@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    android:label="MainNavFragment"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.jadebyte.jadeplayer.main.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_playbackFragment"
+            app:destination="@id/playbackFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playbackFragment"
+        android:name="com.jadebyte.jadeplayer.main.playback.PlaybackFragment"
+        android:label="fragment_playback"
+        tools:layout="@layout/fragment_playback" >
+        <argument
+            android:name="transitionName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_playbackFragment_to_songsMenuBottomSheetDialogFragment"
+            app:destination="@id/songsMenuBottomSheetDialogFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/songsMenuBottomSheetDialogFragment"
+        android:name="com.jadebyte.jadeplayer.main.songs.SongsMenuBottomSheetDialogFragment"
+        android:label="fragment_songs_menu_bottom_sheet_dialog"
+        tools:layout="@layout/fragment_songs_menu_bottom_sheet_dialog" >
+        <argument
+            android:name="mediaId"
+            app:argType="long" />
+    </dialog>
+</navigation>

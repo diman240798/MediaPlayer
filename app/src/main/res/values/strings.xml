@@ -1,0 +1,163 @@
+<!--
+  Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
+  -->
+
+<resources>
+    <string name="app_name">Jade Player</string>
+
+    <!--OnBoarding Slides-->
+    <string name="got_it">Got it</string>
+    <string name="board_title_1">Best Music App</string>
+    <string name="board_description_1">Easily add your create your trip, and let people know where you’re heading.</string>
+    <string name="board_title_2">Listen</string>
+    <string name="board_description_2">Discover where people are going, and join them on their trips.</string>
+    <string name="board_title_3">Nonstop</string>
+    <string name="board_description_3">Ask people to join you on your trips.</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+
+
+    <!--Accessibility-->
+    <string name="on_boarding_image">On-boarding image</string>
+    <string name="app_icon">App Icon</string>
+    <string name="get_started">Get Started</string>
+    <string name="image_of_navigation_item">Image of Navigation item</string>
+    <string name="navigation_icon">Navigation icon</string>
+    <string name="track_album_art">Track album art</string>
+    <string name="playlist_image">Playlist image</string>
+    <string name="artist_avatar">Artist avatar</string>
+    <string name="album_art">Album art</string>
+    <string name="genre_art">Genre art</string>
+    <string name="more_options">More options</string>
+    <string name="go_back">Go back</string>
+    <string name="shuffle_playlist">Shuffle playlist</string>
+    <string name="repeat_playlist">Repeat playlist</string>
+    <string name="play_and_pause_button">Play and pause button</string>
+    <string name="pause_button">Pause button</string>
+    <string name="play_button">Play button</string>
+    <string name="next_button">Next Button</string>
+    <string name="previous_button">Previous button</string>
+    <string name="current_playing_tracks">Current playing tracks</string>
+    <string name="man_holding_an_empty_box">Man holding an empty box</string>
+    <string name="add_new">Add New</string>
+    <string name="add_new_playlist">Add New Playlist</string>
+    <string name="skip_to_next">Skip to next song</string>
+    <string name="skip_to_previous">Skip to previous song</string>
+    <string name="play_song">Play song</string>
+    <string name="pause_song">Pause song</string>
+
+
+    <!--Navigation-->
+    <string name="explore">Explore</string>
+    <string name="songs">Songs</string>
+    <string name="albums">Albums</string>
+    <string name="playlist">Playlist</string>
+    <string name="search">Search</string>
+    <string name="close">Close</string>
+    <string name="nav_dialog_info">You can sort it as you want</string>
+    <string name="identify_music">Identify Music</string>
+    <string name="artists">Artists</string>
+    <string name="favourites">Favourites</string>
+    <string name="genres">Genres</string>
+    <string name="radio">Radio</string>
+    <string name="settings">Settings</string>
+    <string name="videos">Videos</string>
+    <string name="filter_results">Filter results</string>
+
+
+    <!--Plurals-->
+    <plurals name="numberOfSongs">
+        <item quantity="one">%d song</item>
+        <item quantity="other">%d songs</item>
+    </plurals>
+    <plurals name="numberOfSongsInAlbum">
+        <item quantity="one">%d song</item>
+        <item quantity="other">%d songs</item>
+    </plurals>
+    <plurals name="numberOfSongsSelected">
+        <item quantity="one">%d song selected</item>
+        <item quantity="other">%d songs selected</item>
+        <item quantity="zero">No songs selected</item>
+    </plurals>
+    <plurals name="numberOfPlaylistsSelected">
+        <item quantity="one">%d playlist selected</item>
+        <item quantity="other">%d playlist selected</item>
+        <item quantity="zero">No playlist selected</item>
+    </plurals>
+    <plurals name="numberOfAlbums">
+        <item quantity="one">%d album</item>
+        <item quantity="other">%d albums</item>
+    </plurals>
+    <plurals name="numberOfPlaylists">
+        <item quantity="one">%d playlist</item>
+        <item quantity="other">%d playlists</item>
+    </plurals>
+
+
+    <!--Dummy Strings. TODO: Remove-->
+    <string name="dummyLyrics">I\'m just a singer who already blew his shot I get along with old timers Cause my name\'s a reminder of a pop song people forgot And I can\'t keep a girl, no \'Cause as soon as the sun comes up I cut \'em all loose and work\'s my excuse But the truth is I can\'t open up[Chorus] Now you don\'t wanna be high like me Never really knowing why like me You don\'t ever wanna step off that roller coaster And be all alone You don\'t wanna ride the bus like this Never knowing who to trust like this You don\'t wanna be stuck up on that stage singing Stuck up on that stage singing All I know are sad songs, sad songs Darling, all I know are sad songs, sad songs</string>
+    <string name="dummyLyricsSource">genus.com</string>
+
+
+    <!--Others-->
+    <string name="read_storage_permission_info">We need to be authorized to access the media files on your device.</string>
+    <string name="read_storage_permission_settings">Storage permission can be enabled under Settings > Apps > %s > Permission.</string>
+    <string name="goToAppInfo">Go to App Info</string>
+    <string name="recentlyPlayed">Recently Played</string>
+    <string name="empty_playlist">You have not played any song yet</string>
+    <string name="play">Play</string>
+    <string name="back">Back</string>
+    <string name="two_comma_separated_values">%s, %s</string>
+    <string name="min">\u0020 minute</string>
+    <string name="mins">\u0020 minutes</string>
+    <string name="sec">\u0020 second</string>
+    <string name="secs">\u0020 seconds</string>
+    <string name="hour">\u0020 hour</string>
+    <string name="hours">\u0020 hours</string>
+    <string name="comma">,\u0020</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="now_playing">Now Playing</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="finding_lyrics">Finding Lyrics</string>
+    <string name="share">Share</string>
+    <string name="play_next">Play next</string>
+    <string name="favourite">Favourite</string>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="delete_frm_library">Delete from library</string>
+    <string name="no_playlist">No playlist here to see</string>
+    <string name="add_playlist_suggestion">How about we start by adding a some songs to your playlist?</string>
+    <string name="create_a_playlist">Create a playlist</string>
+    <string name="create_playlist">Create playlist</string>
+    <string name="create_playlist_thumb_text">Click here to change image</string>
+    <string name="upload_playlist_image">Upload a picture as your playlist identity</string>
+    <string name="playlist_name">Playlist name</string>
+    <string name="playlist_empty_message">Playlist cannot be empty</string>
+    <string name="playlist_empty_thumb_message">Change playlist name or select an image</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="edit_songs">Edit songs</string>
+    <string name="edit_playlist">Edit Playlist</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="playlist_delete_message">Do you want to permanently delete \"%1$s\"?</string>
+    <string name="no_thanks">No thanks</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="continue_">Continue</string>
+    <string name="sth_deleted">\"%1$s\" deleted</string>
+    <string name="sth_went_wrong">Oops! Something went wrong</string>
+    <string name="done">Done</string>
+    <string name="select_songs">Select Songs</string>
+    <string name="song_in_album">%1$s in %2$s</string>
+    <string name="remove_picture">Remove picture</string>
+    <string name="success">Success</string>
+    <string name="notification_channel">Now Playing</string>
+    <string name="notification_channel_description">Shows what music is currently playing in Jade Player</string>
+    <string name="playing_now">Playing Now</string>
+    <string name="search_hint">Search title, album, artist, genre or playlist</string>
+    <string name="no_results">No results found for \"%s\"</string>
+
+
+</resources>

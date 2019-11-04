@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
+  -->
+
+<resources>
+    <!--<color name="colorPrimary">#070E21</color>
+    <color name="colorPrimaryDark">#03060F</color>
+    <color name="colorAccent">#FF4060</color>
+    <color name="colorBackground">@color/colorPrimary</color>
+    <color name="darkPrimary">#070E21</color>
+    <color name="lightBlue">#78849E</color>
+    <color name="selectedNavColor">@color/colorAccent</color>
+    <color name="unSelectedNavColor">#CBC9C9</color>
+    <color name="colorNavItemBg">#303030</color>
+    <color name="colorNavItemBgSelected">@color/colorAccent</color>
+    <color name="colorBurOverlay">#F7070E21</color>
+    <color name="seek_bar_background">#454956</color>
+    <color name="fadedColorPrimary">#161C2C</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="textColorSecondary">#B2FFFFFF</color>
+    <color name="search_icon_tint">#3A424D</color>-->
+</resources>

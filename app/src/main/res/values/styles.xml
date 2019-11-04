@@ -1,0 +1,125 @@
+<!--
+  Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
+  -->
+
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:scrollbarThumbVertical">@drawable/scrollbar_thumb_vertical</item>
+        <item name="android:scrollbarTrackHorizontal">@drawable/scrollbar_track_vertical</item>
+        <item name="indicatorFastScrollerThumbStyle">@style/Widget.FastScrollSample.FastScrollerThumb</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.ColoredStatusBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!--Always dark theme-->
+    <style name="AppTheme.NoActionBar.DarkTheme">
+        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <!--Splash theme-->
+    <style name="AppTheme.NoActionBar.DarkTheme.Splash">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
+    <!--Fullscreen style-->
+    <style name="AppTheme.FullScreenDialogStyle">
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:windowFullscreen">false
+        </item> <!-- True for full screen without status bar -->
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.DialogAnimation" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_out</item>
+    </style>
+
+    <style name="AppTheme.SectionTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/padding_large</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+    </style>
+
+    <style name="AppTheme.SectionIcon">
+        <item name="navigationIcon" type="id">@id/navigationIcon</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:contentDescription">@string/navigation_icon</item>
+        <item name="android:padding">@dimen/padding_large</item>
+    </style>
+
+
+    <style name="AppTheme.SectionBackButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+        <item name="android:layout_margin">@dimen/margin_medium</item>
+        <item name="android:drawableLeft">@drawable/ic_back</item>
+        <item name="android:text">@string/back</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/text_size_x_small</item>
+    </style>
+
+    <style name="AppTheme.MenuButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">@dimen/padding_xx_large</item>
+        <item name="android:paddingEnd">@dimen/padding_xx_large</item>
+        <item name="android:paddingTop">@dimen/padding_large</item>
+        <item name="android:paddingBottom">@dimen/padding_large</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="TransparentBottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomSheetTheme" parent="@style/Theme.Design.BottomSheetDialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="bottomSheetStyle">@style/TransparentBottomSheet</item>
+        <item name="android:windowEnterAnimation">@anim/bottom_sheet_in</item>
+        <item name="android:windowExitAnimation">@anim/bottom_sheet_out</item>
+    </style>
+
+    <style name="Widget.FastScrollSample.FastScrollerThumb" parent="Widget.IndicatorFastScroll.FastScrollerThumb">
+        <item name="thumbColor">?colorAccent</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+</resources>
