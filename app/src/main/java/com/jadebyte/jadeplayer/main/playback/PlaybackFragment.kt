@@ -160,10 +160,13 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun showFindingLyrics() {
-        if (hasLyrics()) {
+        /*if (hasLyrics()) {
             showFoundLyrics()
             return
-        }
+        }*/
+
+
+
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(
             albumArt.fadeOutSlideUp(translationY, slideDuration),
@@ -179,17 +182,22 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
 
             override fun onAnimationEnd(animation: Animator?) {
                 albumArtGroup.visibility = View.GONE
-                Handler().postDelayed({
-                    showFoundLyrics(getString(R.string.dummyLyrics), getString(R.string.dummyLyricsSource))
-                }, TimeUnit.SECONDS.toMillis(4))
                 animatorSet.removeAllListeners()
             }
         })
 
-        animatorSet.start()
+        val curItem = viewModel.currentItem.value
+        if (curItem != null) {
+            viewModel.getLyrics(curItem.subtitle, curItem.title, animatorSet, {
+                Handler().postDelayed({
+                    showFoundLyrics(viewModel.lyrics, getString(R.string.dummyLyricsSource))
+                }, TimeUnit.SECONDS.toMillis(4))
+            })
+            animatorSet.start()
+        }
     }
 
-    private fun showFoundLyrics(lyrics: String? = null, source: String? = null) {
+    private fun showFoundLyrics(lyrics: String? = null, source: String) {
         val lyricsIsEmpty = lyrics.isNullOrEmpty()
         if (!lyricsIsEmpty) {
             lyricsText.text = lyrics

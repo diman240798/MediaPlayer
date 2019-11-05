@@ -2,6 +2,7 @@
 
 package com.jadebyte.jadeplayer.main.playback
 
+import android.animation.AnimatorSet
 import android.app.Application
 import android.content.SharedPreferences
 import android.os.Handler
@@ -16,6 +17,7 @@ import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRoomDatabase
+import com.jadebyte.jadeplayer.main.lyrics.LyricsFetcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,6 +32,7 @@ class PlaybackViewModel(
 ) :
     AndroidViewModel(application) {
 
+    var lyrics: String? = null
     private val playedRepository: RecentlyPlayedRepository
     private val _mediaItems = MutableLiveData<List<MediaItemData>>()
     private val _currentItem = MutableLiveData<MediaItemData?>()
@@ -335,6 +338,23 @@ class PlaybackViewModel(
         updatePosition = false
 
         handler.removeCallbacksAndMessages(null)
+    }
+
+    fun getLyrics(
+        artist: String,
+        song: String,
+        animatorSet: AnimatorSet,
+        showLyrics: () -> Boolean
+    ) {
+        viewModelScope.launch {
+            lyrics = withContext(Dispatchers.IO) {
+                LyricsFetcher.fetchLyrics(artist, song)
+            }
+            withContext(Dispatchers.Main) {
+                showLyrics()
+            }
+
+        }
     }
 
     private val lastParendId: String get() = preferences.getString(Constants.LAST_PARENT_ID, Constants.SONGS_ROOT)!!
