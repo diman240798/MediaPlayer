@@ -20,6 +20,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.C
@@ -31,7 +32,6 @@ import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.upstream.FileDataSourceFactory
 import com.jadebyte.jadeplayer.R
-import com.jadebyte.jadeplayer.common.GlideApp
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayed
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
@@ -297,7 +297,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
         }
 
         private fun loadLargeIcon() {
-            GlideApp.with(this@PlaybackService)
+            Glide.with(this@PlaybackService)
                 .asBitmap()
                 .skipMemoryCache(false)
                 .load(mediaController.metadata.description.iconUri)

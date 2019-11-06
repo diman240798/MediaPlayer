@@ -8,7 +8,6 @@ import android.provider.MediaStore
 import com.jadebyte.jadeplayer.common.dp
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.data.Model
-import com.jadebyte.jadeplayer.main.common.network.image.playlist.PlaylistModelLoader
 import kotlinx.android.parcel.Parcelize
 
 /**

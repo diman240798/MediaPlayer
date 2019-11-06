@@ -7,11 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.jadebyte.jadeplayer.R
-import com.jadebyte.jadeplayer.common.GlideApp
 import kotlinx.android.synthetic.main.item_on_boarding.view.*
 
 
@@ -24,7 +24,7 @@ class OnBoardingAdapter(private val context: Context, private val boards: Array<
         val layout = LayoutInflater.from(context).inflate(R.layout.item_on_boarding, container, false)
 
         val board = boards[position]
-        GlideApp.with(context)
+        Glide.with(context)
             .load(board.image)
             .transform(MultiTransformation(CenterCrop(), RoundedCorners(15)))
             .into(layout.onBoardingImg)

@@ -7,12 +7,12 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.jadebyte.jadeplayer.R
-import com.jadebyte.jadeplayer.common.GlideApp
 import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.artists.Artist
 import com.jadebyte.jadeplayer.main.common.image.CircularTransparentCenter
@@ -34,122 +34,190 @@ object DataBindingAdapters {
     @BindingAdapter("android:src")
     @JvmStatic
     fun setAlbumCover(view: ImageView, song: Song?) {
-        GlideApp.with(view)
+        Glide.with(view)
+            .load(R.drawable.thumb_circular_default)
+            .transform(
+                MultiTransformation(centerCrop, circleCrop)
+            )
+            .into(view)
+        /*Glide.with(view)
             .load(song?.album)
             .transform(
                 MultiTransformation(centerCrop, circleCrop)
             )
             .placeholder(R.drawable.thumb_circular_default)
-            .into(view)
+            .into(view)*/
     }
 
     @BindingAdapter("android:src")
     @JvmStatic
     fun setAlbumCover(view: ImageView, mediaItem: MediaItemData?) {
-        GlideApp.with(view)
+        Glide.with(view)
+            .load(R.drawable.thumb_circular_default)
+            .transform(
+                MultiTransformation(centerCrop, circleCrop)
+            )
+            .into(view)
+
+        /*Glide.with(view)
             .load(mediaItem)
             .transform(
                 MultiTransformation(centerCrop, circleCrop)
             )
             .placeholder(R.drawable.thumb_circular_default)
-            .into(view)
+            .into(view)*/
     }
 
     @BindingAdapter("android:src")
     @JvmStatic
     fun setAlbumCover(view: ImageView, item: RecentlyPlayed?) {
-        GlideApp.with(view)
+        Glide.with(view)
+            .load(R.drawable.thumb_circular_default)
+            .transform(
+                MultiTransformation(centerCrop, circleCrop)
+            )
+            .into(view)
+
+        /*Glide.with(view)
             .load(item)
             .transform(
                 MultiTransformation(centerCrop, circleCrop)
             )
             .placeholder(R.drawable.thumb_circular_default)
-            .into(view)
+            .into(view)*/
     }
 
 
     @BindingAdapter("mediaSrc")
     @JvmStatic
     fun setAlbumCoverCompat(view: ImageView, item: MediaItemData?) {
-        GlideApp.with(view)
+        Glide.with(view)
+            .load(R.drawable.thumb_circular_default)
+            .transform(
+                MultiTransformation(centerCrop, circleCrop, CircularTransparentCenter(.3F))
+            )
+            .into(view)
+
+        /*Glide.with(view)
             .load(item)
             .transform(
                 MultiTransformation(centerCrop, circleCrop, CircularTransparentCenter(.3F))
             )
             .placeholder(R.drawable.thumb_circular_default_hollow)
-            .into(view)
+            .into(view)*/
     }
 
     @BindingAdapter("android:src")
     @JvmStatic
     fun setArtistAvatar(view: ImageView, artist: Artist) {
-        GlideApp.with(view)
+        Glide.with(view)
+            .load(R.drawable.thumb_circular_default)
+            .transform(
+                MultiTransformation(centerCrop, circleCrop)
+            )
+            .into(view)
+        /*Glide.with(view)
             .load(artist)
             .transform(
                 MultiTransformation(centerCrop, circleCrop)
             )
             .placeholder(R.drawable.thumb_circular_default)
-            .into(view)
+            .into(view)*/
     }
 
     @BindingAdapter("android:src")
     @JvmStatic
     fun setAlbumCover(view: ImageView, album: Album) {
-        GlideApp.with(view)
+        Glide.with(view)
+            .load(R.drawable.thumb_circular_default)
+            .transform(
+                MultiTransformation(centerCrop, RoundedCorners(10))
+            )
+            .into(view)
+
+        /*Glide.with(view)
             .load(album)
             .transform(
                 MultiTransformation(centerCrop, RoundedCorners(10))
             )
             .placeholder(R.drawable.thumb_default)
-            .into(view)
+            .into(view)*/
     }
 
     @BindingAdapter("artistSrc")
     @JvmStatic
     fun setAlbumSrc(view: ImageView, album: Album) {
-        GlideApp.with(view)
+        Glide.with(view)
+            .load(R.drawable.thumb_default_short)
+            .transform(
+                MultiTransformation(centerCrop, RoundedCorners(10))
+            )
+            .into(view)
+
+        /*Glide.with(view)
             .load(album)
             .transform(
                 MultiTransformation(centerCrop, RoundedCorners(10))
             )
             .placeholder(R.drawable.thumb_default_short)
-            .into(view)
+            .into(view)*/
     }
 
     @BindingAdapter("android:src")
     @JvmStatic
     fun setPlaylistCover(view: ImageView, playlist: Playlist) {
-        GlideApp.with(view)
+        Glide.with(view)
+            .load(R.drawable.thumb_circular_default)
+            .transform(
+                MultiTransformation(centerCrop, circleCrop)
+            )
+            .into(view)
+
+        /*Glide.with(view)
             .load(playlist.modForViewWidth(view.measuredWidth))
             .transform(
                 MultiTransformation(centerCrop, circleCrop)
             )
             .placeholder(R.drawable.thumb_circular_default)
-            .into(view)
+            .into(view)*/
     }
 
     @BindingAdapter("playlistSrc")
     @JvmStatic
     fun setPlaylistSrc(view: ImageView, playlist: Playlist) {
-        GlideApp.with(view)
+        Glide.with(view)
+            .load(R.drawable.thumb_default_short)
+            .transform(
+                MultiTransformation(centerCrop, RoundedCorners(10))
+            )
+            .into(view)
+
+        /*Glide.with(view)
             .load(playlist.modForViewWidth(view.measuredWidth))
             .transform(
                 MultiTransformation(centerCrop, RoundedCorners(10))
             )
             .placeholder(R.drawable.thumb_default_short)
-            .into(view)
+            .into(view)*/
     }
 
     @BindingAdapter("genreSrc")
     @JvmStatic
     fun setGenreSrc(view: ImageView, genre: Genre) {
-        GlideApp.with(view)
+        Glide.with(view)
+            .load(R.drawable.thumb_default_short)
+            .transform(
+                MultiTransformation(centerCrop, RoundedCorners(10))
+            )
+            .into(view)
+
+        /*Glide.with(view)
             .load(genre)
             .transform(
                 MultiTransformation(centerCrop, RoundedCorners(10))
             )
             .placeholder(R.drawable.thumb_default_short)
-            .into(view)
+            .into(view)*/
     }
 
     @BindingAdapter("repeatSrc")

@@ -17,6 +17,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.engine.GlideException
@@ -24,7 +25,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.jadebyte.jadeplayer.R
-import com.jadebyte.jadeplayer.common.GlideApp
 import com.jadebyte.jadeplayer.common.crossFadeWidth
 import com.jadebyte.jadeplayer.common.px
 import com.jadebyte.jadeplayer.main.common.callbacks.TextWatcher
@@ -194,7 +194,7 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
     }
 
     private fun displayImage(any: Any?) {
-        GlideApp.with(this)
+        Glide.with(this)
             .load(any)
             .transform(
                 MultiTransformation(DataBindingAdapters.centerCrop, RoundedCorners(7.px))
