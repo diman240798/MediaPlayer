@@ -2,7 +2,6 @@
 
 package com.jadebyte.jadeplayer.main.playback
 
-import android.animation.AnimatorSet
 import android.app.Application
 import android.content.SharedPreferences
 import android.os.Handler
@@ -19,6 +18,7 @@ import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRoomDatabase
 import com.jadebyte.jadeplayer.main.lyrics.LyricsFetcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -32,7 +32,7 @@ class PlaybackViewModel(
 ) :
     AndroidViewModel(application) {
 
-    var lyrics: String? = null
+    var lyrics: Lyrics? = null
     private val playedRepository: RecentlyPlayedRepository
     private val _mediaItems = MutableLiveData<List<MediaItemData>>()
     private val _currentItem = MutableLiveData<MediaItemData?>()
@@ -340,15 +340,11 @@ class PlaybackViewModel(
         handler.removeCallbacksAndMessages(null)
     }
 
-    fun getLyrics(
-        artist: String,
-        song: String,
-        animatorSet: AnimatorSet,
-        showLyrics: () -> Boolean
-    ) {
-        viewModelScope.launch {
+    fun getLyrics(id: String, artist: String, song:String, showLyrics: () -> Boolean): Job {
+
+        return viewModelScope.launch {
             lyrics = withContext(Dispatchers.IO) {
-                LyricsFetcher.fetchLyrics(artist, song)
+                LyricsFetcher.fetchLyrics(id, artist, song)
             }
             withContext(Dispatchers.Main) {
                 showLyrics()

@@ -16,8 +16,10 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.children
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
@@ -28,6 +30,7 @@ import com.jadebyte.jadeplayer.main.common.callbacks.AnimatorListener
 import com.jadebyte.jadeplayer.main.common.callbacks.OnSeekBarChangeListener
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_playback.*
+import kotlinx.coroutines.Job
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.concurrent.TimeUnit
 
@@ -38,8 +41,24 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
     private val viewModel: PlaybackViewModel by sharedViewModel()
     private lateinit var rotationAnimSet: AnimatorSet
     private val handler = Handler()
+
+    private var lyricsFindingAnimationJob: Job? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (lyricsFindingAnimationJob != null) {
+                        lyricsFindingAnimationJob?.cancel()
+                }
+                this.isEnabled = false
+                activity?.onBackPressed()
+            }
+        }
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback)
+
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
     }
 
@@ -165,8 +184,6 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
             return
         }*/
 
-
-
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(
             albumArt.fadeOutSlideUp(translationY, slideDuration),
@@ -188,20 +205,20 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
 
         val curItem = viewModel.currentItem.value
         if (curItem != null) {
-            viewModel.getLyrics(curItem.subtitle, curItem.title, animatorSet, {
+            lyricsFindingAnimationJob = viewModel.getLyrics(curItem.id, curItem.subtitle, curItem.title, {
                 Handler().postDelayed({
-                    showFoundLyrics(viewModel.lyrics, getString(R.string.dummyLyricsSource))
-                }, TimeUnit.SECONDS.toMillis(4))
+                    showFoundLyrics(viewModel.lyrics)
+                }, 300)
             })
             animatorSet.start()
         }
     }
 
-    private fun showFoundLyrics(lyrics: String? = null, source: String) {
-        val lyricsIsEmpty = lyrics.isNullOrEmpty()
+    private fun showFoundLyrics(lyrics: Lyrics?) {
+        val lyricsIsEmpty = lyrics == null || lyrics.lyrics.isNullOrEmpty()
         if (!lyricsIsEmpty) {
-            lyricsText.text = lyrics
-            lyricsSource.text = source
+            lyricsText.text = lyrics?.lyrics
+            lyricsSource.text = lyrics?.lyricsSource
         }
 
         val animatorSet = AnimatorSet()
@@ -229,9 +246,6 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
         })
         animatorSet.start()
     }
-
-
-    private fun hasLyrics() = !lyricsText.text.isNullOrEmpty()
 
     private val onSeekBarChangeListener = object : OnSeekBarChangeListener {
 
