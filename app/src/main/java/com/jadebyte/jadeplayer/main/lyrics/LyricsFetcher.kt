@@ -111,7 +111,7 @@ class LyricsFetcher {
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                return null
+                return Lyrics("", "", "", "Nothing Found", "Sorry. We cdn't find lyrics for u :(")
             }
         }
     }

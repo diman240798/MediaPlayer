@@ -19,7 +19,6 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.children
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
@@ -30,9 +29,9 @@ import com.jadebyte.jadeplayer.main.common.callbacks.AnimatorListener
 import com.jadebyte.jadeplayer.main.common.callbacks.OnSeekBarChangeListener
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_playback.*
-import kotlinx.coroutines.Job
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.concurrent.TimeUnit
+import java.lang.Exception
+import java.lang.RuntimeException
 
 
 class PlaybackFragment : BaseFragment(), View.OnClickListener {
@@ -42,26 +41,15 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
     private lateinit var rotationAnimSet: AnimatorSet
     private val handler = Handler()
 
-    private var lyricsFindingAnimationJob: Job? = null
+    private var findingLyricsAnimatorSet: AnimatorSet? = null
+    private var foundLyricsAnimatorSet: AnimatorSet? = null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val onBackPressedCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (lyricsFindingAnimationJob != null) {
-                        lyricsFindingAnimationJob?.cancel()
-                }
-                this.isEnabled = false
-                activity?.onBackPressed()
-            }
-        }
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback)
-
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,6 +67,7 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
         observeViewData()
     }
 
+
     private fun observeViewData() {
         viewModel.mediaPosition.observe(viewLifecycleOwner, Observer {
             if (!userTouchingSeekBar) playbackSeekBar.progress = it.toInt()
@@ -89,8 +78,8 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
         })
 
         viewModel.playbackState.observe(viewLifecycleOwner, Observer { updateState(it) })
+        viewModel.lyrics.observe(viewLifecycleOwner, Observer { showFoundLyrics(it) })
     }
-
 
     private fun setupView() {
         rotationAnimSet = AnimatorInflater.loadAnimator(activity, R.animator.album_art_rotation) as AnimatorSet
@@ -114,6 +103,7 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
             if (playPauseButton.currentView != playButton) playPauseButton.showPrevious()
         }
     }
+
 
     override fun onClick(v: View?) {
         when (v?.id) {
@@ -184,67 +174,69 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
             return
         }*/
 
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(
+        findingLyricsAnimatorSet = AnimatorSet()
+        findingLyricsAnimatorSet?.playTogether(
             albumArt.fadeOutSlideUp(translationY, slideDuration),
             lyricsButton.fadeOutSlideUp(translationY, slideDuration),
             progressBar.fadeInSlideUp(translationY, slideDuration),
             findingLyrics.fadeInSlideUp(translationY, slideDuration)
         )
-        animatorSet.interpolator = AccelerateDecelerateInterpolator()
-        animatorSet.addListener(object : AnimatorListener {
+        findingLyricsAnimatorSet?.interpolator = AccelerateDecelerateInterpolator()
+        findingLyricsAnimatorSet?.addListener(object : AnimatorListener {
             override fun onAnimationStart(animation: Animator?) {
+                try {
                 loadingLyricsGroup.visibility = View.VISIBLE
+                } catch (ignored: Exception) {}
             }
 
             override fun onAnimationEnd(animation: Animator?) {
-                albumArtGroup.visibility = View.GONE
-                animatorSet.removeAllListeners()
+                try {
+                    albumArtGroup.visibility = View.GONE
+                } catch (ignored: Exception) {}
+                findingLyricsAnimatorSet?.removeAllListeners()
             }
         })
 
         val curItem = viewModel.currentItem.value
         if (curItem != null) {
-            lyricsFindingAnimationJob = viewModel.getLyrics(curItem.id, curItem.subtitle, curItem.title, {
-                Handler().postDelayed({
-                    showFoundLyrics(viewModel.lyrics)
-                }, 300)
-            })
-            animatorSet.start()
+            viewModel.getLyrics(curItem.id, curItem.subtitle, curItem.title)
+            findingLyricsAnimatorSet?.start()
         }
     }
 
     private fun showFoundLyrics(lyrics: Lyrics?) {
-        val lyricsIsEmpty = lyrics == null || lyrics.lyrics.isNullOrEmpty()
-        if (!lyricsIsEmpty) {
-            lyricsText.text = lyrics?.lyrics
-            lyricsSource.text = lyrics?.lyricsSource
-        }
+        if (lyrics == null) return
 
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(
-            if (!lyricsIsEmpty) progressBar.fadeOutSlideUp(translationY, slideDuration) else
-                albumArt.fadeOutSlideUp(translationY, slideDuration),
-            if (!lyricsIsEmpty) findingLyrics.fadeOutSlideUp(translationY, slideDuration) else
-                lyricsButton.fadeOutSlideUp(translationY, slideDuration),
+        lyricsText.text = lyrics.lyrics
+        lyricsSource.text = lyrics.lyricsSource
+
+        foundLyricsAnimatorSet = AnimatorSet()
+        foundLyricsAnimatorSet?.playTogether(
+            progressBar.fadeOutSlideUp(translationY, slideDuration), //else albumArt.fadeOutSlideUp(translationY, slideDuration),
+            findingLyrics.fadeOutSlideUp(translationY, slideDuration), //else lyricsButton.fadeOutSlideUp(translationY, slideDuration),
             closeButton.fadeInSlideUp(translationY, slideDuration),
             quoteImg.fadeInSlideUp(translationY, slideDuration),
             lyricsText.fadeInSlideUp(translationY, slideDuration),
             lyricsSource.fadeInSlideUp(translationY, slideDuration)
         )
 
-        animatorSet.interpolator = AccelerateDecelerateInterpolator()
-        animatorSet.addListener(object : AnimatorListener {
+        foundLyricsAnimatorSet?.interpolator = AccelerateDecelerateInterpolator()
+        foundLyricsAnimatorSet?.addListener(object : AnimatorListener {
             override fun onAnimationStart(animation: Animator?) {
-                lyricsGroup.visibility = View.VISIBLE
+                try {
+                    albumArtGroup.visibility = View.GONE
+                    lyricsGroup.visibility = View.VISIBLE
+                } catch (ignored: Exception) {}
             }
 
             override fun onAnimationEnd(animation: Animator?) {
-                if (!lyricsIsEmpty) loadingLyricsGroup.visibility = View.GONE else albumArtGroup.visibility = View.GONE
-                animatorSet.removeAllListeners()
+                try {
+                    loadingLyricsGroup.visibility = View.GONE // else albumArtGroup.visibility = View.GONE
+                } catch (ignored: Exception) {}
+                foundLyricsAnimatorSet?.removeAllListeners()
             }
         })
-        animatorSet.start()
+        foundLyricsAnimatorSet?.start()
     }
 
     private val onSeekBarChangeListener = object : OnSeekBarChangeListener {
@@ -262,8 +254,17 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
 
     }
 
+    private fun removeLyricsAnimators() {
+        findingLyricsAnimatorSet?.removeAllListeners()
+        findingLyricsAnimatorSet?.cancel()
+        foundLyricsAnimatorSet?.removeAllListeners()
+        foundLyricsAnimatorSet?.cancel()
+    }
+
     override fun onDestroyView() {
         rotationAnimSet.cancel()
+        removeLyricsAnimators()
+        viewModel.lyrics.value = null
         super.onDestroyView()
     }
 

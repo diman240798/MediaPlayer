@@ -32,7 +32,8 @@ class PlaybackViewModel(
 ) :
     AndroidViewModel(application) {
 
-    var lyrics: Lyrics? = null
+
+    var lyrics = MutableLiveData<Lyrics?>()
     private val playedRepository: RecentlyPlayedRepository
     private val _mediaItems = MutableLiveData<List<MediaItemData>>()
     private val _currentItem = MutableLiveData<MediaItemData?>()
@@ -340,16 +341,12 @@ class PlaybackViewModel(
         handler.removeCallbacksAndMessages(null)
     }
 
-    fun getLyrics(id: String, artist: String, song:String, showLyrics: () -> Boolean): Job {
+    fun getLyrics(id: String, artist: String, song:String): Job {
 
         return viewModelScope.launch {
-            lyrics = withContext(Dispatchers.IO) {
+            lyrics.value = withContext(Dispatchers.IO) {
                 LyricsFetcher.fetchLyrics(id, artist, song)
             }
-            withContext(Dispatchers.Main) {
-                showLyrics()
-            }
-
         }
     }
 
