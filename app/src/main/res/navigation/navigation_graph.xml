@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_playbackFragment_to_songsMenuBottomSheetDialogFragment"
             app:destination="@id/songsMenuBottomSheetDialogFragment" />
+        <action
+            android:id="@+id/action_playbackFragment_to_lyricsFragment"
+            app:destination="@id/lyricsFragment" />
     </fragment>
     <dialog
         android:id="@+id/songsMenuBottomSheetDialogFragment"
@@ -39,4 +42,13 @@
             android:name="mediaId"
             app:argType="long" />
     </dialog>
+    <fragment
+        android:id="@+id/lyricsFragment"
+        android:name="com.jadebyte.jadeplayer.main.lyrics.LyricsFragment"
+        android:label="fragment_lyrics"
+        tools:layout="@layout/fragment_lyrics" >
+        <argument
+            android:name="lyricsText"
+            app:argType="string" />
+    </fragment>
 </navigation>

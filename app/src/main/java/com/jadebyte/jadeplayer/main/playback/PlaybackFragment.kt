@@ -90,6 +90,7 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
         closeButton.setOnClickListener(this)
         moreOptions.setOnClickListener(this)
         playingTracks.setOnClickListener(this)
+        lyricsText.setOnClickListener(this)
         playbackSeekBar.setOnSeekBarChangeListener(onSeekBarChangeListener)
     }
 
@@ -112,7 +113,14 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
             R.id.closeButton -> closeLyrics()
             R.id.moreOptions -> showMenuBottomSheet()
             R.id.playingTracks -> showCurrentTracks()
+            R.id.lyricsText -> goLyricsFragment()
         }
+    }
+
+    private fun goLyricsFragment() {
+        val lyrics = viewModel.lyrics.value?.lyrics ?: "No Lyrics"
+        val action = PlaybackFragmentDirections.actionPlaybackFragmentToLyricsFragment(lyrics)
+        findNavController().navigate(action)
     }
 
     private fun showCurrentTracks() {
@@ -206,6 +214,7 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
 
     private fun showFoundLyrics(lyrics: Lyrics?) {
         if (lyrics == null) return
+        if (lyrics.id != viewModel.currentItem.value?.id) return
 
         lyricsText.text = lyrics.lyrics
         lyricsSource.text = lyrics.lyricsSource
@@ -264,7 +273,6 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
     override fun onDestroyView() {
         rotationAnimSet.cancel()
         removeLyricsAnimators()
-        viewModel.lyrics.value = null
         super.onDestroyView()
     }
 

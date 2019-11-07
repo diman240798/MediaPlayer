@@ -17,6 +17,7 @@ import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRoomDatabase
 import com.jadebyte.jadeplayer.main.lyrics.LyricsFetcher
+import com.jadebyte.jadeplayer.main.lyrics.LyricsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -34,10 +35,12 @@ class PlaybackViewModel(
 
 
     var lyrics = MutableLiveData<Lyrics?>()
+    private val lyricsRepository: LyricsRepository = LyricsRepository()
     private val playedRepository: RecentlyPlayedRepository
     private val _mediaItems = MutableLiveData<List<MediaItemData>>()
     private val _currentItem = MutableLiveData<MediaItemData?>()
-    private val _playbackState = MutableLiveData<PlaybackStateCompat>().apply { value = EMPTY_PLAYBACK_STATE }
+    private val _playbackState =
+        MutableLiveData<PlaybackStateCompat>().apply { value = EMPTY_PLAYBACK_STATE }
     private val _shuffleMode = MutableLiveData<Int>().apply {
         value = preferences.getInt(
             Constants.LAST_SHUFFLE_MODE,
@@ -191,8 +194,9 @@ class PlaybackViewModel(
 
     private fun updateState(state: PlaybackStateCompat, metadata: MediaMetadataCompat):
             List<MediaItemData>? {
-        val items = (_mediaItems.value?.map { it.copy(isPlaying = it.id == metadata.id && state.isPlayingOrBuffering) }
-            ?: emptyList())
+        val items =
+            (_mediaItems.value?.map { it.copy(isPlaying = it.id == metadata.id && state.isPlayingOrBuffering) }
+                ?: emptyList())
 
         val currentItem = if (items.isEmpty()) {
             // Only update media item if playback has started
@@ -221,8 +225,17 @@ class PlaybackViewModel(
     }
 
     private val subscriptionCallback = object : SubscriptionCallback() {
-        override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
-            val items = children.map { MediaItemData(it, isItemPlaying(it.mediaId!!), isItemBuffering(it.mediaId!!)) }
+        override fun onChildrenLoaded(
+            parentId: String,
+            children: MutableList<MediaBrowserCompat.MediaItem>
+        ) {
+            val items = children.map {
+                MediaItemData(
+                    it,
+                    isItemPlaying(it.mediaId!!),
+                    isItemBuffering(it.mediaId!!)
+                )
+            }
             val current = if (!playMediaAfterLoad.isNullOrBlank()) {
                 getItemFrmPlayId(playMediaAfterLoad!!, items)
             } else {
@@ -341,16 +354,26 @@ class PlaybackViewModel(
         handler.removeCallbacksAndMessages(null)
     }
 
-    fun getLyrics(id: String, artist: String, song:String): Job {
-
+    fun getLyrics(id: String, artist: String, song: String): Job {
         return viewModelScope.launch {
             lyrics.value = withContext(Dispatchers.IO) {
-                LyricsFetcher.fetchLyrics(id, artist, song)
+                val lyricsFromBd: Lyrics? = lyricsRepository.getLyrics(id)
+                if (lyricsFromBd != null) {
+                    return@withContext lyricsFromBd
+                } else {
+                    val lyrics = LyricsFetcher.fetchLyrics(id, artist, song)
+                    lyricsRepository.set(lyrics.id, lyrics)
+                    return@withContext lyrics
+                }
             }
         }
     }
 
-    private val lastParendId: String get() = preferences.getString(Constants.LAST_PARENT_ID, Constants.SONGS_ROOT)!!
+    private val lastParendId: String
+        get() = preferences.getString(
+            Constants.LAST_PARENT_ID,
+            Constants.SONGS_ROOT
+        )!!
 
 }
 

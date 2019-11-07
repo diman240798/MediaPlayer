@@ -92,7 +92,7 @@ object DataBindingAdapters {
     @JvmStatic
     fun setAlbumCoverCompat(view: ImageView, item: MediaItemData?) {
         Glide.with(view)
-            .load(R.drawable.thumb_circular_default)
+            .load(R.drawable.thumb_circular_default_hollow)
             .transform(
                 MultiTransformation(centerCrop, circleCrop, CircularTransparentCenter(.3F))
             )
@@ -129,7 +129,7 @@ object DataBindingAdapters {
     @JvmStatic
     fun setAlbumCover(view: ImageView, album: Album) {
         Glide.with(view)
-            .load(R.drawable.thumb_circular_default)
+            .load(R.drawable.thumb_default)
             .transform(
                 MultiTransformation(centerCrop, RoundedCorners(10))
             )

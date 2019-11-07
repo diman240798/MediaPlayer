@@ -10,7 +10,7 @@ class LyricsFetcher {
 
     companion object {
 
-        fun fetchLyrics(id: String, artist: String, track: String): Lyrics? {
+        fun fetchLyrics(id: String, artist: String, track: String): Lyrics {
             var lyricsSource: String? = null
             try {
                 val artistU = artist.replace(" ".toRegex(), "+")
