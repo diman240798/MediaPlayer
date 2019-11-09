@@ -19,6 +19,7 @@ import com.jadebyte.jadeplayer.main.explore.AppRoomDatabase
 import com.jadebyte.jadeplayer.main.lyrics.Lyrics
 import com.jadebyte.jadeplayer.main.lyrics.LyricsFetcher
 import com.jadebyte.jadeplayer.main.lyrics.LyricsDao
+import com.jadebyte.jadeplayer.main.lyrics.LyricsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -36,8 +37,8 @@ class PlaybackViewModel(
 
 
     var lyrics = MutableLiveData<Lyrics?>()
-    private val lyricsDao: LyricsDao = AppRoomDatabase.getDatabase(application).lyricsDao()
     private val playedRepository: RecentlyPlayedRepository
+    private val lyricsRepository: LyricsRepository
     private val _mediaItems = MutableLiveData<List<MediaItemData>>()
     private val _currentItem = MutableLiveData<MediaItemData?>()
     private val _playbackState =
@@ -71,6 +72,7 @@ class PlaybackViewModel(
     init {
         val recentlyPlayed = AppRoomDatabase.getDatabase(application).recentDao()
         playedRepository = RecentlyPlayedRepository(recentlyPlayed)
+        lyricsRepository = LyricsRepository(AppRoomDatabase.getDatabase(application).lyricsDao())
     }
 
     fun playPause() {
@@ -357,13 +359,13 @@ class PlaybackViewModel(
 
     fun getLyrics(id: String, artist: String, song: String): Job {
         return viewModelScope.launch {
-            lyrics.value = withContext(Dispatchers.IO) {
-                val lyricsFromBd: Lyrics? = lyricsDao.getById(id)
+            lyrics.value = withContext(Dispatchers.IO) { // todo: move to lyricsRepository
+                val lyricsFromBd: Lyrics? = lyricsRepository.getLyrics(id)
                 if (lyricsFromBd != null) {
                     return@withContext lyricsFromBd
                 } else {
                     val lyrics = LyricsFetcher.fetchLyrics(id, artist, song)
-                    lyricsDao.upsert(lyrics)
+                    lyricsRepository.save(lyrics)
                     lyrics.id = id
                     return@withContext lyrics
                 }

@@ -25,11 +25,11 @@ interface LyricsDao {
     fun delete(employee: Lyrics)
 
     @Transaction
-    fun upsert(obj: Lyrics) {
+    fun upsert(lyrics: Lyrics) {
         try {
-            insert(obj).toLong()
+            insert(lyrics).toLong()
         } catch (ex: SQLiteConstraintException) {
-            update(obj)
+            update(lyrics)
         }
     }
 }
