@@ -16,7 +16,7 @@ class ExploreViewModel(application: Application) : AlbumsViewModel(application) 
     override var sortOrder: String? = "RANDOM() LIMIT 5"
 
     init {
-        val recentDao = RecentlyPlayedRoomDatabase.getDatabase(application).recentDao()
+        val recentDao = AppRoomDatabase.getDatabase(application).recentDao()
         recentlyPlayedRepository = RecentlyPlayedRepository(recentDao)
         recentlyPlayed = recentlyPlayedRepository.recentlyPlayed
     }

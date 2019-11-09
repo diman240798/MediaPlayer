@@ -15,9 +15,10 @@ import com.jadebyte.jadeplayer.common.urlEncoded
 import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
-import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRoomDatabase
+import com.jadebyte.jadeplayer.main.explore.AppRoomDatabase
+import com.jadebyte.jadeplayer.main.lyrics.Lyrics
 import com.jadebyte.jadeplayer.main.lyrics.LyricsFetcher
-import com.jadebyte.jadeplayer.main.lyrics.LyricsRepository
+import com.jadebyte.jadeplayer.main.lyrics.LyricsDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -35,7 +36,7 @@ class PlaybackViewModel(
 
 
     var lyrics = MutableLiveData<Lyrics?>()
-    private val lyricsRepository: LyricsRepository = LyricsRepository()
+    private val lyricsDao: LyricsDao = AppRoomDatabase.getDatabase(application).lyricsDao()
     private val playedRepository: RecentlyPlayedRepository
     private val _mediaItems = MutableLiveData<List<MediaItemData>>()
     private val _currentItem = MutableLiveData<MediaItemData?>()
@@ -68,7 +69,7 @@ class PlaybackViewModel(
 
 
     init {
-        val recentlyPlayed = RecentlyPlayedRoomDatabase.getDatabase(application).recentDao()
+        val recentlyPlayed = AppRoomDatabase.getDatabase(application).recentDao()
         playedRepository = RecentlyPlayedRepository(recentlyPlayed)
     }
 
@@ -357,12 +358,13 @@ class PlaybackViewModel(
     fun getLyrics(id: String, artist: String, song: String): Job {
         return viewModelScope.launch {
             lyrics.value = withContext(Dispatchers.IO) {
-                val lyricsFromBd: Lyrics? = lyricsRepository.getLyrics(id)
+                val lyricsFromBd: Lyrics? = lyricsDao.getById(id)
                 if (lyricsFromBd != null) {
                     return@withContext lyricsFromBd
                 } else {
                     val lyrics = LyricsFetcher.fetchLyrics(id, artist, song)
-                    lyricsRepository.set(lyrics.id, lyrics)
+                    lyricsDao.upsert(lyrics)
+                    lyrics.id = id
                     return@withContext lyrics
                 }
             }

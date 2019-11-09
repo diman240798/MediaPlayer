@@ -1,6 +1,5 @@
 package com.jadebyte.jadeplayer.main.lyrics
 
-import com.jadebyte.jadeplayer.main.playback.Lyrics
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.lang.Exception
@@ -106,12 +105,24 @@ class LyricsFetcher {
                 if (lyricURL.contains("genius"))
                     lyrics = lyrics.substring(lyrics.indexOf("Lyrics") + 6)
 
-                return Lyrics(id, artist, track, lyrics, lyricsSource)
+                return Lyrics(
+                    id,
+                    artist,
+                    track,
+                    lyrics,
+                    lyricsSource
+                )
 
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                return Lyrics("", "", "", "Nothing Found", "Sorry. We cdn't find lyrics for u :(")
+                return Lyrics(
+                    "",
+                    "",
+                    "",
+                    "Nothing Found",
+                    "Sorry. We cdn't find lyrics for u :("
+                )
             }
         }
     }

@@ -16,7 +16,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.SeekBar
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -28,10 +27,10 @@ import com.jadebyte.jadeplayer.databinding.FragmentPlaybackBinding
 import com.jadebyte.jadeplayer.main.common.callbacks.AnimatorListener
 import com.jadebyte.jadeplayer.main.common.callbacks.OnSeekBarChangeListener
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
+import com.jadebyte.jadeplayer.main.lyrics.Lyrics
 import kotlinx.android.synthetic.main.fragment_playback.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.lang.Exception
-import java.lang.RuntimeException
 
 
 class PlaybackFragment : BaseFragment(), View.OnClickListener {

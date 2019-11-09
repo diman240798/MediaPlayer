@@ -35,7 +35,7 @@ import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayed
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
-import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRoomDatabase
+import com.jadebyte.jadeplayer.main.explore.AppRoomDatabase
 import com.jadebyte.jadeplayer.main.songs.basicSongsOrder
 import com.jadebyte.jadeplayer.main.songs.basicSongsSelection
 import com.jadebyte.jadeplayer.main.songs.basicSongsSelectionArg
@@ -76,7 +76,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
             PendingIntent.getActivity(this, 0, it, 0)
         }
 
-        recentRepo = RecentlyPlayedRepository(RecentlyPlayedRoomDatabase.getDatabase(application).recentDao())
+        recentRepo = RecentlyPlayedRepository(AppRoomDatabase.getDatabase(application).recentDao())
 
         // Create a MediaSession
         mediaSession = MediaSessionCompat(this, this.javaClass.name).apply {
