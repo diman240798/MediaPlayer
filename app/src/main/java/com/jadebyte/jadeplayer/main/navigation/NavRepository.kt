@@ -34,6 +34,8 @@ class NavRepository(private var origin: Int?, private val preferences: SharedPre
             NavItem(Constants.NAV_SETTINGS, R.string.settings, R.drawable.ic_settings, isFrom(7))
         items[preferences.getInt(Constants.NAV_VIDEOS, 8)] =
             NavItem(Constants.NAV_VIDEOS, R.string.videos, R.drawable.ic_video, isFrom(8))
+        items[preferences.getInt(Constants.NAV_FOLDERS, 9)] =
+            NavItem(Constants.NAV_FOLDERS, R.string.folders, R.drawable.ic_folder, isFrom(9))
         liveItems.value = items.filterNotNull()
     }
 
