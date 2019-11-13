@@ -158,6 +158,10 @@
     <string name="playing_now">Playing Now</string>
     <string name="search_hint">Search title, album, artist, genre or playlist</string>
     <string name="no_results">No results found for \"%s\"</string>
+    <string name="start_record">Start Recording</string>
+    <string name="upload_record">Uploading Record</string>
+    <string name="humming">Humming</string>
+    <string name="listening">Listening</string>
 
 
 </resources>

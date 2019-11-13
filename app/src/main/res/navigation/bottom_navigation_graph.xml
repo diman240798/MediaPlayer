@@ -168,6 +168,12 @@
         <action
             android:id="@+id/action_navigationDialogFragment_to_genresFragment"
             app:destination="@id/genresFragment" />
+        <action
+            android:id="@+id/action_navigationDialogFragment_self"
+            app:destination="@id/navigationDialogFragment" />
+        <action
+            android:id="@+id/action_navigationDialogFragment_to_shazamFragment"
+            app:destination="@id/shazamFragment" />
     </dialog>
     <fragment
         android:id="@+id/albumSongsFragment"
@@ -407,5 +413,9 @@
             android:name="album"
             app:argType="com.jadebyte.jadeplayer.main.albums.Album" />
     </dialog>
+    <fragment
+        android:id="@+id/shazamFragment"
+        android:name="com.jadebyte.jadeplayer.main.shazam.ShazamFragment"
+        android:label="ShazamFragment" />
 
 </navigation>
