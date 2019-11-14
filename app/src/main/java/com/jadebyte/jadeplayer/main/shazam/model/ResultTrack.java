@@ -1,4 +1,4 @@
-package com.jadebyte.jadeplayer.main.shazam;
+package com.jadebyte.jadeplayer.main.shazam.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;

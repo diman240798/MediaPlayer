@@ -1,4 +1,4 @@
-package com.jadebyte.jadeplayer.main.shazam;
+package com.jadebyte.jadeplayer.main.shazam.ui;
 
 import android.animation.TypeEvaluator;
 import android.graphics.Color;

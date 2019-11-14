@@ -1,4 +1,4 @@
-package com.jadebyte.jadeplayer.main.shazam;
+package com.jadebyte.jadeplayer.main.shazam.api;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +9,7 @@ public class UploadFile {
     private final String boundary, valueName;
     private final File file;
 
-    UploadFile(File file, String boundary, String valueName) {
+    public UploadFile(File file, String boundary, String valueName) {
         this.boundary = boundary;
         this.valueName = valueName;
         this.file = file;

@@ -1,7 +1,9 @@
-package com.jadebyte.jadeplayer.main.shazam;
+package com.jadebyte.jadeplayer.main.shazam.api;
 
 
 import android.util.Log;
+
+import com.jadebyte.jadeplayer.main.shazam.model.ResultTrack;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +24,6 @@ public class API {
     private static final String API_TOKEN = "test";
     public static final DispatchQueue thread = new DispatchQueue("API");
     private static final int group_id = 138792192;
-    private Runnable searchRunnable;
 
     public ResultTrack recognizeVoice(final File file, final boolean isHumming) {
         final ResultTrack[] track = {null};
@@ -33,7 +34,7 @@ public class API {
                 try {
                     String method;
                     JSONObject response = upload(file, method = isHumming ? Method.RECOGNIZE_WITH_OFFSET : Method.RECOGNIZE);
-                    Log.e(TAG, method + " = " + String.valueOf(response));
+                    Log.e(TAG, method + " = " + response);
                     if (response.has("result") && !response.isNull("result")) {
                         track[0] = new ResultTrack(response.getJSONObject("result"));
                     }
@@ -44,15 +45,8 @@ public class API {
     }
 
 
-    public JSONObject upload(File file, String method, Params params) throws JSONException {
-        if (params == null) {
-            params = new Params();
-        }
-        return new JSONObject(Network.uploadFile(URL + "?method=" + method + "&api_token=" + API_TOKEN + "&" + String.valueOf(params), file, "file", 0));
-    }
-
     public JSONObject upload(File file, String method) throws JSONException {
-        return upload(file, method, new Params());
+        return new JSONObject(Network.uploadFile(URL + "?method=" + method + "&api_token=" + API_TOKEN, file, "file", 0));
     }
 
     public static API getInstance() {

@@ -1,4 +1,4 @@
-package com.jadebyte.jadeplayer.main.shazam;
+package com.jadebyte.jadeplayer.main.shazam.api;
 
 import android.text.TextUtils;
 

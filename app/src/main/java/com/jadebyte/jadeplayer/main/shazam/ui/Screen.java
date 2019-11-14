@@ -1,4 +1,4 @@
-package com.jadebyte.jadeplayer.main.shazam;
+package com.jadebyte.jadeplayer.main.shazam.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
