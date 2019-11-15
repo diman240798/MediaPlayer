@@ -1,6 +1,7 @@
 package com.jadebyte.jadeplayer.main.shazam.ui;
 
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -17,22 +18,25 @@ import android.media.MediaRecorder;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import com.jadebyte.jadeplayer.R;
+import com.jadebyte.jadeplayer.main.common.permission.PermissionUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
 public class RecordView extends View {
 
-    private final Activity activity;
-    private final OnRecordingStoppedListener onRecordingStoppedListener;
+    private Activity activity;
+    private OnRecordingStoppedListener onRecordingStoppedListener;
 
     private MediaRecorder recorder;
     private final float INDETERMINANT_MIN_SWEEP = 15f;
@@ -55,7 +59,7 @@ public class RecordView extends View {
     private final TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private final TextPaint durationPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private StaticLayout staticLayout, durationLayout;
-    public  int status = DEFAULT, countAudio = 0, currentDuration = 0;
+    public int status = DEFAULT, countAudio = 0, currentDuration = 0;
     private ObjectAnimator animator;
     private File currentFile;
     private boolean breathAnimationWork = false;
@@ -65,6 +69,7 @@ public class RecordView extends View {
     private AnimatorSet indeterminateAnimator;
     private float indeterminateSweep, indeterminateRotateOffset, startAngle = -90;
     private int animDuration = 4000, animSteps = 3;
+    private Runnable animationRunnable;
 
     public RecordView(Activity activity, OnRecordingStoppedListener onRecordingStoppedListener) {
         super(activity);
@@ -92,18 +97,15 @@ public class RecordView extends View {
         durationPaint.setTypeface(Screen.getTypeface(getContext(), "fonts/roboto_regular.ttf"));
         setText(R.string.start_record);
         setTextDuration("0:00");
-        initRecorder();
         startBreathAnimation();
     }
 
     private void startBreathAnimation() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                breathAnimationWork = true;
-                breath();
-            }
-        });
+        animationRunnable = () -> {
+            breathAnimationWork = true;
+            breath();
+        };
+        post(animationRunnable);
     }
 
     private void breath() {
@@ -143,15 +145,16 @@ public class RecordView extends View {
                 canvas.restoreToCount(count);
                 break;
             case LOADING:
-                canvas.drawArc(rectF, startAngle + indeterminateRotateOffset, indeterminateSweep,false, loadingPaint);
+                canvas.drawArc(rectF, startAngle + indeterminateRotateOffset, indeterminateSweep, false, loadingPaint);
                 break;
         }
     }
 
-    public void startRecord() {
+    public void startRecord() throws IOException {
         if (status != DEFAULT) {
             return;
         }
+        initRecorder();
         recorder.start();
         startProgressTimer();
         status = RECORDING;
@@ -199,7 +202,6 @@ public class RecordView extends View {
             }
         });
         animator.start();
-        initRecorder();
     }
 
     public void setScale(float scale) {
@@ -207,19 +209,17 @@ public class RecordView extends View {
         super.setScaleY(scale);
     }
 
-    private void initRecorder() {
-        try {
-            countAudio++;
-            recorder = new MediaRecorder();
-            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
-            recorder.setAudioEncodingBitRate(48000);
-            recorder.setAudioSamplingRate(16000);
-            currentFile = File.createTempFile("audio", String.valueOf(countAudio));
-            recorder.setOutputFile(currentFile.getAbsolutePath());
-            recorder.prepare();
-        } catch (Throwable ignored) { }
+    private void initRecorder() throws IOException {
+        countAudio++;
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
+        recorder.setAudioEncodingBitRate(48000);
+        recorder.setAudioSamplingRate(16000);
+        currentFile = File.createTempFile("audio", String.valueOf(countAudio));
+        recorder.setOutputFile(currentFile.getAbsolutePath());
+        recorder.prepare();
     }
 
     public void release() {
@@ -227,7 +227,8 @@ public class RecordView extends View {
             try {
                 recorder.stop();
                 recorder.release();
-            } catch (Throwable ignored) { }
+            } catch (Throwable ignored) {
+            }
         }
     }
 
@@ -258,12 +259,21 @@ public class RecordView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        boolean hasMicrophonPermission = PermissionUtil.Companion.hasPermissions(getContext(), Manifest.permission.RECORD_AUDIO);
+        if (!hasMicrophonPermission) {
+            PermissionUtil.Companion.requestRequiredPermissions(activity, Manifest.permission.RECORD_AUDIO);
+            return false;
+        }
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_MOVE:
                 return true;
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
-                startRecord();
+                try {
+                    startRecord();
+                } catch (IOException e) {
+                    Log.d("RecordView", e.getMessage());
+                }
                 break;
 //            case MotionEvent.ACTION_POINTER_UP:
 //            case MotionEvent.ACTION_CANCEL:
@@ -303,7 +313,8 @@ public class RecordView extends View {
                 try {
                     progressTimer.cancel();
                     progressTimer = null;
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
         }
     }
@@ -314,7 +325,8 @@ public class RecordView extends View {
                 try {
                     progressTimer.cancel();
                     progressTimer = null;
-                } catch (Exception e) { }
+                } catch (Exception e) {
+                }
             }
             progressTimer = new Timer();
             progressTimer.schedule(new TimerTask() {
@@ -359,16 +371,17 @@ public class RecordView extends View {
         indeterminateSweep = INDETERMINANT_MIN_SWEEP;
         indeterminateAnimator = new AnimatorSet();
         AnimatorSet prevSet = null, nextSet;
-        for(int k = 0; k < animSteps; k++) {
+        for (int k = 0; k < animSteps; k++) {
             nextSet = createIndeterminateAnimator(k);
             AnimatorSet.Builder builder = indeterminateAnimator.play(nextSet);
-            if(prevSet != null) {
+            if (prevSet != null) {
                 builder.after(prevSet);
             }
             prevSet = nextSet;
         }
         indeterminateAnimator.addListener(new AnimatorListenerAdapter() {
             boolean wasCancelled = false;
+
             @Override
             public void onAnimationCancel(Animator animation) {
                 wasCancelled = true;
@@ -386,14 +399,19 @@ public class RecordView extends View {
 
     public void stopAnimation() {
         if (startAngleRotate != null) {
+            startAngleRotate.removeAllListeners();
+            startAngleRotate.removeAllUpdateListeners();
             startAngleRotate.cancel();
             startAngleRotate = null;
         }
         if (progressAnimator != null) {
+            progressAnimator.removeAllListeners();
+            progressAnimator.removeAllUpdateListeners();
             progressAnimator.cancel();
             progressAnimator = null;
         }
         if (indeterminateAnimator != null) {
+            indeterminateAnimator.removeAllListeners();
             indeterminateAnimator.cancel();
             indeterminateAnimator = null;
         }
@@ -401,9 +419,9 @@ public class RecordView extends View {
 
     private AnimatorSet createIndeterminateAnimator(float step) {
         final float maxSweep = 360f * (animSteps - 1) / animSteps + INDETERMINANT_MIN_SWEEP;
-        final float start = -90f + step*(maxSweep - INDETERMINANT_MIN_SWEEP);
+        final float start = -90f + step * (maxSweep - INDETERMINANT_MIN_SWEEP);
         ValueAnimator frontEndExtend = ValueAnimator.ofFloat(INDETERMINANT_MIN_SWEEP, maxSweep);
-        frontEndExtend.setDuration(animDuration /animSteps / 2);
+        frontEndExtend.setDuration(animDuration / animSteps / 2);
         frontEndExtend.setInterpolator(new DecelerateInterpolator(1));
         frontEndExtend.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -421,7 +439,7 @@ public class RecordView extends View {
                 indeterminateRotateOffset = (Float) animation.getAnimatedValue();
             }
         });
-        ValueAnimator backEndRetract = ValueAnimator.ofFloat(start, start+maxSweep - INDETERMINANT_MIN_SWEEP);
+        ValueAnimator backEndRetract = ValueAnimator.ofFloat(start, start + maxSweep - INDETERMINANT_MIN_SWEEP);
         backEndRetract.setDuration(animDuration / animSteps / 2);
         backEndRetract.setInterpolator(new DecelerateInterpolator(1));
         backEndRetract.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -445,5 +463,21 @@ public class RecordView extends View {
         set.play(frontEndExtend).with(rotateAnimator1);
         set.play(backEndRetract).with(rotateAnimator2).after(rotateAnimator1);
         return set;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        status = -1;
+        stopAnimation();
+        onRecordingStoppedListener = null;
+        activity = null;
+        if (animationRunnable != null) {
+            removeCallbacks(animationRunnable);
+        }
+        if (progressTimer != null) {
+            progressTimer.cancel();
+            progressTimer = null;
+        }
     }
 }

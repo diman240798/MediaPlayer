@@ -19,11 +19,8 @@ public class API {
         public static final String RECOGNIZE_WITH_OFFSET = "recognizeWithOffset";
     }
 
-    private static volatile API Instance = null;
-    private static final String URL = "https://api.audd.io/";
-    //    private static final String API_TOKEN = "test";
-    private static final String API_TOKEN = "67c0097c4d963d4ea359056ff8a188df";
-    private static final int group_id = 138792192;
+    private final String URL = "https://api.audd.io/";
+    private final String API_TOKEN = "67c0097c4d963d4ea359056ff8a188df";
 
     public ResultTrack recognizeVoice(final File file, final boolean isHumming) {
         ResultTrack track = null;
@@ -42,19 +39,6 @@ public class API {
 
     public JSONObject upload(File file, String method) throws JSONException {
         return new JSONObject(Network.uploadFile(URL + "?method=" + method + "&api_token=" + API_TOKEN, file, "file", 0));
-    }
-
-    public static API getInstance() {
-        API localInstance = Instance;
-        if (localInstance == null) {
-            synchronized (API.class) {
-                localInstance = Instance;
-                if (localInstance == null) {
-                    Instance = localInstance = new API();
-                }
-            }
-        }
-        return localInstance;
     }
 
 }

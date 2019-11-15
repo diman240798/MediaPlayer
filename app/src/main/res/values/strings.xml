@@ -164,6 +164,8 @@
     <string name="listening">Listening</string>
     <string name="search_author">Search Author</string>
     <string name="download">Download</string>
+    <string name="permissions">Permissions</string>
+    <string name="ask_permissions">For this app function we require next permissions</string>
 
 
 </resources>

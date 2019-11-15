@@ -19,7 +19,7 @@ public class ToggleIcon extends View {
 
     private final int colorGray = Color.BLACK;
     private final int colorPrimaryDark = Color.parseColor("#2196F3");
-    private final HummingSupplier hummingSupplier;
+    private HummingSupplier hummingSupplier;
 
     private final TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private StaticLayout staticLayout;
@@ -91,6 +91,12 @@ public class ToggleIcon extends View {
 
     public boolean isHumming() {
         return hummingSupplier.get();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        hummingSupplier = null;
     }
 }
 

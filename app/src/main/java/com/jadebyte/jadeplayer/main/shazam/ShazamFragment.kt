@@ -36,7 +36,7 @@ class ShazamFragment : Fragment() {
         recordView = RecordView(activity) { currentFile ->
             songNetworkScope.launch {
                 var resultTrack = withContext(Dispatchers.IO) {
-                    API.getInstance().recognizeVoice(currentFile, isHumming)
+                    API().recognizeVoice(currentFile, isHumming)
                 }
                 resultTrack = resultTrack ?: ResultTrack("We cdnt find that song(", "Sorry", "")
                 val action = ShazamFragmentDirections.actionShazamFragmentToFragmentShazamBottomDialog(resultTrack.toString())
