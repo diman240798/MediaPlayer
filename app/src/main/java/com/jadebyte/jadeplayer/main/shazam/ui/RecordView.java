@@ -34,17 +34,12 @@ public class RecordView extends View {
     private final Activity activity;
     private final OnRecordingStoppedListener onRecordingStoppedListener;
 
-    public interface OnRecordListener {
-        void onStartRecord();
-        void onStopRecord();
-    }
-
-    private static MediaRecorder recorder;
-    private static final float INDETERMINANT_MIN_SWEEP = 15f;
+    private MediaRecorder recorder;
+    private final float INDETERMINANT_MIN_SWEEP = 15f;
     private final Object sync = new Object();
     private Timer progressTimer = null;
     private final Object progressTimerSync = new Object();
-    public final static int DEFAULT = 0, RECORDING = 1, LOADING = 2;
+    public final int DEFAULT = 0, RECORDING = 1, LOADING = 2;
 
     private int size,
             radius,
@@ -60,10 +55,9 @@ public class RecordView extends View {
     private final TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private final TextPaint durationPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private StaticLayout staticLayout, durationLayout;
-    public static int status = DEFAULT, countAudio = 0, currentDuration = 0;
+    public  int status = DEFAULT, countAudio = 0, currentDuration = 0;
     private ObjectAnimator animator;
     private File currentFile;
-    private OnRecordListener onRecordListener;
     private boolean breathAnimationWork = false;
     private RectF rectF;
     private ValueAnimator startAngleRotate;
@@ -158,9 +152,6 @@ public class RecordView extends View {
         if (status != DEFAULT) {
             return;
         }
-        if (onRecordListener != null) {
-            onRecordListener.onStartRecord();
-        }
         recorder.start();
         startProgressTimer();
         status = RECORDING;
@@ -172,14 +163,10 @@ public class RecordView extends View {
         if (status != RECORDING) {
             return;
         }
-        if (onRecordListener != null) {
-            onRecordListener.onStopRecord();
-        }
         release();
         stopProgressTimer();
-        onRecordingStoppedListener.onRecordingStopped(currentFile);
-        initRecorder();
         setLoading();
+        onRecordingStoppedListener.onRecordingStopped(currentFile);
     }
 
     public void setLoading() {
@@ -212,6 +199,7 @@ public class RecordView extends View {
             }
         });
         animator.start();
+        initRecorder();
     }
 
     public void setScale(float scale) {
@@ -234,7 +222,7 @@ public class RecordView extends View {
         } catch (Throwable ignored) { }
     }
 
-    public static void release() {
+    public void release() {
         if (recorder != null) {
             try {
                 recorder.stop();
@@ -306,10 +294,6 @@ public class RecordView extends View {
     @Override
     public boolean hasOverlappingRendering() {
         return false;
-    }
-
-    public void setOnRecordListener(OnRecordListener listener) {
-        this.onRecordListener = listener;
     }
 
     private void stopProgressTimer() {

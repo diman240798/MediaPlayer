@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="resutTrack"
+            type="com.jadebyte.jadeplayer.main.shazam.model.ResultTrack" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:padding="@dimen/padding_medium"
+        tools:context=".main.shazam.FragmentShazamBottomDialog">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bottom_sheet_round_bg"
+            android:orientation="vertical"
+            android:id="@+id/buttonsContainer"
+            android:paddingTop="@dimen/padding_x_large"
+            android:paddingBottom="@dimen/padding_x_large">
+
+            <TextView
+                android:textAlignment="center"
+                tools:textColor="#fff"
+                style="@style/AppTheme.MenuButton"
+                tools:text="Nickelback - If today was your last day"
+                android:text="@{resutTrack.artist + ` - ` + resutTrack.title }" />
+
+            <Button
+                tools:textColor="#fff"
+                android:id="@+id/share"
+                style="@style/AppTheme.MenuButton"
+                android:drawableEnd="@drawable/ic_share"
+                android:text="@string/share" />
+
+            <Button
+                tools:textColor="#fff"
+                android:id="@+id/search"
+                style="@style/AppTheme.MenuButton"
+                android:drawableEnd="@drawable/ic_search"
+                android:text="@string/search" />
+
+            <Button
+                tools:textColor="#fff"
+                android:id="@+id/searchAuthor"
+                style="@style/AppTheme.MenuButton"
+                android:drawableEnd="@drawable/ic_search"
+                android:text="@string/search_author" />
+
+            <Button
+                tools:textColor="#fff"
+                android:id="@+id/download"
+                style="@style/AppTheme.MenuButton"
+                android:drawableEnd="@android:drawable/stat_sys_download"
+                android:text="@string/download" />
+
+
+        </LinearLayout>
+
+    </FrameLayout>
+</layout>

@@ -27,6 +27,7 @@ public class SwitchView extends View {
 
     public SwitchView(HummingSupplier singingSupplier, Context context) {
         super(context);
+        setFocusable(false);
         this.singingSupplier = singingSupplier;
         radius = Screen.dp(context, 16);
         trackHeight = Screen.dp(context,18);

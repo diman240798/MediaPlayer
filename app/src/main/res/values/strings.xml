@@ -162,6 +162,8 @@
     <string name="upload_record">Uploading Record</string>
     <string name="humming">Humming</string>
     <string name="listening">Listening</string>
+    <string name="search_author">Search Author</string>
+    <string name="download">Download</string>
 
 
 </resources>

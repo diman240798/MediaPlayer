@@ -416,6 +416,22 @@
     <fragment
         android:id="@+id/shazamFragment"
         android:name="com.jadebyte.jadeplayer.main.shazam.ShazamFragment"
-        android:label="ShazamFragment" />
+        android:label="ShazamFragment" >
+        <action
+            android:id="@+id/action_shazamFragment_to_fragmentShazamBottomDialog"
+            app:destination="@+id/fragmentShazamBottomDialog" />
+        <action
+            android:id="@+id/action_shazamFragment_to_fragmentShazamBottomDialog2"
+            app:destination="@id/fragmentShazamBottomDialog" />
+    </fragment>
+    <dialog
+        tools:layout="@layout/fragment_shazam_result_dialog"
+        android:id="@+id/fragmentShazamBottomDialog"
+        android:name="com.jadebyte.jadeplayer.main.shazam.FragmentShazamBottomDialog"
+        android:label="FragmentShazamBottomDialog" >
+        <argument
+            android:name="resultTrackJson"
+            app:argType="string" />
+    </dialog>
 
 </navigation>

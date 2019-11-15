@@ -21,27 +21,22 @@ public class API {
 
     private static volatile API Instance = null;
     private static final String URL = "https://api.audd.io/";
-    private static final String API_TOKEN = "test";
-    public static final DispatchQueue thread = new DispatchQueue("API");
+    //    private static final String API_TOKEN = "test";
+    private static final String API_TOKEN = "67c0097c4d963d4ea359056ff8a188df";
     private static final int group_id = 138792192;
 
     public ResultTrack recognizeVoice(final File file, final boolean isHumming) {
-        final ResultTrack[] track = {null};
-        thread.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-                    String method;
-                    JSONObject response = upload(file, method = isHumming ? Method.RECOGNIZE_WITH_OFFSET : Method.RECOGNIZE);
-                    Log.e(TAG, method + " = " + response);
-                    if (response.has("result") && !response.isNull("result")) {
-                        track[0] = new ResultTrack(response.getJSONObject("result"));
-                    }
-                } catch (Throwable ignored) { }
+        ResultTrack track = null;
+        try {
+            String method;
+            JSONObject response = upload(file, method = isHumming ? Method.RECOGNIZE_WITH_OFFSET : Method.RECOGNIZE);
+            Log.e(TAG, method + " = " + response);
+            if (response.has("result") && !response.isNull("result")) {
+                track = new ResultTrack(response.getJSONObject("result"));
             }
-        });
-        return track[0];
+        } catch (Throwable ignored) {
+        }
+        return track;
     }
 
 

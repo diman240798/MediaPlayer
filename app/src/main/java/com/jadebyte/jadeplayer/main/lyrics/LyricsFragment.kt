@@ -2,28 +2,16 @@
 
 package com.jadebyte.jadeplayer.main.lyrics
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.jadebyte.jadeplayer.R
 import kotlinx.android.synthetic.main.fragment_lyrics.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val LYRICS_TEXT_PARAM = "lyricsText"
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [LyricsFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [LyricsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LyricsFragment : Fragment() {
 
     private var lyricsText: String? = null
