@@ -242,7 +242,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
         }
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-//            updateNotification(state)
+            updateNotification(state)
             addToRecentlyPlayed(mediaController.metadata, state)
             persistPosition()
         }
@@ -307,11 +307,10 @@ class PlaybackService : MediaBrowserServiceCompat() {
         private fun buildNotification(state: Int): Notification? {
 
             // Skip building a notification when state is "none" and metadata is null
-            return if (mediaController.metadata != null
+            return if (mediaController.metadata != null && mediaController.metadata.description.title != null
                 && state != PlaybackStateCompat.STATE_NONE
             ) {
-                return null
-//                notificationBuilder.buildNotification(mediaSession.sessionToken, largeBitmap)
+                notificationBuilder.buildNotification(mediaSession.sessionToken, largeBitmap)
             } else {
                 null
             }
@@ -352,10 +351,10 @@ class PlaybackService : MediaBrowserServiceCompat() {
             }
 
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                /*notificationManager.notify(
+                notificationManager.notify(
                     Constants.PLAYBACK_NOTIFICATION, notificationBuilder.buildNotification
                         (mediaSession.sessionToken, resource)
-                )*/
+                )
                 largeBitmap = resource
             }
 
