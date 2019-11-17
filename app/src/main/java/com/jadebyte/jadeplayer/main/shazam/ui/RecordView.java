@@ -468,6 +468,10 @@ public class RecordView extends View {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        animator.removeAllListeners();
+        animator.removeAllUpdateListeners();
+        animator.cancel();
+        animator = null;
         status = -1;
         stopAnimation();
         onRecordingStoppedListener = null;
