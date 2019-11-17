@@ -6,8 +6,10 @@ package com.jadebyte.jadeplayer.main.common.utils
  * Original Source: https://raw.githubusercontent.com/flutter/plugins/master/packages/image_picker/android/src/main/java/io/flutter/plugins/imagepicker/FileUtils.java
  */
 
+import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
@@ -176,5 +178,26 @@ object UriFileUtils {
 
     private fun isGooglePhotosUri(uri: Uri): Boolean {
         return "com.google.android.apps.photos.contentprovider" == uri.authority
+    }
+
+    fun checkIconUri(cr: ContentResolver, contentUri: Uri?): Boolean {
+        contentUri ?: return false
+        val projection = arrayOf(MediaStore.MediaColumns.DATA)
+        var cur: Cursor? = null;
+        try {
+            cur = cr.query(contentUri, projection, null, null, null);
+            if (cur != null) {
+                if (cur.moveToFirst()) {
+                    val filePath = cur.getString(0);
+                    if (File(filePath).exists()) {
+                        // do something if it exists
+                        return true
+                    }
+                }
+            }
+        } finally {
+            cur?.close()
+        }
+        return false
     }
 }
