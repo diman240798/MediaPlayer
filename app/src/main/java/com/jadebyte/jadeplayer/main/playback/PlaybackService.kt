@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat.MediaItem
@@ -17,6 +18,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
@@ -33,6 +35,7 @@ import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.upstream.FileDataSourceFactory
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.data.Constants
+import com.jadebyte.jadeplayer.main.common.utils.UriFileUtils
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayed
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
 import com.jadebyte.jadeplayer.main.explore.AppRoomDatabase
@@ -242,7 +245,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
         }
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-//            updateNotification(state)
+            updateNotification(state)
             addToRecentlyPlayed(mediaController.metadata, state)
             persistPosition()
         }
@@ -284,7 +287,11 @@ class PlaybackService : MediaBrowserServiceCompat() {
             // state itself, even though the name sounds like it."
             buildNotification(state)?.let {
                 notificationManager.notify(Constants.PLAYBACK_NOTIFICATION, it)
-                loadLargeIcon()
+                if (UriFileUtils.checkIconUri(contentResolver, mediaController.metadata.description.iconUri)) {
+                    loadLargeIcon(mediaController.metadata.description.iconUri)
+                } else {
+                    loadLargeIcon(res = R.drawable.ic_launcher)
+                }
 
                 if (!isForegroundService) {
                     ContextCompat.startForegroundService(
@@ -296,22 +303,22 @@ class PlaybackService : MediaBrowserServiceCompat() {
             }
         }
 
-        private fun loadLargeIcon() {
+        private fun loadLargeIcon(uri: Uri? = null, @DrawableRes res: Int = 0) {
+            val drawable = uri ?: res;
             Glide.with(this@PlaybackService)
                 .asBitmap()
                 .skipMemoryCache(false)
-                .load(mediaController.metadata.description.iconUri)
+                .load(drawable)
                 .into(notificationTarget)
         }
 
         private fun buildNotification(state: Int): Notification? {
 
             // Skip building a notification when state is "none" and metadata is null
-            return if (mediaController.metadata != null
+            return if (mediaController.metadata != null && mediaController.metadata.description.title != null
                 && state != PlaybackStateCompat.STATE_NONE
             ) {
-                return null
-//                notificationBuilder.buildNotification(mediaSession.sessionToken, largeBitmap)
+                notificationBuilder.buildNotification(mediaSession.sessionToken, largeBitmap)
             } else {
                 null
             }
@@ -352,10 +359,10 @@ class PlaybackService : MediaBrowserServiceCompat() {
             }
 
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                /*notificationManager.notify(
-                    Constants.PLAYBACK_NOTIFICATION, notificationBuilder.buildNotification
-                        (mediaSession.sessionToken, resource)
-                )*/
+                val notification = notificationBuilder.buildNotification(mediaSession.sessionToken, resource)
+                notificationManager.notify(
+                    Constants.PLAYBACK_NOTIFICATION, notification
+                )
                 largeBitmap = resource
             }
 

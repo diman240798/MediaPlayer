@@ -45,7 +45,7 @@ class MediaStoreSource(
 
     private suspend fun updateCatalog(): List<MediaMetadataCompat>? {
         return withContext(Dispatchers.IO) {
-            val art = ImageUtils.getBitmapFromVectorDrawable(context, R.drawable.thumb_circular_default)
+            val art = ImageUtils.getBitmapFromVectorDrawable(context, R.drawable.ic_launcher)
 
             val results = mutableListOf<MediaMetadataCompat>()
             val cursor = context.contentResolver.query(uri, songsProjection, selection, selectionArgs, sortOrder)
