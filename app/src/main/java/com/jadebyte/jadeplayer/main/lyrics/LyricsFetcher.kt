@@ -1,7 +1,9 @@
 package com.jadebyte.jadeplayer.main.lyrics
 
+import arrow.core.Try
+import arrow.core.getOrDefault
+import arrow.core.getOrElse
 import org.jsoup.Jsoup
-import java.lang.Exception
 import java.net.URLEncoder
 
 class LyricsFetcher {
@@ -12,23 +14,18 @@ class LyricsFetcher {
         class NoLyricsFoundException : Exception()
 
         fun fetchLyrics(id: String, artist: String, track: String): Lyrics {
-            var fetchResult: FetchResult? = null
 
             val artistU = artist.replace(" ".toRegex(), "+")
             val trackU = track.replace(" ".toRegex(), "+")
 
 
             try {
-                try {
-                    fetchResult = tryAzlyrics(artistU, trackU)
-                    if (fetchResult == null) throw NoLyricsFoundException()
-                } catch (e: Exception) {
-                    try {
-                        fetchResult = tryGenius(artistU, trackU)
-                        if (fetchResult == null) throw NoLyricsFoundException()
-                    } catch (e: Exception) {
-                        fetchResult = tryWikia(artistU, trackU)
-                        if (fetchResult == null) throw NoLyricsFoundException()
+
+                val fetchResult = Try { tryAzlyrics(artistU, trackU) }.getOrDefault {
+                    Try { tryGenius(artistU, trackU) }.getOrDefault {
+                        Try { tryWikia(artistU, trackU) }.getOrElse {
+                            throw NoLyricsFoundException()
+                        }
                     }
                 }
 
