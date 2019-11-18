@@ -127,7 +127,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sectionBackButton"
-        app:tabBackground="@color/colorPrimary"
+        app:tabBackground="@color/colorBackground"
         app:tabGravity="center"
         app:tabMode="scrollable" />
 

@@ -17,6 +17,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
@@ -153,6 +154,8 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
     private fun closeLyrics() {
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(
+            progressBar.fadeOutSlideUp(translationY, slideDuration),
+            findingLyrics.fadeOutSlideUp(translationY, slideDuration),
             albumArt.fadeInSlideDown(translationY, slideDuration),
             lyricsButton.fadeInSlideDown(translationY, slideDuration),
             closeButton.fadeOutSlideDown(translationY, slideDuration),
@@ -176,10 +179,6 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun showFindingLyrics() {
-        /*if (hasLyrics()) {
-            showFoundLyrics()
-            return
-        }*/
 
         findingLyricsAnimatorSet = AnimatorSet()
         findingLyricsAnimatorSet?.playTogether(
@@ -213,7 +212,10 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
 
     private fun showFoundLyrics(lyrics: Lyrics?) {
         if (lyrics == null) return
-        if (lyrics.id != viewModel.currentItem.value?.id) return
+        if (lyrics.id != viewModel.currentItem.value?.id) {
+            if (progressBar.isVisible) closeLyrics()
+            return
+        }
 
         lyricsText.text = lyrics.lyrics
         lyricsSource.text = lyrics.lyricsSource
