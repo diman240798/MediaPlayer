@@ -9,7 +9,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.jadebyte.jadeplayer.main.shazam.api.API
+import com.jadebyte.jadeplayer.main.shazam.api.AuddAPI
+import com.jadebyte.jadeplayer.main.shazam.api.AcrCloudApi
 import com.jadebyte.jadeplayer.main.shazam.model.ResultTrack
 import com.jadebyte.jadeplayer.main.shazam.ui.RecordView
 import com.jadebyte.jadeplayer.main.shazam.ui.Screen
@@ -36,8 +37,12 @@ class ShazamFragment : Fragment() {
         recordView = RecordView(activity) { currentFile ->
             songNetworkScope.launch {
                 var resultTrack = withContext(Dispatchers.IO) {
-                    API().recognizeVoice(currentFile, isHumming)
+                    AcrCloudApi().recognizeVoice(currentFile, isHumming)
                 }
+                resultTrack = resultTrack ?: withContext(Dispatchers.IO) {
+                    AuddAPI().recognizeVoice(currentFile, isHumming)
+                }
+
                 resultTrack = resultTrack ?: ResultTrack("We cdnt find that song(", "Sorry", "")
                 val action = ShazamFragmentDirections.actionShazamFragmentToFragmentShazamBottomDialog(resultTrack.toString())
                 findNavController().navigate(action)
