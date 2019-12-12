@@ -1,15 +1,16 @@
 package com.jadebyte.jadeplayer.main.folders
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 
-class FoldersViewModel : ViewModel() {
-    private val foldersRepository : FoldersRepository
+class FoldersViewModel(application: Application) : AndroidViewModel(application) {
+    private val foldersRepository : FoldersRepository = FoldersRepository()
     val items : LiveData<List<Folder>>
 
 
     init {
-        foldersRepository = FoldersRepository()
+        foldersRepository.loadData(application)
         items = foldersRepository.items
     }
 }

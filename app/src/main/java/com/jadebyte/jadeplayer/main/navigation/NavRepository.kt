@@ -15,7 +15,7 @@ class NavRepository(private var origin: Int?, private val preferences: SharedPre
     val liveItems = MediatorLiveData<List<NavItem>>()
 
     init {
-        val items = arrayOfNulls<NavItem?>(9)
+        val items = arrayOfNulls<NavItem?>(10)
         items[preferences.getInt(Constants.NAV_SONGS, 0)] =
             NavItem(Constants.NAV_SONGS, R.string.songs, R.drawable.ic_song_thin, isFrom(0))
         items[preferences.getInt(Constants.NAV_IDENTIFY, 1)] =
@@ -66,5 +66,6 @@ val keys = arrayListOf(
     Constants.NAV_PLAYLIST,
     Constants.NAV_RADIO,
     Constants.NAV_SETTINGS,
-    Constants.NAV_VIDEOS
+    Constants.NAV_VIDEOS,
+    Constants.NAV_FOLDERS
 )

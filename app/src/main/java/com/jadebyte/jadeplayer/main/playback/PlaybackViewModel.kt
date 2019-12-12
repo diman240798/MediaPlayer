@@ -70,9 +70,9 @@ class PlaybackViewModel(
 
 
     init {
-        val recentlyPlayed = AppRoomDatabase.getDatabase(application).recentDao()
-        playedRepository = RecentlyPlayedRepository(recentlyPlayed)
-        lyricsRepository = LyricsRepository(AppRoomDatabase.getDatabase(application).lyricsDao())
+        val database = AppRoomDatabase.getDatabase(application)
+        playedRepository = RecentlyPlayedRepository(database.recentDao())
+        lyricsRepository = LyricsRepository(database.lyricsDao())
     }
 
     fun playPause() {

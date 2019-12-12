@@ -59,7 +59,7 @@ abstract class BasePlayerFragment<T : Model> : BaseFragment(), View.OnClickListe
 
     private fun observeViewModel() {
         if (items.isEmpty()) {
-            viewModel.init()
+            viewModel.init(null)
             viewModel.items.observe(viewLifecycleOwner, Observer(::updateViews))
         } else {
             viewModel.overrideCurrentItems(items)

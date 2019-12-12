@@ -15,7 +15,7 @@ class SongsFragment : BasePlayerFragment<Song>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this)[SongsViewModel::class.java]
+        viewModel = activity?.run {ViewModelProviders.of(this)[SongsViewModel::class.java]}!!
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {
@@ -23,8 +23,7 @@ class SongsFragment : BasePlayerFragment<Song>() {
     }
 
     override fun onOverflowMenuClick(position: Int) {
-        val action =
-            SongsFragmentDirections.actionSongsFragmentToSongsMenuBottomSheetDialogFragment(mediaId = items[position].id)
+        val action = SongsFragmentDirections.actionSongsFragmentToSongsMenuBottomSheetDialogFragment(mediaId = items[position].id)
         findNavController().navigate(action)
     }
 

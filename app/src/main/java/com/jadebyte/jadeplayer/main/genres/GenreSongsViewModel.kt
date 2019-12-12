@@ -4,12 +4,13 @@ package com.jadebyte.jadeplayer.main.genres
 
 import android.app.Application
 import android.provider.MediaStore
+import com.jadebyte.jadeplayer.main.songs.Song
 import com.jadebyte.jadeplayer.main.songs.SongsViewModel
 
 class GenreSongsViewModel(application: Application) : SongsViewModel(application) {
 
-    override fun init(vararg params: Any?) {
+    override fun init(items: List<Song>?, vararg params: Any?) {
         uri = MediaStore.Audio.Genres.Members.getContentUri("external", params[0] as Long)
-        super.init()
+        super.init(null)
     }
 }

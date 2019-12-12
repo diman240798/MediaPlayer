@@ -9,11 +9,14 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
-import kotlinx.android.synthetic.main.fragment_playlist_songs_editor_dialog.*
+import com.jadebyte.jadeplayer.main.songs.Song
+import com.jadebyte.jadeplayer.main.songs.SongsViewModel
+import kotlinx.android.synthetic.main.fragment_folders.*
 
 
 class FoldersFragment : Fragment(), OnItemClickListener {
@@ -41,17 +44,28 @@ class FoldersFragment : Fragment(), OnItemClickListener {
     private fun setupView() {
         val variables = SparseArrayCompat<Any>(1)
         variables.put(BR.selectable, true)
-        val adapter =
-            BaseAdapter(items, activity!!, R.layout.item_song, BR.song, this, variables = variables)
-        songsRV.adapter = adapter
-        songsRV.layoutManager = LinearLayoutManager(activity)
+        val adapter = BaseAdapter(items, activity!!, R.layout.item_folder, BR.folder, this, variables = variables)
+        foldersRecyclerView.adapter = adapter
+        foldersRecyclerView.layoutManager = LinearLayoutManager(activity)
     }
 
     private fun observeViewModel() {
-        viewModel.items.observe(viewLifecycleOwner, Observer {items = it})
+        viewModel.items.observe(viewLifecycleOwner, Observer(::updateViews))
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun updateViews(items: List<Folder>) {
+        this.items = items
+        (foldersRecyclerView.adapter as BaseAdapter<Folder>).updateItems(items)
+
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {
+        val folder: Folder = items[position]
+        val songsViewModel = activity?.run {ViewModelProviders.of(this)[SongsViewModel::class.java] }!!
+        songsViewModel.currentItems = folder.songs
+        val action = FoldersFragmentDirections.actionFoldersFragmentToSongsFragment()
+        findNavController().navigate(action)
 
     }
 

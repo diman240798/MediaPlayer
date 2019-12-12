@@ -4,6 +4,7 @@ package com.jadebyte.jadeplayer.main.albums
 
 import android.app.Application
 import android.provider.MediaStore
+import com.jadebyte.jadeplayer.main.songs.Song
 import com.jadebyte.jadeplayer.main.songs.SongsViewModel
 import com.jadebyte.jadeplayer.main.songs.basicSongsSelection
 import com.jadebyte.jadeplayer.main.songs.basicSongsSelectionArg
@@ -18,8 +19,8 @@ class AlbumSongsViewModel(application: Application) : SongsViewModel(application
 
     override var sortOrder: String? = "${MediaStore.Audio.Media.TRACK} COLLATE NOCASE ASC"
 
-    override fun init(vararg params: Any?) {
+    override fun init(items: List<Song>?, vararg params: Any?) {
         selectionArgs = arrayOf(basicSongsSelectionArg, params[0].toString())
-        super.init()
+        super.init(null)
     }
 }

@@ -7,7 +7,5 @@ class Folder(
     override val id: String,
     val name: String,
     val path: String,
-    songs: List<Song>
-) : Model() {
-
-}
+    val songs: List<Song>
+) : Model() {}

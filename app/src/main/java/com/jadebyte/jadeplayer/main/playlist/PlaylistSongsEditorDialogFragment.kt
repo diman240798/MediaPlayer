@@ -35,7 +35,7 @@ class PlaylistSongsEditorDialogFragment : BaseFullscreenDialogFragment(), OnItem
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this)[PlaylistSongsEditorViewModel::class.java]
         playlist = arguments!!.getParcelable("playlist")!!
-        viewModel.init(playlist.id)
+        viewModel.init(null, playlist.id)
     }
 
     override fun onCreateView(

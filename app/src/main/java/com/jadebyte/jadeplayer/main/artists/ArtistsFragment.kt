@@ -38,7 +38,7 @@ class ArtistsFragment : BaseFragment(), OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProviders.of(this)[ArtistsViewModel::class.java]
-        viewModel.init()
+        viewModel.init(null)
         setupRecyclerView()
         observeViewModel()
         navigationIcon.setOnClickListener(

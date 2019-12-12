@@ -34,7 +34,7 @@ class GenreSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickList
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         genre = arguments!!.getParcelable("genre")!!
         viewModel = ViewModelProviders.of(this)[GenreSongsViewModel::class.java]
-        viewModel.init(genre.id)
+        viewModel.init(null, genre.id)
     }
 
     override fun onCreateView(
