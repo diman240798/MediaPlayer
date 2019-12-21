@@ -61,6 +61,10 @@ class PlaybackService : MediaBrowserServiceCompat() {
     private lateinit var mediaSessionConnector: MediaSessionConnector
     private lateinit var recentRepo: RecentlyPlayedRepository
 
+    // This must be `by lazy` because the source won't initially be ready.
+    // See [onLoadChildren] to see where it's accessed (and first constructed)
+    private lateinit var browseTree: BrowseTree
+
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
@@ -109,23 +113,26 @@ class PlaybackService : MediaBrowserServiceCompat() {
         )
         serviceScope.launch {
             mediaSource.load()
+
+            browseTree = BrowseTree(applicationContext, mediaSource)
+
+            // ExoPlayer will manage the MediaSession for us.
+            mediaSessionConnector = MediaSessionConnector(mediaSession).also {
+                // Produces DataSource instances through which media data is loaded.
+                val dataSourceFactory = FileDataSourceFactory()
+                // Create the PlaybackPreparer of the media session connector.
+                val playbackPreparer = PlaybackPreparer(
+                    browseTree,
+                    exoPlayer,
+                    dataSourceFactory,
+                    preferences
+                )
+                it.setPlayer(exoPlayer)
+                it.setPlaybackPreparer(playbackPreparer)
+                it.setQueueNavigator(QueueNavigator(mediaSession))
+            }
         }
 
-        // ExoPlayer will manage the MediaSession for us.
-        mediaSessionConnector = MediaSessionConnector(mediaSession).also {
-            // Produces DataSource instances through which media data is loaded.
-            val dataSourceFactory = FileDataSourceFactory()
-            // Create the PlaybackPreparer of the media session connector.
-            val playbackPreparer = PlaybackPreparer(
-                mediaSource,
-                exoPlayer,
-                dataSourceFactory,
-                preferences
-            )
-            it.setPlayer(exoPlayer)
-            it.setPlaybackPreparer(playbackPreparer)
-            it.setQueueNavigator(QueueNavigator(mediaSession))
-        }
         packageValidator = PackageValidator(this, R.xml.allowed_media_browser_callers)
     }
 
@@ -207,13 +214,6 @@ class PlaybackService : MediaBrowserServiceCompat() {
             // Unknown caller. Return a root without any content so the system doesn't disconnect the app
             BrowserRoot(Constants.EMPTY_ROOT, rootExtras)
         }
-    }
-
-
-    // This must be `by lazy` because the source won't initially be ready.
-    // See [onLoadChildren] to see where it's accessed (and first constructed)
-    private val browseTree by lazy {
-        BrowseTree(applicationContext, mediaSource)
     }
 
     private val audioAttributes = AudioAttributes.Builder()

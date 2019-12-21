@@ -30,6 +30,7 @@ object Constants {
     const val EMPTY_ROOT = "@empty@"
     const val ALBUMS_ROOT = "__ALBUMS__"
     const val ARTISTS_ROOT = "_ARTISTS__"
+    const val FOLDERS_ROOT = "_FOLDERS__"
     const val SONGS_ROOT = "_SONGS__"
     const val NETWORK_FAILURE = "com.jadebyte.jadeplayer.playback.NETWORK_FAILURE"
     const val LAST_SHUFFLE_MODE = "com.jadebyte.jadeplayer.playback.LAST_SHUFFLE_MODE"

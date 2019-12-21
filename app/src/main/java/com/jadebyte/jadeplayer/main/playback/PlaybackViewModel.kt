@@ -4,6 +4,7 @@ package com.jadebyte.jadeplayer.main.playback
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.support.v4.media.MediaBrowserCompat
@@ -94,7 +95,9 @@ class PlaybackViewModel(
                 mediaSessionConnection.transportControls.play()
             }
         } else {
-            transportControls.playFromMediaId(mediaId, null)
+            val extras = Bundle()
+            extras.putString("uri", lastParendId)
+            transportControls.playFromMediaId(mediaId, extras)
             transportControls.setRepeatMode(repeatMode.value!!)
             transportControls.setShuffleMode(shuffleMode.value!!)
         }
@@ -103,12 +106,24 @@ class PlaybackViewModel(
     fun playAlbum(album: Album, playId: String = Constants.PLAY_FIRST) {
         val parentId = lastParendId
         val list = mediaItems.value
-        if (parentId == album.id.urlEncoded && list != null) {
+        if (parentId == album.id.urlEncoded && list != null && !list.isEmpty()) {
             playMediaId(getItemFrmPlayId(playId, list)?.id)
         } else {
             playMediaAfterLoad = playId
             mediaSessionConnection.unsubscribe(parentId, subscriptionCallback)
             mediaSessionConnection.subscribe(album.id.urlEncoded, subscriptionCallback)
+        }
+    }
+
+    fun playFolder(folderPath: String, playId: String = Constants.PLAY_FIRST) {
+        val parentId = lastParendId
+        val list = mediaItems.value
+        if (parentId == folderPath && list != null) {
+            playMediaId(getItemFrmPlayId(playId, list)?.id)
+        } else {
+            playMediaAfterLoad = playId
+            mediaSessionConnection.unsubscribe(parentId, subscriptionCallback)
+            mediaSessionConnection.subscribe(folderPath, subscriptionCallback)
         }
     }
 
