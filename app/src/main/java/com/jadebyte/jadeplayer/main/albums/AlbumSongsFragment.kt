@@ -37,7 +37,7 @@ class AlbumSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickList
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         album = arguments!!.getParcelable("album")!!
         viewModel = ViewModelProviders.of(this)[AlbumSongsViewModel::class.java]
-        viewModel.init(null, album.id)
+        viewModel.init(album.id)
 
     }
 

@@ -21,8 +21,8 @@ class PlaylistSongsViewModel(application: Application) : SongsViewModel(applicat
     override var projection: Array<String>? =
         listOf(*baseSongsProjection, MediaStore.Audio.Playlists.Members.AUDIO_ID).toTypedArray()
 
-    override fun init(items: List<Song>?, vararg params: Any?) {
+    override fun init(vararg params: Any?) {
         uri = MediaStore.Audio.Playlists.Members.getContentUri("external", params[0] as Long)
-        super.init(null)
+        super.init()
     }
 }

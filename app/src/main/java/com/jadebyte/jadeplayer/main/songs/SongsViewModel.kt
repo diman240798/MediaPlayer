@@ -13,8 +13,6 @@ import com.jadebyte.jadeplayer.main.common.view.BaseMediaStoreViewModel
  */
 open class SongsViewModel(application: Application) : BaseMediaStoreViewModel<Song>(application) {
 
-    var currentItems: List<Song>? = null
-
     override var repository: MediaStoreRepository<Song> = SongsRepository(application)
 
     override var selection: String? = basicSongsSelection
@@ -26,15 +24,6 @@ open class SongsViewModel(application: Application) : BaseMediaStoreViewModel<So
     override var uri: Uri = baseSongUri
 
     override var projection: Array<String>? = baseSongsProjection
-
-    override fun init(items: List<Song>?, vararg params: Any?) {
-        super.init(currentItems)
-    }
-
-    override fun onCleared() {
-        currentItems = null
-        super.onCleared()
-    }
 }
 
 val baseSongsProjection = arrayOf(

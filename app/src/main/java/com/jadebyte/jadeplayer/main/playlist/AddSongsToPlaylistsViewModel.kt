@@ -36,14 +36,14 @@ class AddSongsToPlaylistsViewModel(application: Application) : PlaylistViewModel
 
 
     @Suppress("UNCHECKED_CAST")
-    override fun init(items: List<Playlist>?, vararg params: Any?) {
+    override fun init(vararg params: Any?) {
         this.songsUri = params[0] as Uri? ?: baseSongUri
         this.songsSelection = params[1] as String? ?: basicSongsSelection
         this.songsSelectionArgs = params[2] as Array<String>? ?: basicSongsSelectionArgs
 
         mediatorItems.addSource(this.items) { mediatorItems.value = it }
         mediatorItems.addSource(insertionData) { mediatorItems.value = it }
-        super.init(null)
+        super.init()
         loadSongs()
     }
 

@@ -19,8 +19,8 @@ class AlbumSongsViewModel(application: Application) : SongsViewModel(application
 
     override var sortOrder: String? = "${MediaStore.Audio.Media.TRACK} COLLATE NOCASE ASC"
 
-    override fun init(items: List<Song>?, vararg params: Any?) {
+    override fun init(vararg params: Any?) {
         selectionArgs = arrayOf(basicSongsSelectionArg, params[0].toString())
-        super.init(null)
+        super.init()
     }
 }

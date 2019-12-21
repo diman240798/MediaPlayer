@@ -12,8 +12,8 @@ import com.jadebyte.jadeplayer.main.albums.AlbumsViewModel
  */
 class ArtistAlbumsViewModel(application: Application) : AlbumsViewModel(application) {
 
-    override fun init(items: List<Album>?, vararg params: Any?) {
+    override fun init(vararg params: Any?) {
         uri = MediaStore.Audio.Artists.Albums.getContentUri("external", params[0] as Long)
-        super.init(null)
+        super.init()
     }
 }

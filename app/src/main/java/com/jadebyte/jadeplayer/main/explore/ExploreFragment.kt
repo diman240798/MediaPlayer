@@ -80,7 +80,7 @@ class ExploreFragment : Fragment(), OnItemClickListener {
         }
 
         if (albums.isEmpty()) {
-            viewModel.init(null)
+            viewModel.init()
             viewModel.items.observeOnce(viewLifecycleOwner, Observer {
                 albums = it
                 (randomAlbumsRV.adapter as BaseAdapter<Album>).updateItems(albums)

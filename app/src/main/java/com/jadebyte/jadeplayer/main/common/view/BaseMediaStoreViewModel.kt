@@ -46,11 +46,7 @@ abstract class BaseMediaStoreViewModel<T>(application: Application) : AndroidVie
      *  Fetch data from the [MediaStore] and watch it for changes to the data at [uri]]
      */
     @CallSuper
-    open fun init(items: List<T>?, vararg params: Any?) {
-        items?.let {
-            overrideCurrentItems(items)
-            return@init
-        }
+    open fun init(vararg params: Any?) {
         observer.onChange(false)
         getApplication<Application>().contentResolver.registerContentObserver(uri, true, observer)
     }

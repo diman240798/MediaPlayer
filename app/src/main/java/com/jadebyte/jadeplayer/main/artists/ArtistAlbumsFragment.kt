@@ -38,7 +38,7 @@ class ArtistAlbumsFragment : BaseFragment(), OnItemClickListener {
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         artist = arguments!!.getParcelable("artist")!!
         viewModel = ViewModelProviders.of(this)[ArtistAlbumsViewModel::class.java]
-        viewModel.init(null, artist.id)
+        viewModel.init(artist.id)
     }
 
     override fun onCreateView(

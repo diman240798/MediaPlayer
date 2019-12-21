@@ -45,7 +45,7 @@ class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListen
 
     @Suppress("UNCHECKED_CAST")
     private fun observeViewModel() {
-        viewModel.init(null)
+        viewModel.init()
         viewModel.items.observe(viewLifecycleOwner, Observer {
             this.items = it
             (playlistRV.adapter as BaseAdapter<Playlist>).updateItems(it)

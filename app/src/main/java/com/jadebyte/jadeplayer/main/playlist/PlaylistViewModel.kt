@@ -27,12 +27,12 @@ open class PlaylistViewModel(application: Application) : BaseMediaStoreViewModel
     override var projection: Array<String>? = basePlaylistProjection
 
 
-    override fun init(items: List<Playlist>?, vararg params: Any?) {
+    override fun init(vararg params: Any?) {
         if (params.isNotEmpty()) {
             selection = "${MediaStore.Audio.Playlists._ID} == ?"
             selectionArgs = arrayOf(params[0].toString())
         }
-        super.init(null)
+        super.init()
     }
 
     @HunterDebug

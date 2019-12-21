@@ -50,7 +50,7 @@ class GenresFragment : BaseFragment(), OnItemClickListener {
 
     @Suppress("UNCHECKED_CAST")
     private fun observeViewModel() {
-        viewModel.init(null)
+        viewModel.init()
         viewModel.items.observe(viewLifecycleOwner, Observer {
             this.items = it
             (genresRV.adapter as BaseAdapter<Genre>).updateItems(this.items)

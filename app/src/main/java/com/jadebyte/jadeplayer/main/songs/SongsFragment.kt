@@ -16,7 +16,7 @@ class SongsFragment : BasePlayerFragment<Song>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = activity?.run {ViewModelProviders.of(this)[SongsViewModel::class.java]}!!
+        viewModel = ViewModelProviders.of(this)[SongsViewModel::class.java]
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {
