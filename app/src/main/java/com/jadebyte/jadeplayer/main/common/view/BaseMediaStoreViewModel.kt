@@ -58,7 +58,6 @@ abstract class BaseMediaStoreViewModel<T>(application: Application) : AndroidVie
                 repository.loadData(uri, projection, selection, selectionArgs, sortOrder)
             }
             deliverResult(result)
-
         }
     }
 

@@ -30,7 +30,7 @@ class MediaStoreSource(
 
     }
 
-    override suspend fun load() {
+    override fun load() {
         updateCatalog()?.let {
             catalog = it
             state = STATE_INITIALIZED
@@ -43,25 +43,26 @@ class MediaStoreSource(
     override fun iterator() = catalog.iterator()
 
 
-    private suspend fun updateCatalog(): List<MediaMetadataCompat>? {
-        return withContext(Dispatchers.IO) {
-            val art = ImageUtils.getBitmapFromVectorDrawable(context, R.drawable.ic_launcher)
+    private fun updateCatalog(): List<MediaMetadataCompat>? {
 
-            val results = mutableListOf<MediaMetadataCompat>()
-            val cursor = context.contentResolver.query(uri, songsProjection, selection, selectionArgs, sortOrder)
-            cursor?.use {
-                val count = it.count.toLong()
-                while (it.moveToNext()) {
-                    // Block on downloading artwork.
-                    val metadata = MediaMetadataCompat.Builder().from(it, count, art)
-                    val build = metadata.build()
-                    build.description.extras?.putAll(build.bundle)
-                    results.add(build)
-                }
+        val art = ImageUtils.getBitmapFromVectorDrawable(context, R.drawable.thumb_circular_default)
+
+        val results = mutableListOf<MediaMetadataCompat>()
+        val cursor =
+            context.contentResolver.query(uri, songsProjection, selection, selectionArgs, sortOrder)
+        cursor?.use {
+            val count = it.count.toLong()
+            while (it.moveToNext()) {
+                // Block on downloading artwork.
+                val metadata = MediaMetadataCompat.Builder().from(it, count, art)
+                val build = metadata.build()
+                build.description.extras?.putAll(build.bundle)
+                results.add(build)
             }
-
-            return@withContext results
         }
+
+        return results
+
     }
 
 }

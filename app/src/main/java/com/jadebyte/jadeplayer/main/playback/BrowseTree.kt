@@ -9,6 +9,7 @@ import android.support.v4.media.MediaMetadataCompat
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.common.urlEncoded
 import com.jadebyte.jadeplayer.main.common.data.Constants
+import java.io.File
 
 
 /**
@@ -34,7 +35,7 @@ import com.jadebyte.jadeplayer.main.common.data.Constants
  * item list "Album_A", and, finally, `browseTree["Album_A"]` would return "Song_1" and "Song_2". Since those are leaf
  * nodes, requesting `browseTree["Song_1"]` would return null (there aren't any children of it).
  */
-class BrowseTree(context: Context, musicSource: MusicSource) {
+class BrowseTree(context: Context, var musicSource: MusicSource) {
     private val mediaIdToChildren = mutableMapOf<String, MutableList<MediaMetadataCompat>>()
 
     operator fun get(parentId: String) = mediaIdToChildren[parentId]
@@ -74,9 +75,17 @@ class BrowseTree(context: Context, musicSource: MusicSource) {
             artist = Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_microphone)
         }.build()
 
+      /*  val foldersMetadata = MediaMetadataCompat.Builder().apply { // make able to play folder???
+            id = Constants.FOLDERS_ROOT
+            title = context.getString(R.string.folders)
+            artist = Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_folder)
+        }.build()*/
+
+
         rootList += songsMetadata
         rootList += albumsMetadata
         rootList += artistsMetadata
+
         mediaIdToChildren[Constants.BROWSABLE_ROOT] = rootList
         musicSource.forEach {
             val albumMediaId = it.albumId.urlEncoded
@@ -88,9 +97,14 @@ class BrowseTree(context: Context, musicSource: MusicSource) {
             val artistChildren = mediaIdToChildren[artistMediaId] ?: buildArtistRoot(it)
             artistChildren += it
 
-            val  songsChildren = mediaIdToChildren[Constants.SONGS_ROOT] ?: mutableListOf()
+            val songsChildren = mediaIdToChildren[Constants.SONGS_ROOT] ?: mutableListOf()
             songsChildren += it
             mediaIdToChildren[Constants.SONGS_ROOT] = songsChildren
+
+            val path = File(it.mediaUri.toString()).parent
+            val foldersChildren = mediaIdToChildren[path] ?: mutableListOf()
+            foldersChildren += it
+            mediaIdToChildren[path] = foldersChildren
         }
     }
 

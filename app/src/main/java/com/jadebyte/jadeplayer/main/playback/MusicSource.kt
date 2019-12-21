@@ -23,7 +23,7 @@ interface MusicSource : Iterable<MediaMetadataCompat> {
     /**
      *  Begins loading the data for this music source.
      */
-    suspend fun load()
+    fun load()
 
     /**
      *  Method which will perform a given action after this [MusicSource] is ready to be used.

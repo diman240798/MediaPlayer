@@ -22,12 +22,14 @@
     <string name="app_icon">App Icon</string>
     <string name="get_started">Get Started</string>
     <string name="image_of_navigation_item">Image of Navigation item</string>
+    <string name="image_of_folder_item">Image of Folder item</string>
     <string name="navigation_icon">Navigation icon</string>
     <string name="track_album_art">Track album art</string>
     <string name="playlist_image">Playlist image</string>
     <string name="artist_avatar">Artist avatar</string>
     <string name="album_art">Album art</string>
     <string name="genre_art">Genre art</string>
+    <string name="folder_art">Folder art</string>
     <string name="more_options">More options</string>
     <string name="go_back">Go back</string>
     <string name="shuffle_playlist">Shuffle playlist</string>
@@ -63,6 +65,7 @@
     <string name="settings">Settings</string>
     <string name="videos">Videos</string>
     <string name="filter_results">Filter results</string>
+    <string name="folders">Folders</string>
 
 
     <!--Plurals-->
@@ -91,6 +94,10 @@
     <plurals name="numberOfPlaylists">
         <item quantity="one">%d playlist</item>
         <item quantity="other">%d playlists</item>
+    </plurals>
+    <plurals name="numberOfFolders">
+        <item quantity="one">%d folder</item>
+        <item quantity="other">%d folders</item>
     </plurals>
 
 

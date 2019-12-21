@@ -22,7 +22,7 @@ import timber.log.Timber
  * Created by Wilberforce on 2019-08-25 at 12:44.
  */
 class PlaybackPreparer(
-    private val musicSource: MusicSource,
+    private val browseTree: BrowseTree,
     private val exoPlayer: ExoPlayer,
     private val dataSourceFactory: DataSource.Factory,
     private val preferences: SharedPreferences
@@ -39,8 +39,8 @@ class PlaybackPreparer(
      *  - Play music on Jade Player
      */
     override fun onPrepareFromSearch(query: String?, playWhenReady: Boolean, extras: Bundle?) {
-        musicSource.whenReady {
-            val metadataList = musicSource.search(query ?: "", extras ?: Bundle.EMPTY)
+        browseTree.musicSource.whenReady {
+            val metadataList = browseTree.musicSource.search(query ?: "", extras ?: Bundle.EMPTY)
             if (metadataList.isNotEmpty()) {
                 val mediaSource = metadataList.toMediaSource(dataSourceFactory)
                 exoPlayer.prepare(mediaSource)
@@ -70,15 +70,21 @@ class PlaybackPreparer(
      *  This is done with expectation that "play" is just "prepare" + "play".
      */
     override fun onPrepareFromMediaId(mediaId: String?, playWhenReady: Boolean, extras: Bundle?) {
-        musicSource.whenReady { _ ->
-            val itemToPlay = musicSource.find { it.id == mediaId }
+        browseTree.musicSource.whenReady { _ ->
+            val itemToPlay = browseTree.musicSource.find { it.id == mediaId }
             if (itemToPlay == null) {
                 Timber.w("onPrepareFromMediaId: Song with id $mediaId not found")
                 return@whenReady
             }
 
-            val metadataList = musicSource.toList()
-            val mediaSource = metadataList.toMediaSource(dataSourceFactory)
+            val lastParentId: String? = extras?.getString("uri")
+
+            val metadataList = if (lastParentId != null) {
+                browseTree[lastParentId]
+            } else {
+                browseTree.musicSource.toList()
+            }
+            val mediaSource = metadataList!!.toMediaSource(dataSourceFactory)
 
             val positionMs = if (itemToPlay.id == preferences.getString(Constants.LAST_ID, null)) {
                 preferences.getLong(Constants.LAST_POSITION, 0)
@@ -103,7 +109,7 @@ class PlaybackPreparer(
      * @return a [List] of [MediaMetadataCompat] objects representing a playlist
      */
     private fun buildPlaylist(itemToPlay: MediaMetadataCompat): List<MediaMetadataCompat> =
-        musicSource.filter { it.album == itemToPlay.album }.sortedBy { it.trackNumber }
+        browseTree.musicSource.filter { it.album == itemToPlay.album }.sortedBy { it.trackNumber }
 
 
     override fun onPrepareFromUri(uri: Uri?, playWhenReady: Boolean, extras: Bundle?) = Unit

@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.BR
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.view.BasePlayerFragment
+import java.io.File
 
 class SongsFragment : BasePlayerFragment<Song>() {
 
@@ -20,11 +21,13 @@ class SongsFragment : BasePlayerFragment<Song>() {
 
     override fun onItemClick(position: Int, sharableView: View?) {
         playbackViewModel.playAll(items[position].id.toString())
+        /*val song = items[position]
+        val parent = File(song.path).parent
+        playbackViewModel.playFolder(parent, song.id.toString())*/
     }
 
     override fun onOverflowMenuClick(position: Int) {
-        val action =
-            SongsFragmentDirections.actionSongsFragmentToSongsMenuBottomSheetDialogFragment(mediaId = items[position].id)
+        val action = SongsFragmentDirections.actionSongsFragmentToSongsMenuBottomSheetDialogFragment(mediaId = items[position].id)
         findNavController().navigate(action)
     }
 

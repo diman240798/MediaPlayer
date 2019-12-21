@@ -169,6 +169,9 @@
             android:id="@+id/action_navigationDialogFragment_to_genresFragment"
             app:destination="@id/genresFragment" />
         <action
+            android:id="@+id/action_navigationDialogFragment_to_foldersFragment"
+            app:destination="@id/foldersFragment" />
+        <action
             android:id="@+id/action_navigationDialogFragment_self"
             app:destination="@id/navigationDialogFragment" />
         <action
@@ -433,5 +436,21 @@
             android:name="resultTrackJson"
             app:argType="string" />
     </dialog>
+    <fragment
+        android:id="@+id/foldersFragment"
+        android:name="com.jadebyte.jadeplayer.main.folders.FoldersFragment"
+        android:label="fragment_folders"
+        tools:layout="@layout/fragment_folders" >
+        <action
+            android:id="@+id/action_foldersFragment_to_navigationDialogFragment"
+            app:destination="@id/navigationDialogFragment" />
+        <action
+            android:id="@+id/action_foldersFragment_to_folderSongsFragment"
+            app:destination="@id/folderSongsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/folderSongsFragment"
+        android:name="com.jadebyte.jadeplayer.main.folders.FolderSongsFragment"
+        android:label="FolderSongsFragment" />
 
 </navigation>

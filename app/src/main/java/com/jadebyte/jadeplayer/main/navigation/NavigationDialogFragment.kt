@@ -129,6 +129,7 @@ class NavigationDialogFragment : BaseFullscreenDialogFragment(), OnStartDragList
             Constants.NAV_ARTISTS -> R.id.action_navigationDialogFragment_to_artistsFragment
             Constants.NAV_GENRES -> R.id.action_navigationDialogFragment_to_genresFragment
             Constants.NAV_IDENTIFY -> R.id.action_navigationDialogFragment_to_shazamFragment
+            Constants.NAV_FOLDERS -> R.id.action_navigationDialogFragment_to_foldersFragment
             else -> null
         }
         if (navId != null) findNavController().navigate(navId)

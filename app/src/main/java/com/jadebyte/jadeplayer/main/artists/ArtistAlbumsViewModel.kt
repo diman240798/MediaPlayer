@@ -4,6 +4,7 @@ package com.jadebyte.jadeplayer.main.artists
 
 import android.app.Application
 import android.provider.MediaStore
+import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.albums.AlbumsViewModel
 
 /**
@@ -15,5 +16,4 @@ class ArtistAlbumsViewModel(application: Application) : AlbumsViewModel(applicat
         uri = MediaStore.Audio.Artists.Albums.getContentUri("external", params[0] as Long)
         super.init()
     }
-
 }
