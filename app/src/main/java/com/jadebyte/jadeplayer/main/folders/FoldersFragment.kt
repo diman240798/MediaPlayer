@@ -5,17 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.collection.SparseArrayCompat
+import androidx.core.view.ViewCompat
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
-import com.jadebyte.jadeplayer.main.songs.SongsViewModel
 import kotlinx.android.synthetic.main.fragment_folders.*
 
 
@@ -68,10 +69,15 @@ class FoldersFragment : Fragment(), OnItemClickListener {
 
     override fun onItemClick(position: Int, sharableView: View?) {
         val folder: Folder = items[position]
-        val songsViewModel = activity?.run {ViewModelProviders.of(this)[SongsViewModel::class.java] }!!
-        songsViewModel.currentItems = folder.songs
-        val action = FoldersFragmentDirections.actionFoldersFragmentToSongsFragment()
-        findNavController().navigate(action)
+        val songsViewModel = activity?.run {ViewModelProviders.of(this)[FolderSongsViewModel::class.java] }!!
+        songsViewModel.setFolder(folder)
+
+        val transitionName = ViewCompat.getTransitionName(sharableView!!)!!
+        val extras = FragmentNavigator.Extras.Builder()
+            .addSharedElement(sharableView, transitionName)
+            .build()
+        val action = FoldersFragmentDirections.actionFoldersFragmentToFolderSongsFragment()
+        findNavController().navigate(action, extras)
 
     }
 

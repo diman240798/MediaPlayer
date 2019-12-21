@@ -76,9 +76,10 @@ class PlaybackService : MediaBrowserServiceCompat() {
         super.onCreate()
 
         // Build a PendingIntent that can be used to launch the UI.
-        val sessionActivityPendingActivity = packageManager?.getLaunchIntentForPackage(packageName)?.let {
-            PendingIntent.getActivity(this, 0, it, 0)
-        }
+        val sessionActivityPendingActivity =
+            packageManager?.getLaunchIntentForPackage(packageName)?.let {
+                PendingIntent.getActivity(this, 0, it, 0)
+            }
 
         recentRepo = RecentlyPlayedRepository(AppRoomDatabase.getDatabase(application).recentDao())
 
@@ -108,14 +109,17 @@ class PlaybackService : MediaBrowserServiceCompat() {
         // The media library is built from the MediaStore. We'll create the source here, and then use
         // a suspend function to perform the query and initialization off the main thread
         mediaSource = MediaStoreSource(
-            this, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, basicSongsSelection, arrayOf(basicSongsSelectionArg),
+            this,
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            basicSongsSelection,
+            arrayOf(basicSongsSelectionArg),
             basicSongsOrder
         )
+
+        mediaSource.load()
+        browseTree = BrowseTree(applicationContext, mediaSource)
+
         serviceScope.launch {
-            mediaSource.load()
-
-            browseTree = BrowseTree(applicationContext, mediaSource)
-
             // ExoPlayer will manage the MediaSession for us.
             mediaSessionConnector = MediaSessionConnector(mediaSession).also {
                 // Produces DataSource instances through which media data is loaded.
@@ -162,7 +166,8 @@ class PlaybackService : MediaBrowserServiceCompat() {
         val resultSent = mediaSource.whenReady { initialized ->
             if (initialized) {
                 val resultList =
-                    mediaSource.search(query, extras ?: Bundle.EMPTY).map { MediaItem(it.description, it.flag) }
+                    mediaSource.search(query, extras ?: Bundle.EMPTY)
+                        .map { MediaItem(it.description, it.flag) }
                 result.sendResult(resultList)
             }
         }
@@ -195,13 +200,20 @@ class PlaybackService : MediaBrowserServiceCompat() {
     }
 
     // Return  the "root" media ID that the client should request to get the list of [MediaItem]s to browse play
-    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
+    override fun onGetRoot(
+        clientPackageName: String,
+        clientUid: Int,
+        rootHints: Bundle?
+    ): BrowserRoot? {
         // By default, all known clients are permitted to search, but only tell unknown callers about search if
         // permitted by the BrowserTree
 
         val isKnownCaller = packageValidator.isKnownCaller(clientPackageName, clientUid)
         val rootExtras = Bundle().apply {
-            putBoolean(Constants.MEDIA_SEARCH_SUPPORTED, isKnownCaller || browseTree.searchableByUnknownCaller)
+            putBoolean(
+                Constants.MEDIA_SEARCH_SUPPORTED,
+                isKnownCaller || browseTree.searchableByUnknownCaller
+            )
             putBoolean(Constants.CONTENT_STYLE_SUPPORTED, true)
             putInt(Constants.CONTENT_STYLE_BROWSABLE_HINT, Constants.CONTENT_STYLE_GRID)
             putInt(Constants.CONTENT_STYLE_PLAYABLE_HINT, Constants.CONTENT_STYLE_LIST)
@@ -288,7 +300,8 @@ class PlaybackService : MediaBrowserServiceCompat() {
 
                 if (!isForegroundService) {
                     ContextCompat.startForegroundService(
-                        applicationContext, Intent(applicationContext, this@PlaybackService.javaClass)
+                        applicationContext,
+                        Intent(applicationContext, this@PlaybackService.javaClass)
                     )
                     startForeground(Constants.PLAYBACK_NOTIFICATION, it)
                     isForegroundService = true
@@ -317,7 +330,10 @@ class PlaybackService : MediaBrowserServiceCompat() {
             }
         }
 
-        private fun addToRecentlyPlayed(metadata: MediaMetadataCompat?, state: PlaybackStateCompat?) {
+        private fun addToRecentlyPlayed(
+            metadata: MediaMetadataCompat?,
+            state: PlaybackStateCompat?
+        ) {
             if (metadata?.id != null && state?.isPlaying == true) {
                 serviceScope.launch {
                     val played = RecentlyPlayed(metadata)
@@ -331,7 +347,8 @@ class PlaybackService : MediaBrowserServiceCompat() {
 
         private fun persistPosition() {
             if (mediaController.playbackState.started) {
-                preferences.edit().putLong(Constants.LAST_POSITION, exoPlayer.contentPosition).apply()
+                preferences.edit().putLong(Constants.LAST_POSITION, exoPlayer.contentPosition)
+                    .apply()
             }
         }
 
@@ -367,7 +384,8 @@ class PlaybackService : MediaBrowserServiceCompat() {
 
 // Helper class to retrieve the the Metadata necessary for the ExoPlayer MediaSession connection
 // extension to call [MediaSessionCompat.setMetadata].
-private class QueueNavigator(mediaSession: MediaSessionCompat) : TimelineQueueNavigator(mediaSession) {
+private class QueueNavigator(mediaSession: MediaSessionCompat) :
+    TimelineQueueNavigator(mediaSession) {
 
     private val window = Timeline.Window()
 

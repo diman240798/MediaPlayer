@@ -29,6 +29,7 @@
     <string name="artist_avatar">Artist avatar</string>
     <string name="album_art">Album art</string>
     <string name="genre_art">Genre art</string>
+    <string name="folder_art">Folder art</string>
     <string name="more_options">More options</string>
     <string name="go_back">Go back</string>
     <string name="shuffle_playlist">Shuffle playlist</string>

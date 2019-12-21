@@ -21,7 +21,7 @@
         android:id="@+id/container">
 
         <ImageView
-            android:id="@+id/item_icon_rv"
+            android:id="@+id/sharableView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
@@ -34,7 +34,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/itemName"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/itemName"
-            tools:src="@drawable/ic_song_thin" />
+            android:transitionName="@{folder.id}"
+            tools:src="@drawable/ic_folder" />
 
         <TextView
             android:id="@+id/itemName"
@@ -49,7 +50,7 @@
             android:textSize="@dimen/text_size_x_small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toEndOf="@id/item_icon_rv"
+            app:layout_constraintStart_toEndOf="@id/sharableView"
             app:layout_constraintTop_toTopOf="@+id/rippleView"
             tools:text="@string/songs" />
 
