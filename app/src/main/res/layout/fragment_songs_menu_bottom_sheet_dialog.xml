@@ -21,6 +21,11 @@
         android:paddingBottom="@dimen/padding_x_large">
 
         <Button
+            android:id="@+id/searchAuthor"
+            style="@style/AppTheme.MenuButton"
+            android:drawableEnd="@drawable/ic_search"
+            android:text="@string/search_author" />
+        <Button
             android:id="@+id/share"
             style="@style/AppTheme.MenuButton"
             android:drawableEnd="@drawable/ic_share"

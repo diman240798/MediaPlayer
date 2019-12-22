@@ -19,6 +19,7 @@ import android.widget.TextView
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
@@ -29,6 +30,7 @@ import com.jadebyte.jadeplayer.main.common.callbacks.AnimatorListener
 import com.jadebyte.jadeplayer.main.common.callbacks.OnSeekBarChangeListener
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
 import com.jadebyte.jadeplayer.main.lyrics.Lyrics
+import com.jadebyte.jadeplayer.main.songs.SongsMenuBottomSheetDialogFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_playback.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.lang.Exception
@@ -145,9 +147,11 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun showMenuBottomSheet() {
-        val mediaItem = viewModel.currentItem.value ?: return
+        val mediaItem: MediaItemData = this.viewModel.currentItem.value ?: return
+        val viewModel = activity?.run { ViewModelProviders.of(this)[SongsMenuBottomSheetDialogFragmentViewModel::class.java] }!!
+        viewModel.setSong(mediaItem)
         val action =
-            PlaybackFragmentDirections.actionPlaybackFragmentToSongsMenuBottomSheetDialogFragment(mediaItem.id.toLong())
+            PlaybackFragmentDirections.actionPlaybackFragmentToPlaybackSongsMenuBottomSheetDialogFragment()
         findNavController().navigate(action)
     }
 

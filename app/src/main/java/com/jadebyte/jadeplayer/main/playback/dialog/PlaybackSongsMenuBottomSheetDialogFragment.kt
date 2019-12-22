@@ -17,7 +17,7 @@ import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
 import com.jadebyte.jadeplayer.main.web.WebFragmentViewModel
 
 
-class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
+class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private lateinit var viewModel: SongsMenuBottomSheetDialogFragmentViewModel
     @IdRes private var popUpTo: Int = 0
@@ -49,7 +49,7 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     private fun searchAuthorWeb() {
         val viewModelWeb : WebFragmentViewModel = activity?.run { ViewModelProviders.of(this)[WebFragmentViewModel::class.java] }!!
         viewModelWeb.setSearchString(this.viewModel.song.value!!)
-        val action = SongsMenuBottomSheetDialogFragmentDirections.actionSongsMenuBottomSheetDialogFragmentToWebFragment()
+        val action = PlaybackSongsMenuBottomSheetDialogFragmentDirections.actionPlaybackSongsMenuBottomSheetDialogFragmentToWebFragment()
         findNavController().navigate(action)
     }
 
@@ -58,12 +58,12 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun addTrackToPlayList() {
-        val selection = "$basicSongsSelection AND ${MediaStore.Audio.Media._ID} = ?"
+        /*val selection = "$basicSongsSelection AND ${MediaStore.Audio.Media._ID} = ?"
         val selectionArgs = arrayOf(basicSongsSelectionArg, viewModel.song.value!!.id.toString())
         val action = SongsMenuBottomSheetDialogFragmentDirections
             .actionSongsMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(selectionArgs, selection)
         val navOptions = NavOptions.Builder().setPopUpTo(popUpTo, false).build()
-        findNavController().navigate(action, navOptions)
+        findNavController().navigate(action, navOptions)*/
     }
 
     private fun favouriteTrack() {

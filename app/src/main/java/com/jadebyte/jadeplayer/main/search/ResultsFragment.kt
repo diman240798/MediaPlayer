@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,8 @@ import com.jadebyte.jadeplayer.main.common.data.Model
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.genres.Genre
 import com.jadebyte.jadeplayer.main.playlist.Playlist
+import com.jadebyte.jadeplayer.main.songs.Song
+import com.jadebyte.jadeplayer.main.songs.SongsMenuBottomSheetDialogFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_results.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -154,10 +157,12 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
     }
 
     private fun onSongItemOverflowMenuClick(position: Int) {
-        val directions =
-            SearchFragmentDirections
-                .actionSearchFragmentToSongsMenuBottomSheetDialogFragment(mediaId = items[position].id as Long)
-        viewModel.navigateFrmSearchFragment(SearchNavigation(directions))
+        val song = items[position] as Song
+        val viewModelDialog = activity?.run { ViewModelProviders.of(this)[SongsMenuBottomSheetDialogFragmentViewModel::class.java] }!!
+        viewModelDialog.setSong(song)
+        val directions = SearchFragmentDirections
+                .actionSearchFragmentToSongsMenuBottomSheetDialogFragment()
+        this.viewModel.navigateFrmSearchFragment(SearchNavigation(directions))
     }
 
 

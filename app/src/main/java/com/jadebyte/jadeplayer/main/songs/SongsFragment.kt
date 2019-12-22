@@ -27,7 +27,10 @@ class SongsFragment : BasePlayerFragment<Song>() {
     }
 
     override fun onOverflowMenuClick(position: Int) {
-        val action = SongsFragmentDirections.actionSongsFragmentToSongsMenuBottomSheetDialogFragment(mediaId = items[position].id)
+        val song = items[position]
+        val viewModel = activity?.run { ViewModelProviders.of(this)[SongsMenuBottomSheetDialogFragmentViewModel::class.java] }!!
+        viewModel.setSong(song)
+        val action = SongsFragmentDirections.actionSongsFragmentToSongsMenuBottomSheetDialogFragment()
         findNavController().navigate(action)
     }
 

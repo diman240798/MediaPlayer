@@ -27,21 +27,12 @@
             android:name="transitionName"
             app:argType="string" />
         <action
-            android:id="@+id/action_playbackFragment_to_songsMenuBottomSheetDialogFragment"
-            app:destination="@id/songsMenuBottomSheetDialogFragment" />
-        <action
             android:id="@+id/action_playbackFragment_to_lyricsFragment"
             app:destination="@id/lyricsFragment" />
+        <action
+            android:id="@+id/action_playbackFragment_to_playbackSongsMenuBottomSheetDialogFragment"
+            app:destination="@id/playbackSongsMenuBottomSheetDialogFragment" />
     </fragment>
-    <dialog
-        android:id="@+id/songsMenuBottomSheetDialogFragment"
-        android:name="com.jadebyte.jadeplayer.main.songs.SongsMenuBottomSheetDialogFragment"
-        android:label="fragment_songs_menu_bottom_sheet_dialog"
-        tools:layout="@layout/fragment_songs_menu_bottom_sheet_dialog" >
-        <argument
-            android:name="mediaId"
-            app:argType="long" />
-    </dialog>
     <fragment
         android:id="@+id/lyricsFragment"
         android:name="com.jadebyte.jadeplayer.main.lyrics.LyricsFragment"
@@ -51,4 +42,16 @@
             android:name="lyricsText"
             app:argType="string" />
     </fragment>
+    <dialog
+        android:id="@+id/playbackSongsMenuBottomSheetDialogFragment"
+        android:name="com.jadebyte.jadeplayer.main.songs.PlaybackSongsMenuBottomSheetDialogFragment"
+        android:label="PlaybackSongsMenuBottomSheetDialogFragment" >
+        <action
+            android:id="@+id/action_playbackSongsMenuBottomSheetDialogFragment_to_webFragment"
+            app:destination="@id/webFragment" />
+    </dialog>
+    <fragment
+        android:id="@+id/webFragment"
+        android:name="com.jadebyte.jadeplayer.main.web.WebFragment"
+        android:label="WebFragment" />
 </navigation>

@@ -16,9 +16,9 @@ data class Album(
     override val id: Long = 0,
     val name: String,
     val artist: String,
+    val key: String,
     val tracks: Int? = 0,
-    val year: String? = "",
-    val key: String
+    val year: String? = ""
 ) : Model(), Parcelable {
 
     constructor(data: Cursor) : this(
