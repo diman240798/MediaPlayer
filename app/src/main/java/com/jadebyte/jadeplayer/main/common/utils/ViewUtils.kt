@@ -5,6 +5,7 @@ package com.jadebyte.jadeplayer.main.common.utils
 import android.content.Context
 import android.graphics.Color
 import android.util.TypedValue
+import android.view.ViewTreeObserver
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
@@ -42,13 +43,16 @@ object ViewUtils {
     }
 
     public fun postponeRecyclerViewEnterSharedElementTransitionForFragment(rv: RecyclerView, fragment: Fragment) {
+        class MyPreDrawListener : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                rv.viewTreeObserver.removeOnPreDrawListener(this)
+                fragment.startPostponedEnterTransition()
+                return true
+            }
+        }
         rv.apply {
             fragment.postponeEnterTransition()
-            viewTreeObserver
-                ?.addOnPreDrawListener {
-                    fragment.startPostponedEnterTransition()
-                    true
-                }
+            viewTreeObserver?.addOnPreDrawListener(MyPreDrawListener())
         }
     }
 }
