@@ -24,8 +24,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorBackground"
-            android:fitsSystemWindows="true">
+            android:background="@color/colorBackground">
 
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="wrap_content"
@@ -41,8 +40,7 @@
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
+            android:layout_height="match_parent">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
@@ -53,7 +51,7 @@
                 <com.google.android.material.appbar.CollapsingToolbarLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fitsSystemWindows="true"
+
                     app:contentScrim="@color/colorBackground"
                     app:layout_scrollFlags="scroll"
                     app:scrimAnimationDuration="250">

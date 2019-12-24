@@ -18,20 +18,19 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
+
         tools:context=".main.playlist.PlaylistSongsFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorBackground"
-            android:fitsSystemWindows="true"
             android:stateListAnimator="@null">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
+
                 app:contentScrim="@color/colorBackground"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
