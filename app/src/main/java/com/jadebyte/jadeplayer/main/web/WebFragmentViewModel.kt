@@ -9,6 +9,6 @@ class WebFragmentViewModel : ViewModel() {
     private val _searhString = MutableLiveData<String>()
 
     fun setSearchString(song: Song) {
-        _searhString.value = Regex("\\s").replace(song.album.artist, "+")
+        _searhString.value = song.album.artist.replace("\\s".toRegex(), "+")
     }
 }
