@@ -24,15 +24,13 @@ import java.util.Collections
 
 class FolderSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
 
-    private lateinit var viewModel: FolderSongsViewModel
     private val playbackViewModel: PlaybackViewModel by sharedViewModel()
+    private val viewModel: FolderSongsViewModel by sharedViewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
-        viewModel = activity?.run {ViewModelProviders.of(this)[FolderSongsViewModel::class.java] }!!
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

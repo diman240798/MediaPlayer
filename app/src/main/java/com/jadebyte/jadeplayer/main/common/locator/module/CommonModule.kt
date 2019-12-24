@@ -4,11 +4,14 @@ package com.jadebyte.jadeplayer.main.common.locator.module
 
 import android.content.ComponentName
 import android.preference.PreferenceManager
+import com.jadebyte.jadeplayer.main.folders.FolderSongsViewModel
 import com.jadebyte.jadeplayer.main.navigation.NavViewModel
 import com.jadebyte.jadeplayer.main.playback.MediaSessionConnection
 import com.jadebyte.jadeplayer.main.playback.PlaybackService
 import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
 import com.jadebyte.jadeplayer.main.search.SearchViewModel
+import com.jadebyte.jadeplayer.main.songs.SongsMenuBottomSheetDialogFragmentViewModel
+import com.jadebyte.jadeplayer.main.web.WebFragmentViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -30,4 +33,7 @@ val commonModule = module {
     viewModel { NavViewModel(get()) }
     viewModel { PlaybackViewModel(get(), get(), get()) }
     viewModel { SearchViewModel(get()) }
+    viewModel { FolderSongsViewModel() }
+    viewModel { SongsMenuBottomSheetDialogFragmentViewModel() }
+    viewModel { WebFragmentViewModel() }
 }

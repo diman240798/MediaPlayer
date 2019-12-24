@@ -19,9 +19,11 @@ import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
 import com.jadebyte.jadeplayer.main.common.utils.ViewUtils
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import kotlinx.android.synthetic.main.fragment_folders.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class FoldersFragment : Fragment(), OnItemClickListener {
+    private val folderSongsVM: FolderSongsViewModel by sharedViewModel()
     private lateinit var viewModel: FoldersViewModel
 
     var items = emptyList<Folder>()
@@ -70,10 +72,10 @@ class FoldersFragment : Fragment(), OnItemClickListener {
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {
+        // update vm
         val folder: Folder = items[position]
-        val songsViewModel = activity?.run {ViewModelProviders.of(this)[FolderSongsViewModel::class.java] }!!
-        songsViewModel.setFolder(folder)
-
+        folderSongsVM.setFolder(folder)
+        // change fragment
         val transitionName = ViewCompat.getTransitionName(sharableView!!)!!
         val extras = FragmentNavigator.Extras.Builder()
             .addSharedElement(sharableView, transitionName)

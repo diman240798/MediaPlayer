@@ -10,9 +10,11 @@ import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.BR
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.view.BasePlayerFragment
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.io.File
 
 class SongsFragment : BasePlayerFragment<Song>() {
+    private val songsMenuBottomDialogVM: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +26,10 @@ class SongsFragment : BasePlayerFragment<Song>() {
     }
 
     override fun onOverflowMenuClick(position: Int) {
+        // update vm
         val song = items[position]
-        val viewModel = activity?.run { ViewModelProviders.of(this)[SongsMenuBottomSheetDialogFragmentViewModel::class.java] }!!
-        viewModel.setSong(song)
+        songsMenuBottomDialogVM.setSong(song)
+        // change fragment
         val action = SongsFragmentDirections.actionSongsFragmentToSongsMenuBottomSheetDialogFragment()
         findNavController().navigate(action)
     }

@@ -11,12 +11,13 @@ import androidx.lifecycle.ViewModelProviders
 
 import com.jadebyte.jadeplayer.R
 import kotlinx.android.synthetic.main.fragment_web.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class WebFragment : Fragment() {
 
     private final val BASE_URL = "https://ru.hotmo.org/search?q="
 
-    private lateinit var viewModel: WebFragmentViewModel
+    private val viewModel: WebFragmentViewModel by sharedViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_web, container, false)
@@ -35,7 +36,6 @@ class WebFragment : Fragment() {
     }
 
     private fun setUpVM() {
-        viewModel = activity?.run { ViewModelProviders.of(this)[WebFragmentViewModel::class.java] }!!
         viewModel.searchString.observe(viewLifecycleOwner, Observer { updateViews(it) })
     }
 

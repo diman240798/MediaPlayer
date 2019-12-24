@@ -38,6 +38,8 @@ import java.lang.Exception
 
 class PlaybackFragment : BaseFragment(), View.OnClickListener {
 
+    private val songsMenuBottomDialogVM: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
+
     private var userTouchingSeekBar = false
     private val viewModel: PlaybackViewModel by sharedViewModel()
     private lateinit var rotationAnimSet: AnimatorSet
@@ -147,11 +149,11 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun showMenuBottomSheet() {
+        // update vm
         val mediaItem: MediaItemData = this.viewModel.currentItem.value ?: return
-        val viewModel = activity?.run { ViewModelProviders.of(this)[SongsMenuBottomSheetDialogFragmentViewModel::class.java] }!!
-        viewModel.setSong(mediaItem)
-        val action =
-            PlaybackFragmentDirections.actionPlaybackFragmentToPlaybackSongsMenuBottomSheetDialogFragment()
+        songsMenuBottomDialogVM.setSong(mediaItem)
+        // change fragment
+        val action = PlaybackFragmentDirections.actionPlaybackFragmentToPlaybackSongsMenuBottomSheetDialogFragment()
         findNavController().navigate(action)
     }
 

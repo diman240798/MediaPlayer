@@ -15,16 +15,18 @@ import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
 import com.jadebyte.jadeplayer.main.web.WebFragmentViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
-    private lateinit var viewModel: SongsMenuBottomSheetDialogFragmentViewModel
+    private val webVM: WebFragmentViewModel by sharedViewModel()
+
+    private val viewModel: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
     @IdRes private var popUpTo: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = activity?.run { ViewModelProviders.of(this)[SongsMenuBottomSheetDialogFragmentViewModel::class.java] }!!
         popUpTo = arguments!!.getInt("popUpTo")
     }
 
@@ -47,8 +49,9 @@ class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun searchAuthorWeb() {
-        val viewModelWeb : WebFragmentViewModel = activity?.run { ViewModelProviders.of(this)[WebFragmentViewModel::class.java] }!!
-        viewModelWeb.setSearchString(this.viewModel.song.value!!)
+        // update vm
+        webVM.setSearchString(this.viewModel.song.value!!)
+        // change fragment
         val action = PlaybackSongsMenuBottomSheetDialogFragmentDirections.actionPlaybackSongsMenuBottomSheetDialogFragmentToWebFragment()
         findNavController().navigate(action)
     }

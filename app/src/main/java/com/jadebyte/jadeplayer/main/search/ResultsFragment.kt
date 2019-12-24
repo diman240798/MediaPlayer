@@ -38,6 +38,8 @@ private const val RESULT = "RESULT"
 
 class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
 
+    private val songsMenuBottomDialogVM: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
+
     lateinit var result: Result
     var items = emptyList<Model>()
     private val viewModel: SearchViewModel by sharedViewModel()
@@ -136,32 +138,28 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
     }
 
     private fun onPlaylistItemLongClick(position: Int) {
-        val directions =
-            SearchFragmentDirections
-                .actionSearchFragmentToPlaylistMenuBottomSheetDialogFragment(playlist = items[position] as Playlist)
+        val directions = SearchFragmentDirections.actionSearchFragmentToPlaylistMenuBottomSheetDialogFragment(playlist = items[position] as Playlist)
         viewModel.navigateFrmSearchFragment(SearchNavigation(directions))
     }
 
     private fun onAlbumItemLongClick(position: Int) {
         val directions =
-            SearchFragmentDirections
-                .actionSearchFragmentToAlbumsMenuBottomSheetDialogFragment(album = items[position] as Album)
+            SearchFragmentDirections.actionSearchFragmentToAlbumsMenuBottomSheetDialogFragment(album = items[position] as Album)
         viewModel.navigateFrmSearchFragment(SearchNavigation(directions))
     }
 
     private fun onGenreItemLongClick(position: Int) {
         val directions =
-            SearchFragmentDirections
-                .actionSearchFragmentToGenresMenuBottomSheetDialogFragment(genre = items[position] as Genre)
+            SearchFragmentDirections.actionSearchFragmentToGenresMenuBottomSheetDialogFragment(genre = items[position] as Genre)
         viewModel.navigateFrmSearchFragment(SearchNavigation(directions))
     }
 
     private fun onSongItemOverflowMenuClick(position: Int) {
+        // update vm
         val song = items[position] as Song
-        val viewModelDialog = activity?.run { ViewModelProviders.of(this)[SongsMenuBottomSheetDialogFragmentViewModel::class.java] }!!
-        viewModelDialog.setSong(song)
-        val directions = SearchFragmentDirections
-                .actionSearchFragmentToSongsMenuBottomSheetDialogFragment()
+        songsMenuBottomDialogVM.setSong(song)
+        // change fragment
+        val directions = SearchFragmentDirections.actionSearchFragmentToSongsMenuBottomSheetDialogFragment()
         this.viewModel.navigateFrmSearchFragment(SearchNavigation(directions))
     }
 
