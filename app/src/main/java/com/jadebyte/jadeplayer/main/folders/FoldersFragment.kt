@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
+import com.jadebyte.jadeplayer.main.common.utils.ViewUtils
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import kotlinx.android.synthetic.main.fragment_folders.*
 
@@ -46,8 +47,9 @@ class FoldersFragment : Fragment(), OnItemClickListener {
         val variables = SparseArrayCompat<Any>(1)
         variables.put(BR.selectable, true)
         val adapter = BaseAdapter(items, activity!!, R.layout.item_folder, BR.folder, this, variables = variables)
-        foldersRecyclerView.adapter = adapter
-        foldersRecyclerView.layoutManager = LinearLayoutManager(activity)
+        foldersRV.adapter = adapter
+        foldersRV.layoutManager = LinearLayoutManager(activity)
+        ViewUtils.postponeRecyclerViewEnterSharedElementTransitionForFragment(foldersRV, FoldersFragment@this)
         navigationIcon.setOnClickListener(
             Navigation.createNavigateOnClickListener(
                 R.id.action_foldersFragment_to_navigationDialogFragment
@@ -63,7 +65,7 @@ class FoldersFragment : Fragment(), OnItemClickListener {
     @Suppress("UNCHECKED_CAST")
     private fun updateViews(items: List<Folder>) {
         this.items = items
-        (foldersRecyclerView.adapter as BaseAdapter<Folder>).updateItems(items)
+        (foldersRV.adapter as BaseAdapter<Folder>).updateItems(items)
         dataNum.text = resources.getQuantityString(R.plurals.numberOfFolders, items.count(), items.count())
     }
 

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
 import com.jadebyte.jadeplayer.main.common.data.Model
+import com.jadebyte.jadeplayer.main.common.utils.ViewUtils
 import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
 import kotlinx.android.synthetic.main.fragment_base_player.*
 import kotlinx.android.synthetic.main.fragment_explore.navigationIcon
@@ -85,6 +86,7 @@ abstract class BasePlayerFragment<T : Model> : BaseFragment(), View.OnClickListe
             )
         dataRV.adapter = adapter
         dataRV.layoutManager = layoutManager()
+        ViewUtils.postponeRecyclerViewEnterSharedElementTransitionForFragment(dataRV, BaseFragment@this)
     }
 
     open fun layoutManager(): RecyclerView.LayoutManager {

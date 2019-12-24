@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jadebyte.jadeplayer.BR
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
+import com.jadebyte.jadeplayer.main.common.utils.ViewUtils
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator
@@ -61,6 +62,7 @@ class GenresFragment : BaseFragment(), OnItemClickListener {
         genresRV.adapter =
             BaseAdapter(items, activity!!, R.layout.item_genre, BR.genre, this, longClick = true)
         genresRV.layoutManager = LinearLayoutManager(activity)
+        ViewUtils.postponeRecyclerViewEnterSharedElementTransitionForFragment(genresRV, GenresFragment@this)
         navigationIcon.setOnClickListener {
             it.findNavController().navigate(R.id.action_genresFragment_to_navigationDialogFragment)
         }

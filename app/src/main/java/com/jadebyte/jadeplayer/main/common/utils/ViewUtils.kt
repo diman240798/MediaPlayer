@@ -8,6 +8,8 @@ import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import java.lang.ref.WeakReference
 
 
@@ -37,5 +39,16 @@ object ViewUtils {
         val value = TypedValue()
         context?.theme?.resolveAttribute(attrRes, value, true)
         return value
+    }
+
+    public fun postponeRecyclerViewEnterSharedElementTransitionForFragment(rv: RecyclerView, fragment: Fragment) {
+        rv.apply {
+            fragment.postponeEnterTransition()
+            viewTreeObserver
+                ?.addOnPreDrawListener {
+                    fragment.startPostponedEnterTransition()
+                    true
+                }
+        }
     }
 }
