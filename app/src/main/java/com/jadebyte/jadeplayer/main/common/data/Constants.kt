@@ -42,10 +42,13 @@ object Constants {
     const val PLAY_RANDOM = "com.jadebyte.jadeplayer.playback.PLAY_RANDOM"
     const val PLAYBACK_NOTIFICATION: Int = 0xb2017
 
+
     // Other constants
     const val MAX_MODEL_IMAGE_THUMB_WIDTH = 100
     val WHITESPACE_REGEX = "\\s|\\n".toRegex()
     const val IMAGE_URI_ROOT = "android.resource://com.jadebyte.jadeplayer/drawable/"
     const val MAX_RECENTLY_PLAYED = 50
+    const val SONG_DOWNLOAD_NOTIFICATION: Int = 0xb2019
+    const val SONG_DOWNLOAD_NOTIFICATION_CHANNEL_ID: String = "Song Downloading Notification"
 
 }
