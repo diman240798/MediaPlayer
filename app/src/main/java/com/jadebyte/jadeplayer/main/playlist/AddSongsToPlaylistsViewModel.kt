@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.event.Event
+import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 import com.jadebyte.jadeplayer.main.songs.SongsRepository
 import com.jadebyte.jadeplayer.main.songs.baseSongUri
 import com.jadebyte.jadeplayer.main.songs.basicSongsSelection
@@ -25,7 +26,7 @@ import kotlinx.coroutines.withContext
 /**
  * Created by Wilberforce on 2019-08-18 at 01:39.
  */
-class AddSongsToPlaylistsViewModel(application: Application) : PlaylistViewModel(application) {
+class AddSongsToPlaylistsViewModel(application: Application, browseTree: BrowseTree) : PlaylistViewModel(application, browseTree) {
     private val songsRepository = SongsRepository(application)
     private val insertionData = MutableLiveData<Event<InsertionResult>>()
     val mediatorItems = MediatorLiveData<Any>()
@@ -34,16 +35,11 @@ class AddSongsToPlaylistsViewModel(application: Application) : PlaylistViewModel
     private lateinit var songsSelection: String
     private lateinit var songsSelectionArgs: Array<String>
 
-
-    @Suppress("UNCHECKED_CAST")
-    override fun init(vararg params: Any?) {
-        this.songsUri = params[0] as Uri? ?: baseSongUri
-        this.songsSelection = params[1] as String? ?: basicSongsSelection
-        this.songsSelectionArgs = params[2] as Array<String>? ?: basicSongsSelectionArgs
+    override fun init(sourceConst: String?) {
+        super.init(sourceConst)
 
         mediatorItems.addSource(this.items) { mediatorItems.value = it }
         mediatorItems.addSource(insertionData) { mediatorItems.value = it }
-        super.init()
         loadSongs()
     }
 

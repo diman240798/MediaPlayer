@@ -29,7 +29,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 abstract class BasePlayerFragment<T : Model> : BaseFragment(), View.OnClickListener, OnItemClickListener {
     val playbackViewModel: PlaybackViewModel by sharedViewModel()
     var items = emptyList<T>()
-    lateinit var viewModel: BaseMediaStoreViewModel<T>
+    abstract val viewModel: BaseMediaStoreViewModel<T>
     @get: IdRes abstract var navigationFragmentId: Int
     @get: PluralsRes open var numberOfDataRes: Int = -1
     @get: StringRes open var titleRes: Int = -1
@@ -49,7 +49,6 @@ abstract class BasePlayerFragment<T : Model> : BaseFragment(), View.OnClickListe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        observeViewModel()
         navigationIcon.setOnClickListener(
             Navigation.createNavigateOnClickListener(
                 navigationFragmentId
@@ -58,9 +57,9 @@ abstract class BasePlayerFragment<T : Model> : BaseFragment(), View.OnClickListe
         playButton.setOnClickListener(this)
     }
 
-    private fun observeViewModel() {
+    fun observeViewModel(sourceConst: String) { // need to be overridden
         if (items.isEmpty()) {
-            viewModel.init()
+            viewModel.init(sourceConst)
             viewModel.items.observe(viewLifecycleOwner, Observer(::updateViews))
         } else {
             viewModel.overrideCurrentItems(items)

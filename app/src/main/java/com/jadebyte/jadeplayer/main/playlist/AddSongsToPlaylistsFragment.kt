@@ -37,7 +37,7 @@ class AddSongsToPlaylistsFragment : BaseFullscreenDialogFragment(), OnItemClickL
         var uri: Uri? = null; if (strUri != null) uri = Uri.parse(strUri)
         val selection = arguments!!.getString("songsSelection")
         val selectionArgs = arguments!!.getStringArray("songsSelectionArgs")
-        viewModel.init(uri, selection, selectionArgs)
+        viewModel.init(uri?.toString())
     }
 
     override fun onCreateView(

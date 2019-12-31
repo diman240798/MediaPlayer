@@ -85,11 +85,18 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
             artist = Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_folder)
         }.build()
 
+        val genresMetadata = MediaMetadataCompat.Builder().apply { // make able to play folder???
+            id = Constants.GENRES_ROOT
+            title = context.getString(R.string.genres)
+            artist = Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_album)
+        }.build()
+
 
         rootList += songsMetadata
         rootList += albumsMetadata
         rootList += artistsMetadata
         rootList += foldersMetadata
+        rootList += genresMetadata
 
         mediaIdToChildren[Constants.BROWSABLE_ROOT] = rootList
         musicSource.forEach {
@@ -109,7 +116,11 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
             val path = File(it.mediaUri.toString()).parent
             val foldersChildren = mediaIdToChildren[path] ?: buildFoldersRoot(it)
             foldersChildren += it
-            mediaIdToChildren[path] = foldersChildren
+
+
+            val genre = it.genre.urlEncoded
+            val genresChildren = mediaIdToChildren[genre] ?: buildGenresRoot(it)
+            genresChildren += it
         }
     }
 
@@ -166,15 +177,14 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
     }
 
 
-    /**
+    /** // TODO: FIX COMMENTS
      * Builds a node, under the root, that represents a folder, given
      * a [MediaMetadataCompat] object that's one of the songs on that folder,
      * marking the item as [MediaItem.FLAG_BROWSABLE], since it will have child
      * node(s) AKA at least 1 song.
      */
     private fun buildFoldersRoot(metadata: MediaMetadataCompat): MutableList<MediaMetadataCompat> {
-        val path = File(metadata.mediaUri.toString()).parent
-        val artistMetadata = MediaMetadataCompat.Builder().apply {
+        val folderMetadata = MediaMetadataCompat.Builder().apply {
             id = metadata.artist.urlEncoded
             title = metadata.artist
             mediaUri = metadata.mediaUri.toString()
@@ -183,10 +193,37 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
 
         // Adds this artist to the 'Artists' category.
         val rootList = mediaIdToChildren[Constants.FOLDERS_ROOT] ?: mutableListOf()
-        rootList += artistMetadata
+        rootList += folderMetadata
         mediaIdToChildren[Constants.FOLDERS_ROOT] = rootList
 
         // Insert the album's root with an empty list for its children, and return the list.
+        val path = File(metadata.mediaUri.toString()).parent
+        return mutableListOf<MediaMetadataCompat>().also {
+            mediaIdToChildren[path] = it
+        }
+    }
+
+    /** // TODO: FIX COMMENTS
+     * Builds a node, under the root, that represents a folder, given
+     * a [MediaMetadataCompat] object that's one of the songs on that folder,
+     * marking the item as [MediaItem.FLAG_BROWSABLE], since it will have child
+     * node(s) AKA at least 1 song.
+     */
+    private fun buildGenresRoot(metadata: MediaMetadataCompat): MutableList<MediaMetadataCompat> {
+        val genreMetadata = MediaMetadataCompat.Builder().apply {
+            id = metadata.artist.urlEncoded
+            title = metadata.artist
+            mediaUri = metadata.mediaUri.toString()
+            flag = MediaItem.FLAG_BROWSABLE
+        }.build()
+
+        // Adds this artist to the 'Artists' category.
+        val rootList = mediaIdToChildren[Constants.GENRES_ROOT] ?: mutableListOf()
+        rootList += genreMetadata
+        mediaIdToChildren[Constants.GENRES_ROOT] = rootList
+
+        // Insert the album's root with an empty list for its children, and return the list.
+        val path = metadata.genre.urlEncoded
         return mutableListOf<MediaMetadataCompat>().also {
             mediaIdToChildren[path] = it
         }

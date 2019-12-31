@@ -4,15 +4,27 @@ package com.jadebyte.jadeplayer.main.common.locator.module
 
 import android.content.ComponentName
 import android.preference.PreferenceManager
+import com.jadebyte.jadeplayer.main.albums.AlbumSongsViewModel
+import com.jadebyte.jadeplayer.main.albums.AlbumsViewModel
+import com.jadebyte.jadeplayer.main.artists.ArtistAlbumsViewModel
+import com.jadebyte.jadeplayer.main.artists.ArtistsViewModel
+import com.jadebyte.jadeplayer.main.explore.ExploreViewModel
 import com.jadebyte.jadeplayer.main.folders.FolderSongsViewModel
+import com.jadebyte.jadeplayer.main.genres.GenreSongsViewModel
+import com.jadebyte.jadeplayer.main.genres.GenresViewModel
 import com.jadebyte.jadeplayer.main.navigation.NavViewModel
 import com.jadebyte.jadeplayer.main.playback.MediaSessionConnection
 import com.jadebyte.jadeplayer.main.playback.PlaybackService
 import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
 import com.jadebyte.jadeplayer.main.playback.mediasource.BasicMediaStoreSource
 import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
+import com.jadebyte.jadeplayer.main.playlist.AddSongsToPlaylistsViewModel
+import com.jadebyte.jadeplayer.main.playlist.PlaylistSongsEditorViewModel
+import com.jadebyte.jadeplayer.main.playlist.PlaylistSongsViewModel
+import com.jadebyte.jadeplayer.main.playlist.PlaylistViewModel
 import com.jadebyte.jadeplayer.main.search.SearchViewModel
 import com.jadebyte.jadeplayer.main.songs.SongsMenuBottomSheetDialogFragmentViewModel
+import com.jadebyte.jadeplayer.main.songs.SongsViewModel
 import com.jadebyte.jadeplayer.main.web.WebFragmentViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -32,8 +44,6 @@ val commonModule = module {
             get()
         )
     }
-    single { BasicMediaStoreSource(get()) }
-    single { BrowseTree(get()) }
 
     viewModel { NavViewModel(get()) }
     viewModel { PlaybackViewModel(get(), get(), get()) }
@@ -41,4 +51,21 @@ val commonModule = module {
     viewModel { FolderSongsViewModel() }
     viewModel { SongsMenuBottomSheetDialogFragmentViewModel() }
     viewModel { WebFragmentViewModel() }
+
+    // metadata
+    single { BasicMediaStoreSource(get()) }
+    single { BrowseTree(get()) }
+    // metadata VMs
+    viewModel { SongsViewModel(get(), get()) }
+    viewModel { GenresViewModel(get(), get()) }
+    viewModel { AlbumSongsViewModel(get(), get()) }
+    viewModel { GenreSongsViewModel(get(), get()) }
+    viewModel { ArtistsViewModel(get(), get()) }
+    viewModel { AlbumsViewModel(get(), get()) }
+    viewModel { ArtistAlbumsViewModel(get(), get()) }
+    viewModel { ExploreViewModel(get(), get()) }
+    viewModel { PlaylistViewModel(get(), get()) }
+    viewModel { AddSongsToPlaylistsViewModel(get(), get()) }
+    viewModel { PlaylistSongsViewModel(get(), get()) }
+    viewModel { PlaylistSongsEditorViewModel(get(), get()) }
 }

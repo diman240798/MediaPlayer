@@ -22,20 +22,21 @@ import com.jadebyte.jadeplayer.common.crossFadeWidth
 import com.jadebyte.jadeplayer.common.observeOnce
 import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
+import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import kotlinx.android.synthetic.main.fragment_explore.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class ExploreFragment : Fragment(), OnItemClickListener {
 
     private var albums: List<Album> = emptyList()
     private var playedList: List<RecentlyPlayed> = emptyList()
-    private lateinit var viewModel: ExploreViewModel
+    private val viewModel: ExploreViewModel by sharedViewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this)[ExploreViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -80,7 +81,7 @@ class ExploreFragment : Fragment(), OnItemClickListener {
         }
 
         if (albums.isEmpty()) {
-            viewModel.init()
+            viewModel.init(Constants.ALBUMS_ROOT)
             viewModel.items.observeOnce(viewLifecycleOwner, Observer {
                 albums = it
                 (randomAlbumsRV.adapter as BaseAdapter<Album>).updateItems(albums)

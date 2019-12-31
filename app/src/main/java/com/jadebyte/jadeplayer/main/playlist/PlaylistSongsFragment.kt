@@ -37,8 +37,8 @@ class PlaylistSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickL
         playlist = arguments!!.getParcelable("playlist")!!
         songsViewModel = ViewModelProviders.of(this)[PlaylistSongsViewModel::class.java]
         playlistViewModel = ViewModelProviders.of(this)[PlaylistViewModel::class.java]
-        songsViewModel.init(playlist.id)
-        playlistViewModel.init(playlist.id)
+        songsViewModel.init(playlist.id.toString())
+        playlistViewModel.init(playlist.id.toString())
 
     }
 

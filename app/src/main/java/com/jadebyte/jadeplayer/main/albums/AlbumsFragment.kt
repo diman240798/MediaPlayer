@@ -15,14 +15,17 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.jadebyte.jadeplayer.BR
 import com.jadebyte.jadeplayer.R
+import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.view.BasePlayerFragment
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class AlbumsFragment : BasePlayerFragment<Album>() {
+    override val viewModel : AlbumsViewModel by sharedViewModel()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this)[AlbumsViewModel::class.java]
     }
 
 
@@ -31,6 +34,11 @@ class AlbumsFragment : BasePlayerFragment<Album>() {
             flexDirection = FlexDirection.ROW
             justifyContent = JustifyContent.SPACE_EVENLY
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeViewModel(Constants.ALBUMS_ROOT)
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {

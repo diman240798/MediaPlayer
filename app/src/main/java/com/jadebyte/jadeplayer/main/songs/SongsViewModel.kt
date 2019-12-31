@@ -5,13 +5,18 @@ package com.jadebyte.jadeplayer.main.songs
 import android.app.Application
 import android.net.Uri
 import android.provider.MediaStore
+import com.jadebyte.jadeplayer.main.common.callbacks.SongSuplier
 import com.jadebyte.jadeplayer.main.common.data.MediaStoreRepository
 import com.jadebyte.jadeplayer.main.common.view.BaseMediaStoreViewModel
+import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 
 /**
  * Created by Wilberforce on 19/04/2019 at 15:06.
  */
-open class SongsViewModel(application: Application) : BaseMediaStoreViewModel<Song>(application) {
+open class SongsViewModel(
+    application: Application,
+    browseTree: BrowseTree
+) : BaseMediaStoreViewModel<Song>(application, browseTree, SongSuplier()) {
 
     override var repository: MediaStoreRepository<Song> = SongsRepository(application)
 

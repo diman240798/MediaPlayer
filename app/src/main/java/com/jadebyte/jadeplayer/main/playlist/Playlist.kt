@@ -5,6 +5,7 @@ package com.jadebyte.jadeplayer.main.playlist
 import android.database.Cursor
 import android.os.Parcelable
 import android.provider.MediaStore
+import android.support.v4.media.MediaMetadataCompat
 import com.jadebyte.jadeplayer.common.dp
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.data.Model
@@ -28,6 +29,12 @@ data class Playlist(
         id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID)),
         name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.NAME)),
         modified = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.DATE_MODIFIED))
+    )
+
+    constructor(data: MediaMetadataCompat) : this(
+        id = data.getLong(MediaStore.Audio.Playlists._ID),
+        name = data.getString(MediaStore.Audio.Playlists.NAME),
+        modified = data.getLong(MediaStore.Audio.Playlists.DATE_MODIFIED)
     )
 
     constructor(p: Playlist) : this(id = p.id, name = p.name, modified = p.modified, songsCount = p.songsCount)

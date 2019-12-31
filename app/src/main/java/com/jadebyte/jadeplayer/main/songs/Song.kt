@@ -5,10 +5,12 @@ package com.jadebyte.jadeplayer.main.songs
 import android.database.Cursor
 import android.os.Parcelable
 import android.provider.MediaStore
+import android.support.v4.media.MediaMetadataCompat
 import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.common.data.Model
 import com.jadebyte.jadeplayer.main.common.utils.ImageUtils
 import com.jadebyte.jadeplayer.main.common.utils.Utils.getTrackNumber
+import com.jadebyte.jadeplayer.main.playback.*
 import kotlinx.android.parcel.Parcelize
 
 
@@ -18,9 +20,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Song(
-    override val id: Long,
+    override val id: String,
     val title: String,
-    val titleKey: String,
+    val titleKey: String = "",
     val album: Album,
     val path: String,
     val duration: Long,
@@ -31,10 +33,10 @@ data class Song(
     var audioId: Long? = null
 ) : Model(), Parcelable {
     constructor(cursor: Cursor) : this(
-        id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
+        id = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
         title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)),
         titleKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE_KEY)),
-        album = Album(cursor, cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))),
+        album = Album(cursor, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))),
         path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)),
         duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)),
         artPath = ImageUtils.getAlbumArtUri(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))).toString(),
@@ -42,14 +44,24 @@ data class Song(
     )
 
     constructor(cursor: Cursor, audioId: Long?) : this(
-        id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID)),
+        id = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID)),
         title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE)),
         titleKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE_KEY)),
-        album = Album(cursor, cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_ID))),
+        album = Album(cursor, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_ID))),
         path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)),
         duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION)),
         artPath = ImageUtils.getAlbumArtUri(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_ID))).toString(),
         number = getTrackNumber(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK))),
         audioId = audioId
+    )
+
+    constructor(data: MediaMetadataCompat) : this(
+        id = data.id ?: "",
+        title = data.title ?: "",
+        album = Album(data),
+        path = data.mediaUri.toString(),
+        duration = data.duration,
+        artPath = ImageUtils.getAlbumArtUri(data.albumId).toString(),
+        number = data.trackNumber?.toString() ?: ""
     )
 }

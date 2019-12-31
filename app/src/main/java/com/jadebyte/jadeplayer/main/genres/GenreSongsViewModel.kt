@@ -3,14 +3,18 @@
 package com.jadebyte.jadeplayer.main.genres
 
 import android.app.Application
-import android.provider.MediaStore
+import android.net.Uri
+import com.jadebyte.jadeplayer.main.common.callbacks.SongSuplier
+import com.jadebyte.jadeplayer.main.common.data.MediaStoreRepository
+import com.jadebyte.jadeplayer.main.common.view.BaseMediaStoreViewModel
+import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 import com.jadebyte.jadeplayer.main.songs.Song
-import com.jadebyte.jadeplayer.main.songs.SongsViewModel
+import com.jadebyte.jadeplayer.main.songs.SongsRepository
+import com.jadebyte.jadeplayer.main.songs.baseSongUri
 
-class GenreSongsViewModel(application: Application) : SongsViewModel(application) {
+class GenreSongsViewModel(application: Application, browseTree: BrowseTree) :
+    BaseMediaStoreViewModel<Song>(application, browseTree, SongSuplier()) {
 
-    override fun init(vararg params: Any?) {
-        uri = MediaStore.Audio.Genres.Members.getContentUri("external", params[0] as Long)
-        super.init()
-    }
+    override var uri: Uri = baseSongUri
+    override var repository: MediaStoreRepository<Song> = SongsRepository(application)
 }

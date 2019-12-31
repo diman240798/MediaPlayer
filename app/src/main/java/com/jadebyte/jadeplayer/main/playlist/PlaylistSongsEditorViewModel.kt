@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hunter.library.debug.HunterDebug
 import com.jadebyte.jadeplayer.main.common.event.Event
+import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 import com.jadebyte.jadeplayer.main.songs.Song
 import com.jadebyte.jadeplayer.main.songs.SongsViewModel
 import com.jadebyte.jadeplayer.main.songs.baseSongsProjection
@@ -20,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class PlaylistSongsEditorViewModel(application: Application) : SongsViewModel(application) {
+class PlaylistSongsEditorViewModel(application: Application, browseTree: BrowseTree) : SongsViewModel(application, browseTree) {
     private val playlistSongsRepository = PlaylistSongsRepository(application)
     private val playlistSongsProjection =
         listOf(*baseSongsProjection, MediaStore.Audio.Playlists.Members.AUDIO_ID).toTypedArray()
@@ -30,10 +31,6 @@ class PlaylistSongsEditorViewModel(application: Application) : SongsViewModel(ap
     val playlistValue: LiveData<Event<Boolean>> get() = _playlistValue
 
 
-    override fun init(vararg params: Any?) {
-        playlistSongsUri = MediaStore.Audio.Playlists.Members.getContentUri("external", params[0] as Long)
-        super.init()
-    }
 
     fun reverseSelection(index: Int): Boolean {
         return data.value?.let {

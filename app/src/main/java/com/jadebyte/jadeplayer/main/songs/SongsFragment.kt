@@ -9,16 +9,22 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.BR
 import com.jadebyte.jadeplayer.R
+import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.view.BasePlayerFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.io.File
 
 class SongsFragment : BasePlayerFragment<Song>() {
     private val songsMenuBottomDialogVM: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
+    override val viewModel: SongsViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this)[SongsViewModel::class.java]
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeViewModel(Constants.SONGS_ROOT)
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {

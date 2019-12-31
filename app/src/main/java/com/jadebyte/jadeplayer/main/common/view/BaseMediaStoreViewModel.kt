@@ -11,7 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.jadebyte.jadeplayer.main.common.ModelSupplier
+import com.jadebyte.jadeplayer.main.common.callbacks.ModelSupplier
 import com.jadebyte.jadeplayer.main.common.data.MediaStoreRepository
 import com.jadebyte.jadeplayer.main.common.data.Model
 import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
  */
 abstract class BaseMediaStoreViewModel<T : Model>(
     application: Application, private val browseTree: BrowseTree,
-    val itemFactory: ModelSupplier<T>, val sourceConst: String
+    val itemFactory: ModelSupplier<T>
 ) : AndroidViewModel(application) {
 
     protected val data = MutableLiveData<List<T>>()
@@ -40,32 +40,36 @@ abstract class BaseMediaStoreViewModel<T : Model>(
     abstract var uri: Uri
 
 
-    private val observer: ContentObserver = object : ContentObserver(null) {
+    /*private val observer: ContentObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean) {
-            loadData()
+            loadData(sourceConst)
         }
-    }
+    }*/
 
     /**
      *  Fetch data from the [MediaStore] and watch it for changes to the data at [uri]]
      */
     @CallSuper
-    open fun init(vararg params: Any?) {
-        loadData()
+    open fun init(sourceConst: String?) {
+        sourceConst?.let {
+            loadData(sourceConst)
+        }
 //        observer.onChange(false)
 //        getApplication<Application>().contentResolver.registerContentObserver(uri, true, observer)
     }
 
 
-    private fun loadData() {
+    private fun loadData(sourceConst: String) {
         viewModelScope.launch {
             /*val result = withContext(Dispatchers.IO) {
                 repository.loadData(uri, projection, selection, selectionArgs, sortOrder)
             }*/
-            val result = browseTree[sourceConst]!!.map {
+            val result = browseTree[sourceConst]?.map {
                 itemFactory.get(it)
             }
-            deliverResult(result)
+            result?.let {
+                deliverResult(result)
+            }
         }
     }
 
@@ -80,7 +84,7 @@ abstract class BaseMediaStoreViewModel<T : Model>(
         if (data.value != items) data.value = items
     }
 
-    fun overrideCurrentItems(items: List<T>) {
+    open fun overrideCurrentItems(items: List<T>) {
         data.value = items
     }
 }

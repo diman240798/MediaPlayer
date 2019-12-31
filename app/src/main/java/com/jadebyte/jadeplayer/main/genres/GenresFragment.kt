@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jadebyte.jadeplayer.BR
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
+import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.utils.ViewUtils
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
@@ -51,7 +52,7 @@ class GenresFragment : BaseFragment(), OnItemClickListener {
 
     @Suppress("UNCHECKED_CAST")
     private fun observeViewModel() {
-        viewModel.init()
+        viewModel.init(Constants.GENRES_ROOT)
         viewModel.items.observe(viewLifecycleOwner, Observer {
             this.items = it
             (genresRV.adapter as BaseAdapter<Genre>).updateItems(this.items)
@@ -62,12 +63,16 @@ class GenresFragment : BaseFragment(), OnItemClickListener {
         genresRV.adapter =
             BaseAdapter(items, activity!!, R.layout.item_genre, BR.genre, this, longClick = true)
         genresRV.layoutManager = LinearLayoutManager(activity)
-        ViewUtils.postponeRecyclerViewEnterSharedElementTransitionForFragment(genresRV, GenresFragment@this)
+        ViewUtils.postponeRecyclerViewEnterSharedElementTransitionForFragment(
+            genresRV, GenresFragment@this
+        )
         navigationIcon.setOnClickListener {
             it.findNavController().navigate(R.id.action_genresFragment_to_navigationDialogFragment)
         }
         fastScroller.setupWithRecyclerView(genresRV, {
-            FastScrollItemIndicator.Text(items[it].name.substring(0, 1).toUpperCase(Locale.getDefault()))
+            FastScrollItemIndicator.Text(
+                items[it].name.substring(0,1).toUpperCase(Locale.getDefault())
+            )
         })
         fastScrollerThumb.setupWithFastScroller(fastScroller)
     }
@@ -78,16 +83,20 @@ class GenresFragment : BaseFragment(), OnItemClickListener {
         val extras = FragmentNavigator.Extras.Builder()
             .addSharedElement(sharableView, transitionName)
             .build()
-        val action = GenresFragmentDirections.actionGenresFragmentToGenreSongsFragment(items[position], transitionName)
+        val action = GenresFragmentDirections.actionGenresFragmentToGenreSongsFragment(
+            items[position],
+            transitionName
+        )
         findNavController().navigate(action, extras)
     }
 
     override fun onItemLongClick(position: Int) {
         super.onItemLongClick(position)
-        val action = GenresFragmentDirections.actionGenresFragmentToGenresMenuBottomSheetDialogFragment(
-            genre =
-            items[position]
-        )
+        val action =
+            GenresFragmentDirections.actionGenresFragmentToGenresMenuBottomSheetDialogFragment(
+                genre =
+                items[position]
+            )
         findNavController().navigate(action)
 
     }

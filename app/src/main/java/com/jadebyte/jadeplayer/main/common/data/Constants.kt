@@ -32,6 +32,8 @@ object Constants {
     const val ARTISTS_ROOT = "_ARTISTS__"
     const val FOLDERS_ROOT = "_FOLDERS__"
     const val SONGS_ROOT = "_SONGS__"
+    const val GENRES_ROOT = "_GENRES__"
+    const val PLAYLISTS_ROOT = "__PLAYLISTS__"
     const val NETWORK_FAILURE = "com.jadebyte.jadeplayer.playback.NETWORK_FAILURE"
     const val LAST_SHUFFLE_MODE = "com.jadebyte.jadeplayer.playback.LAST_SHUFFLE_MODE"
     const val LAST_REPEAT_MODE = "com.jadebyte.jadeplayer.playback.LAST_REPEAT_MODE"

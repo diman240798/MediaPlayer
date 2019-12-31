@@ -5,6 +5,7 @@ package com.jadebyte.jadeplayer.main.artists
 import android.database.Cursor
 import android.os.Parcelable
 import android.provider.MediaStore
+import android.support.v4.media.MediaMetadataCompat
 import com.jadebyte.jadeplayer.main.common.data.Model
 import kotlinx.android.parcel.Parcelize
 
@@ -16,16 +17,23 @@ import kotlinx.android.parcel.Parcelize
 data class Artist(
     override val id: Long,
     val name: String,
-    val songsCount: Int,
-    val albumsCount: Int
+    val songsCount: Long,
+    val albumsCount: Long
 ) : Model(),
     Parcelable {
 
     constructor(data: Cursor) : this(
         name = data.getString(data.getColumnIndex(MediaStore.Audio.Artists.ARTIST)),
-        songsCount = data.getInt(data.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS)),
-        albumsCount = data.getInt(data.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS)),
+        songsCount = data.getLong(data.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS)),
+        albumsCount = data.getLong(data.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS)),
         id = data.getLong(data.getColumnIndex(MediaStore.Audio.Artists._ID))
+    )
+
+    constructor(data: MediaMetadataCompat) : this(
+        name = data.getString(MediaStore.Audio.Artists.ARTIST),
+        songsCount = data.getLong(MediaStore.Audio.Artists.NUMBER_OF_TRACKS),
+        albumsCount = data.getLong(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS),
+        id = data.getLong(MediaStore.Audio.Artists._ID)
     )
 
 }

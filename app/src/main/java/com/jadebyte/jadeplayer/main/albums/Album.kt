@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.os.Parcelable
 import android.provider.MediaStore
 import android.support.v4.media.MediaMetadataCompat
+import com.jadebyte.jadeplayer.common.urlEncoded
 import com.jadebyte.jadeplayer.main.common.data.Model
 import com.jadebyte.jadeplayer.main.playback.*
 import kotlinx.android.parcel.Parcelize
@@ -15,12 +16,11 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class Album(
-    override val id: Long = 0,
+    override var id: String = "",
     val name: String,
     val artist: String,
-    val key: String,
     val tracks: Long? = 0,
-    val year: String? = ""
+    val year: String? = "" // TODO:
 ) : Model(), Parcelable {
 
     constructor(data: Cursor) : this(
@@ -28,23 +28,19 @@ data class Album(
         artist = data.getString(data.getColumnIndex(MediaStore.Audio.Albums.ARTIST)),
         year = data.getString(data.getColumnIndex(MediaStore.Audio.Albums.FIRST_YEAR)),
         tracks = data.getInt(data.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS)).toLong(),
-        id = data.getLong(data.getColumnIndex(MediaStore.Audio.Albums._ID)),
-        key = data.getString(data.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY))
+        id = data.getString(data.getColumnIndex(MediaStore.Audio.Albums._ID))
     )
 
-    constructor(cursor: Cursor, id: Long) : this(
+    constructor(cursor: Cursor, id: String) : this(
         name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)),
         artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)),
-        id = id,
-        key = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY))
+        id = id
     )
 
     constructor(data: MediaMetadataCompat) : this(
-        name = data.getString(MediaStore.Audio.Albums.ALBUM),
-        artist = data.getString(MediaStore.Audio.Albums.ARTIST),
-        year = data.getString(MediaStore.Audio.Albums.FIRST_YEAR),
-        tracks = data.getLong(MediaStore.Audio.Albums.NUMBER_OF_SONGS),
-        id = data.getLong(MediaStore.Audio.Albums._ID),
-        key = data.getString(MediaStore.Audio.Albums.ALBUM_KEY)
+        name = data.album ?: "",
+        artist = data.artist ?: "",
+        tracks = data.trackNumber,
+        id = data.albumId.urlEncoded
     )
 }

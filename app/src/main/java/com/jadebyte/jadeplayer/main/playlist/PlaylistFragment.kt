@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jadebyte.jadeplayer.BR
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
+import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_playlist.*
@@ -45,7 +46,7 @@ class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListen
 
     @Suppress("UNCHECKED_CAST")
     private fun observeViewModel() {
-        viewModel.init()
+        viewModel.init(Constants.PLAYLISTS_ROOT)
         viewModel.items.observe(viewLifecycleOwner, Observer {
             this.items = it
             (playlistRV.adapter as BaseAdapter<Playlist>).updateItems(it)
