@@ -15,7 +15,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class WebFragment : Fragment() {
 
-    private final val BASE_URL = "https://ru.hotmo.org/search?q="
 
     private val viewModel: WebFragmentViewModel by sharedViewModel()
 
@@ -29,6 +28,7 @@ class WebFragment : Fragment() {
         setUpOnBackPressed()
         setUpWebView()
         setUpVM()
+
     }
 
     private fun setUpWebView() {
@@ -36,11 +36,11 @@ class WebFragment : Fragment() {
     }
 
     private fun setUpVM() {
-        viewModel.searchString.observe(viewLifecycleOwner, Observer { updateViews(it) })
+        viewModel.url.observe(viewLifecycleOwner, Observer { updateViews(it) })
     }
 
-    fun updateViews(searchStr: String) {
-        webView.loadUrl("$BASE_URL$searchStr")
+    fun updateViews(url: String) {
+        webView.loadUrl("$url")
     }
 
     private fun setUpOnBackPressed() {

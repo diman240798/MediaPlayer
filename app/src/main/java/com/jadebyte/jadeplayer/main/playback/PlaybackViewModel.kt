@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.*
@@ -186,6 +187,25 @@ class PlaybackViewModel(
             }
         }
     }
+
+
+    fun addToQueue(mediaDescription: MediaDescriptionCompat) {
+        mediaSessionConnection.addToQueue(mediaDescription)
+    }
+
+    fun removeFromQueue(mediaDescription: MediaDescriptionCompat) {
+        mediaSessionConnection.removeFromQueue(mediaDescription)
+    }
+
+    fun addToQueue() {
+        currentItem.value?.description?.let { mediaSessionConnection.addToQueue(it) }
+    }
+
+    fun removeFromQueue() {
+        currentItem.value?.description?.let { mediaSessionConnection.removeFromQueue(it) }
+    }
+
+
 
     // When the session's [PlaybackStateCompat] changes, the [mediaItems] needs to be updated
     private val playbackStateObserver = Observer<PlaybackStateCompat> {

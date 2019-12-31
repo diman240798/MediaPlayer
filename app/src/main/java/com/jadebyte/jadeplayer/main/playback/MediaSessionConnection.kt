@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -70,6 +71,14 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName, 
         true
     } else {
         false
+    }
+
+    fun addToQueue(mediaDescription: MediaDescriptionCompat) {
+        mediaController.addQueueItem(mediaDescription)
+    }
+
+    fun removeFromQueue(mediaDescription: MediaDescriptionCompat) {
+        mediaController.removeQueueItem(mediaDescription)
     }
 
 

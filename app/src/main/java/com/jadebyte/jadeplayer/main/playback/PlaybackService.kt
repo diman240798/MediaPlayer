@@ -3,42 +3,27 @@
 
 package com.jadebyte.jadeplayer.main.playback
 
-import android.app.Notification
 import android.app.PendingIntent
-import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat.MediaItem
-import android.support.v4.media.MediaDescriptionCompat
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
-import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.upstream.FileDataSourceFactory
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.data.Constants
-import com.jadebyte.jadeplayer.main.common.utils.UriFileUtils
-import com.jadebyte.jadeplayer.main.explore.RecentlyPlayed
-import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
 import com.jadebyte.jadeplayer.main.explore.AppRoomDatabase
+import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
+import com.jadebyte.jadeplayer.main.playback.mediasession.MediaControllerCallback
+import com.jadebyte.jadeplayer.main.playback.mediasession.QueueEditor
+import com.jadebyte.jadeplayer.main.playback.mediasession.QueueNavigator
 import com.jadebyte.jadeplayer.main.songs.basicSongsOrder
 import com.jadebyte.jadeplayer.main.songs.basicSongsSelection
 import com.jadebyte.jadeplayer.main.songs.basicSongsSelectionArg
@@ -54,25 +39,25 @@ import org.koin.android.ext.android.inject
  * the callback [onLoadChildren].
  */
 class PlaybackService : MediaBrowserServiceCompat() {
-    private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
+    internal lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
     private lateinit var packageValidator: PackageValidator
     private lateinit var mediaSource: MusicSource
-    private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var mediaController: MediaControllerCompat
-    private lateinit var notificationManager: NotificationManagerCompat
-    private lateinit var notificationBuilder: NotificationBuilder
+    internal lateinit var mediaSession: MediaSessionCompat
+    internal lateinit var mediaController: MediaControllerCompat
+    internal lateinit var notificationManager: NotificationManagerCompat
+    internal lateinit var notificationBuilder: NotificationBuilder
     private lateinit var mediaSessionConnector: MediaSessionConnector
-    private lateinit var recentRepo: RecentlyPlayedRepository
+    internal lateinit var recentRepo: RecentlyPlayedRepository
 
     // This must be `by lazy` because the source won't initially be ready.
     // See [onLoadChildren] to see where it's accessed (and first constructed)
     private lateinit var browseTree: BrowseTree
 
     private val serviceJob = SupervisorJob()
-    private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
+    internal val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
-    private val preferences: SharedPreferences by inject()
-    private var isForegroundService = false
+    internal val preferences: SharedPreferences by inject()
+    internal var isForegroundService = false
 
 
     override fun onCreate() {
@@ -101,7 +86,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
         // Because ExoPlayer will manage the MediaSession, add the service as a callback for
         // state changes.
         mediaController = MediaControllerCompat(this, mediaSession).also {
-            it.registerCallback(MediaControllerCallback())
+            it.registerCallback(MediaControllerCallback(this))
         }
 
         notificationBuilder = NotificationBuilder(this)
@@ -137,6 +122,10 @@ class PlaybackService : MediaBrowserServiceCompat() {
                 it.setPlayer(exoPlayer)
                 it.setPlaybackPreparer(playbackPreparer)
                 it.setQueueNavigator(QueueNavigator(mediaSession))
+                it.setQueueEditor(QueueEditor(browseTree))
+                it.mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
+                        or MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS
+                        or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
             }
         }
 
@@ -151,18 +140,6 @@ class PlaybackService : MediaBrowserServiceCompat() {
         // Cancel coroutines when the service is going away.
         serviceScope.cancel()
     }
-
-    // Removes the playback notification.
-    // Since `stopForeground(false)` has already been called in [MediaControllerCallback.onPlaybackStateChanged],
-    // it's possible to cancel the notification to cancel the notification with
-    // `notificationManager.cancel(PLAYBACK_NOTIFICATION)` if minSdkVersion is >= [Build.VERSION_CODES.LOLLIPOP].
-    //
-    // Prior to [Build.VERSION_CODES.LOLLIPOP], notifications associated with a foreground service remained marked
-    // "ongoing" even after calling [Service.stopForeground], and cannot be cancelled normally.
-    //
-    // Fortunately, it's possible to simple call [Service.stopForeground] a second time, this time with `true`.
-    // his won't change anything about the service's state, but will simply remove the notification.
-    private fun removePlaybackNotification() = stopForeground(true)
 
     // Returns a list of [MediaItem]s that match the given search query
     override fun onSearch(query: String, extras: Bundle?, result: Result<List<MediaItem>>) {
@@ -238,166 +215,9 @@ class PlaybackService : MediaBrowserServiceCompat() {
 
     // Configure ExoPlayer to handle audio focus for us.
     // See https://link.medium.com/Zw5gorq9mZ
-    private val exoPlayer by lazy {
+    internal val exoPlayer by lazy {
         ExoPlayerFactory.newSimpleInstance(this).apply {
             setAudioAttributes(this@PlaybackService.audioAttributes, true)
         }
     }
-
-
-    private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
-        val notificationTarget = NotificationTarget()
-        var largeBitmap: Bitmap? = null
-
-
-        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            updateNotification(mediaController.playbackState)
-            addToRecentlyPlayed(metadata, mediaController.playbackState)
-            persistPosition()
-        }
-
-        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-            updateNotification(state)
-            addToRecentlyPlayed(mediaController.metadata, state)
-            persistPosition()
-        }
-
-        private fun updateNotification(state: PlaybackStateCompat?) {
-            if (state == null) return
-
-            when (val updatedState = state.state) {
-                PlaybackStateCompat.STATE_PLAYING,
-                PlaybackStateCompat.STATE_BUFFERING -> initiatePlayback(updatedState)
-                else -> terminatePlayback(updatedState)
-            }
-        }
-
-        private fun terminatePlayback(state: Int) {
-            becomingNoisyReceiver.unregister()
-            if (isForegroundService) {
-                stopForeground(false)
-                isForegroundService = false
-
-                // If playback has ended, also stop the service
-                if (state == PlaybackStateCompat.STATE_NONE) {
-                    stopSelf()
-                }
-                val notification = buildNotification(state)
-                if (notification != null) {
-                    notificationManager.notify(Constants.PLAYBACK_NOTIFICATION, notification)
-                } else {
-                    removePlaybackNotification()
-                }
-            }
-        }
-
-        private fun initiatePlayback(state: Int) {
-            becomingNoisyReceiver.register()
-
-            // This may look strange, but the documentation for [Service.startForeground]
-            // notes that "calling this method does *not* put the service in the started
-            // state itself, even though the name sounds like it."
-            buildNotification(state)?.let {
-                notificationManager.notify(Constants.PLAYBACK_NOTIFICATION, it)
-                if (UriFileUtils.checkIconUri(contentResolver, mediaController.metadata.description.iconUri)) {
-                    loadLargeIcon(mediaController.metadata.description.iconUri)
-                } else {
-                    loadLargeIcon(res = R.drawable.ic_launcher)
-                }
-
-                if (!isForegroundService) {
-                    ContextCompat.startForegroundService(
-                        applicationContext,
-                        Intent(applicationContext, this@PlaybackService.javaClass)
-                    )
-                    startForeground(Constants.PLAYBACK_NOTIFICATION, it)
-                    isForegroundService = true
-                }
-            }
-        }
-
-        private fun loadLargeIcon(uri: Uri? = null, @DrawableRes res: Int = 0) {
-            val drawable = uri ?: res;
-            Glide.with(this@PlaybackService)
-                .asBitmap()
-                .skipMemoryCache(false)
-                .load(drawable)
-                .into(notificationTarget)
-        }
-
-        private fun buildNotification(state: Int): Notification? {
-
-            // Skip building a notification when state is "none" and metadata is null
-            return if (mediaController.metadata != null && mediaController.metadata.description.title != null
-                && state != PlaybackStateCompat.STATE_NONE
-            ) {
-                notificationBuilder.buildNotification(mediaSession.sessionToken, largeBitmap)
-            } else {
-                null
-            }
-        }
-
-        private fun addToRecentlyPlayed(
-            metadata: MediaMetadataCompat?,
-            state: PlaybackStateCompat?
-        ) {
-            if (metadata?.id != null && state?.isPlaying == true) {
-                serviceScope.launch {
-                    val played = RecentlyPlayed(metadata)
-                    recentRepo.insert(played)
-                    recentRepo.trim()
-                    preferences.edit().putString(Constants.LAST_ID, metadata.id).apply()
-                }
-
-            }
-        }
-
-        private fun persistPosition() {
-            if (mediaController.playbackState.started) {
-                preferences.edit().putLong(Constants.LAST_POSITION, exoPlayer.contentPosition)
-                    .apply()
-            }
-        }
-
-
-        private inner class NotificationTarget :
-            CustomTarget<Bitmap>(NOTIFICATION_LARGE_ICON_SIZE, NOTIFICATION_LARGE_ICON_SIZE) {
-
-            override fun onStart() {
-                largeBitmap = null
-            }
-
-            override fun onLoadCleared(placeholder: Drawable?) {
-                largeBitmap = null
-            }
-
-            override fun onLoadFailed(errorDrawable: Drawable?) {
-                largeBitmap = null
-            }
-
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                val notification = notificationBuilder.buildNotification(mediaSession.sessionToken, resource)
-                notificationManager.notify(
-                    Constants.PLAYBACK_NOTIFICATION, notification
-                )
-                largeBitmap = resource
-            }
-
-        }
-
-
-    }
 }
-
-// Helper class to retrieve the the Metadata necessary for the ExoPlayer MediaSession connection
-// extension to call [MediaSessionCompat.setMetadata].
-private class QueueNavigator(mediaSession: MediaSessionCompat) :
-    TimelineQueueNavigator(mediaSession) {
-
-    private val window = Timeline.Window()
-
-    override fun getMediaDescription(player: Player, windowIndex: Int) =
-        player.currentTimeline.getWindow(windowIndex, window, true).tag as MediaDescriptionCompat
-
-}
-

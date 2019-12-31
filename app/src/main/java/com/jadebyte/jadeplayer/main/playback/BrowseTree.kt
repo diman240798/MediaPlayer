@@ -6,6 +6,7 @@ package com.jadebyte.jadeplayer.main.playback
 import android.content.Context
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaMetadataCompat
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.common.urlEncoded
 import com.jadebyte.jadeplayer.main.common.data.Constants
@@ -36,6 +37,8 @@ import java.io.File
  * nodes, requesting `browseTree["Song_1"]` would return null (there aren't any children of it).
  */
 class BrowseTree(context: Context, var musicSource: MusicSource) {
+    var currentMediaSource: ConcatenatingMediaSource? = null
+
     private val mediaIdToChildren = mutableMapOf<String, MutableList<MediaMetadataCompat>>()
 
     operator fun get(parentId: String) = mediaIdToChildren[parentId]

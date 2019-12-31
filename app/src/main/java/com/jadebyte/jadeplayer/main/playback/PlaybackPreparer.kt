@@ -91,6 +91,7 @@ class PlaybackPreparer(
             } else {
                 0
             }
+            browseTree.currentMediaSource = mediaSource
 
             // Since the playlist was probably based on some ordering (such as tracks
             // on an album), find which window index to play first so that the song the

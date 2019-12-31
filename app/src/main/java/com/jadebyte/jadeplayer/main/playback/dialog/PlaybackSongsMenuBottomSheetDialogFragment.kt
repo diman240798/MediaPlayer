@@ -14,6 +14,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
+import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
 import com.jadebyte.jadeplayer.main.web.WebFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -21,6 +22,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private val webVM: WebFragmentViewModel by sharedViewModel()
+    private val playbackViewModel: PlaybackViewModel by sharedViewModel()
+
 
     private val viewModel: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
     @IdRes private var popUpTo: Int = 0
@@ -57,7 +60,7 @@ class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun deleteTrack() {
-        // TODO: Implement
+        playbackViewModel.removeFromQueue()
     }
 
     private fun addTrackToPlayList() {
@@ -78,7 +81,7 @@ class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun playNextTrack() {
-        // TODO: Implement
+
     }
 
 
