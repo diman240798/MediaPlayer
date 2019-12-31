@@ -1,6 +1,6 @@
 // Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
 
-package com.jadebyte.jadeplayer.main.playback
+package com.jadebyte.jadeplayer.main.playback.mediasource
 
 import android.content.SharedPreferences
 import android.net.Uri
@@ -15,6 +15,10 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.DataSource
 import com.jadebyte.jadeplayer.main.common.data.Constants
+import com.jadebyte.jadeplayer.main.playback.album
+import com.jadebyte.jadeplayer.main.playback.id
+import com.jadebyte.jadeplayer.main.playback.toMediaSource
+import com.jadebyte.jadeplayer.main.playback.trackNumber
 import timber.log.Timber
 
 

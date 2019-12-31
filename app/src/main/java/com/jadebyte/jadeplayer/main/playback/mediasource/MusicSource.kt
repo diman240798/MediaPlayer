@@ -1,13 +1,14 @@
 // Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
 // A little modification was made from the original file: https://raw.githubusercontent.com/googlesamples/android-UniversalMusicPlayer/master/common/src/main/java/com/example/android/uamp/media/library/MusicSource.kt
 
-package com.jadebyte.jadeplayer.main.playback
+package com.jadebyte.jadeplayer.main.playback.mediasource
 
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.media.MediaMetadataCompat
 import androidx.annotation.IntDef
 import com.jadebyte.jadeplayer.common.contains
+import com.jadebyte.jadeplayer.main.playback.*
 
 
 /**
@@ -72,12 +73,14 @@ const val STATE_ERROR = 4
 /**
  * Base class for music sources
  */
-abstract class AbstractMusicSource : MusicSource {
+abstract class AbstractMusicSource :
+    MusicSource {
 
     private val onReadyListeners = mutableListOf<(Boolean) -> Unit>()
 
     @State
-    var state: Int = STATE_CREATED
+    var state: Int =
+        STATE_CREATED
         set(value) {
             if (value == STATE_INITIALIZED || value == STATE_ERROR) {
                 synchronized(onReadyListeners) {

@@ -1,6 +1,6 @@
 // Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
 
-package com.jadebyte.jadeplayer.main.playback
+package com.jadebyte.jadeplayer.main.playback.mediasource
 
 import android.content.Context
 import android.net.Uri
@@ -8,8 +8,7 @@ import android.provider.MediaStore
 import android.support.v4.media.MediaMetadataCompat
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.utils.ImageUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.jadebyte.jadeplayer.main.playback.from
 
 
 /**
@@ -17,7 +16,7 @@ import kotlinx.coroutines.withContext
  *
  * Source of [MediaMetadataCompat] objects created from songs in the MediaStore
  */
-class MediaStoreSource(
+open class MediaStoreSource(
     val context: Context, val uri: Uri,
     val selection: String,
     val selectionArgs: Array<String>,
@@ -26,14 +25,16 @@ class MediaStoreSource(
     private var catalog: List<MediaMetadataCompat> = emptyList()
 
     init {
-        state = STATE_INITIALIZING
+        state =
+            STATE_INITIALIZING
 
     }
 
     override fun load() {
         updateCatalog()?.let {
             catalog = it
-            state = STATE_INITIALIZED
+            state =
+                STATE_INITIALIZED
         } ?: run {
             catalog = emptyList()
             state = STATE_ERROR
@@ -49,7 +50,8 @@ class MediaStoreSource(
 
         val results = mutableListOf<MediaMetadataCompat>()
         val cursor =
-            context.contentResolver.query(uri, songsProjection, selection, selectionArgs, sortOrder)
+            context.contentResolver.query(uri,
+                songsProjection, selection, selectionArgs, sortOrder)
         cursor?.use {
             val count = it.count.toLong()
             while (it.moveToNext()) {

@@ -7,7 +7,7 @@ import com.google.android.exoplayer2.ControlDispatcher
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
-import com.jadebyte.jadeplayer.main.playback.BrowseTree
+import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 
 
 // Helper class to retrieve the the Metadata necessary for the ExoPlayer MediaSession connection

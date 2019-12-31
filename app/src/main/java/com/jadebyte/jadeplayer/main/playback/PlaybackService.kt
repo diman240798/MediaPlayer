@@ -24,6 +24,7 @@ import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
 import com.jadebyte.jadeplayer.main.playback.mediasession.MediaControllerCallback
 import com.jadebyte.jadeplayer.main.playback.mediasession.QueueEditor
 import com.jadebyte.jadeplayer.main.playback.mediasession.QueueNavigator
+import com.jadebyte.jadeplayer.main.playback.mediasource.*
 import com.jadebyte.jadeplayer.main.songs.basicSongsOrder
 import com.jadebyte.jadeplayer.main.songs.basicSongsSelection
 import com.jadebyte.jadeplayer.main.songs.basicSongsSelectionArg
@@ -41,7 +42,7 @@ import org.koin.android.ext.android.inject
 class PlaybackService : MediaBrowserServiceCompat() {
     internal lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
     private lateinit var packageValidator: PackageValidator
-    private lateinit var mediaSource: MusicSource
+    private val mediaSource: BasicMediaStoreSource by inject()
     internal lateinit var mediaSession: MediaSessionCompat
     internal lateinit var mediaController: MediaControllerCompat
     internal lateinit var notificationManager: NotificationManagerCompat
@@ -51,7 +52,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
 
     // This must be `by lazy` because the source won't initially be ready.
     // See [onLoadChildren] to see where it's accessed (and first constructed)
-    private lateinit var browseTree: BrowseTree
+    private val browseTree: BrowseTree  by inject()
 
     private val serviceJob = SupervisorJob()
     internal val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -96,16 +97,9 @@ class PlaybackService : MediaBrowserServiceCompat() {
 
         // The media library is built from the MediaStore. We'll create the source here, and then use
         // a suspend function to perform the query and initialization off the main thread
-        mediaSource = MediaStoreSource(
-            this,
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-            basicSongsSelection,
-            arrayOf(basicSongsSelectionArg),
-            basicSongsOrder
-        )
 
         mediaSource.load()
-        browseTree = BrowseTree(applicationContext, mediaSource)
+        browseTree.load(this)
 
         serviceScope.launch {
             // ExoPlayer will manage the MediaSession for us.
@@ -113,12 +107,13 @@ class PlaybackService : MediaBrowserServiceCompat() {
                 // Produces DataSource instances through which media data is loaded.
                 val dataSourceFactory = FileDataSourceFactory()
                 // Create the PlaybackPreparer of the media session connector.
-                val playbackPreparer = PlaybackPreparer(
-                    browseTree,
-                    exoPlayer,
-                    dataSourceFactory,
-                    preferences
-                )
+                val playbackPreparer =
+                    PlaybackPreparer(
+                        browseTree,
+                        exoPlayer,
+                        dataSourceFactory,
+                        preferences
+                    )
                 it.setPlayer(exoPlayer)
                 it.setPlaybackPreparer(playbackPreparer)
                 it.setQueueNavigator(QueueNavigator(mediaSession))

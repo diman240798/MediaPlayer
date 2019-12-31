@@ -11,10 +11,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.jadebyte.jadeplayer.main.common.ModelSupplier
 import com.jadebyte.jadeplayer.main.common.data.MediaStoreRepository
-import kotlinx.coroutines.Dispatchers
+import com.jadebyte.jadeplayer.main.common.data.Model
+import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  *  Created by Wilberforce on 19/04/2019 at 16:45.
@@ -24,7 +25,10 @@ import kotlinx.coroutines.withContext
  *  fetching of data from [MediaStore] and watching it for subsequent changes.
  *
  */
-abstract class BaseMediaStoreViewModel<T>(application: Application) : AndroidViewModel(application) {
+abstract class BaseMediaStoreViewModel<T : Model>(
+    application: Application, private val browseTree: BrowseTree,
+    val itemFactory: ModelSupplier<T>, val sourceConst: String
+) : AndroidViewModel(application) {
 
     protected val data = MutableLiveData<List<T>>()
     val items: LiveData<List<T>> get() = data
@@ -47,15 +51,19 @@ abstract class BaseMediaStoreViewModel<T>(application: Application) : AndroidVie
      */
     @CallSuper
     open fun init(vararg params: Any?) {
-        observer.onChange(false)
-        getApplication<Application>().contentResolver.registerContentObserver(uri, true, observer)
+        loadData()
+//        observer.onChange(false)
+//        getApplication<Application>().contentResolver.registerContentObserver(uri, true, observer)
     }
 
 
     private fun loadData() {
         viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
+            /*val result = withContext(Dispatchers.IO) {
                 repository.loadData(uri, projection, selection, selectionArgs, sortOrder)
+            }*/
+            val result = browseTree[sourceConst]!!.map {
+                itemFactory.get(it)
             }
             deliverResult(result)
         }
@@ -63,7 +71,7 @@ abstract class BaseMediaStoreViewModel<T>(application: Application) : AndroidVie
 
     override fun onCleared() {
         super.onCleared()
-        getApplication<Application>().contentResolver.unregisterContentObserver(observer)
+//        getApplication<Application>().contentResolver.unregisterContentObserver(observer)
     }
 
 

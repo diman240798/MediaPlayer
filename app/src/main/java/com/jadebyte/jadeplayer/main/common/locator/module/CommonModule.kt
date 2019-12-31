@@ -9,6 +9,8 @@ import com.jadebyte.jadeplayer.main.navigation.NavViewModel
 import com.jadebyte.jadeplayer.main.playback.MediaSessionConnection
 import com.jadebyte.jadeplayer.main.playback.PlaybackService
 import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
+import com.jadebyte.jadeplayer.main.playback.mediasource.BasicMediaStoreSource
+import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 import com.jadebyte.jadeplayer.main.search.SearchViewModel
 import com.jadebyte.jadeplayer.main.songs.SongsMenuBottomSheetDialogFragmentViewModel
 import com.jadebyte.jadeplayer.main.web.WebFragmentViewModel
@@ -30,6 +32,9 @@ val commonModule = module {
             get()
         )
     }
+    single { BasicMediaStoreSource(get()) }
+    single { BrowseTree(get()) }
+
     viewModel { NavViewModel(get()) }
     viewModel { PlaybackViewModel(get(), get(), get()) }
     viewModel { SearchViewModel(get()) }

@@ -18,6 +18,7 @@ import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.utils.UriFileUtils
 import com.jadebyte.jadeplayer.main.explore.RecentlyPlayed
 import com.jadebyte.jadeplayer.main.playback.*
+import com.jadebyte.jadeplayer.main.playback.mediasource.NOTIFICATION_LARGE_ICON_SIZE
 import kotlinx.coroutines.launch
 
 class MediaControllerCallback(private val playbackService: PlaybackService) : MediaControllerCompat.Callback() {
@@ -150,7 +151,10 @@ class MediaControllerCallback(private val playbackService: PlaybackService) : Me
 
 
     private inner class NotificationTarget :
-        CustomTarget<Bitmap>(NOTIFICATION_LARGE_ICON_SIZE, NOTIFICATION_LARGE_ICON_SIZE) {
+        CustomTarget<Bitmap>(
+            NOTIFICATION_LARGE_ICON_SIZE,
+            NOTIFICATION_LARGE_ICON_SIZE
+        ) {
 
         override fun onStart() {
             largeBitmap = null
