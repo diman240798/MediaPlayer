@@ -89,6 +89,6 @@ class AlbumSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickList
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {
-        playbackViewModel.playAlbum(album, items[position].id.toString())
+        playbackViewModel.playAlbum(album, items[position].id)
     }
 }

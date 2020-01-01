@@ -42,7 +42,6 @@ import org.koin.android.ext.android.inject
 class PlaybackService : MediaBrowserServiceCompat() {
     internal lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
     private lateinit var packageValidator: PackageValidator
-    private val mediaSource: BasicMediaStoreSource by inject()
     internal lateinit var mediaSession: MediaSessionCompat
     internal lateinit var mediaController: MediaControllerCompat
     internal lateinit var notificationManager: NotificationManagerCompat
@@ -50,8 +49,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
     private lateinit var mediaSessionConnector: MediaSessionConnector
     internal lateinit var recentRepo: RecentlyPlayedRepository
 
-    // This must be `by lazy` because the source won't initially be ready.
-    // See [onLoadChildren] to see where it's accessed (and first constructed)
+    private val mediaSource: BasicMediaStoreSource by inject()
     private val browseTree: BrowseTree  by inject()
 
     private val serviceJob = SupervisorJob()
@@ -97,9 +95,6 @@ class PlaybackService : MediaBrowserServiceCompat() {
 
         // The media library is built from the MediaStore. We'll create the source here, and then use
         // a suspend function to perform the query and initialization off the main thread
-
-        mediaSource.load()
-        browseTree.load(this)
 
         serviceScope.launch {
             // ExoPlayer will manage the MediaSession for us.
