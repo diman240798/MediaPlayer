@@ -21,10 +21,11 @@ import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
 import com.jadebyte.jadeplayer.main.songs.Song
 import kotlinx.android.synthetic.main.fragment_genre_songs.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class GenreSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
-    private lateinit var viewModel: GenreSongsViewModel
+    private val viewModel: GenreSongsViewModel by sharedViewModel()
     private lateinit var genre: Genre
     private var items = emptyList<Song>()
 
@@ -33,8 +34,7 @@ class GenreSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickList
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         genre = arguments!!.getParcelable("genre")!!
-        viewModel = ViewModelProviders.of(this)[GenreSongsViewModel::class.java]
-        viewModel.init(genre.id.toString())
+        viewModel.init(genre.name)
     }
 
     override fun onCreateView(

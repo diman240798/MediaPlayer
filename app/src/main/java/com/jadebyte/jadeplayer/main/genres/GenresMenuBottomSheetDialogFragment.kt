@@ -50,12 +50,13 @@ class GenresMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun addToPlayList() {
-        val uri = MediaStore.Audio.Genres.Members.getContentUri("external", genre.id)
+      // TODO: FIX
+        /*  val uri = MediaStore.Audio.Genres.Members.getContentUri("external", genre.id)
         val action = GenresMenuBottomSheetDialogFragmentDirections
             .actionGenresMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(songsUri = uri.toString())
         val navOptions = NavOptions.Builder().setPopUpTo(popUpTo, false).build()
 
-        findNavController().navigate(action, navOptions)
+        findNavController().navigate(action, navOptions)*/
     }
 
     private fun share() {

@@ -23,18 +23,18 @@ import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import kotlinx.android.synthetic.main.fragment_genres.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
 
 class GenresFragment : BaseFragment(), OnItemClickListener {
 
     private var items: List<Genre> = emptyList()
-    private lateinit var viewModel: GenresViewModel
+    private val viewModel: GenresViewModel by sharedViewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this)[GenresViewModel::class.java]
     }
 
     override fun onCreateView(

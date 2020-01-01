@@ -20,15 +20,15 @@ import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_playlist.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
 
     private var items: List<Playlist> = emptyList()
-    private lateinit var viewModel: PlaylistViewModel
+    private val viewModel: PlaylistViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this)[PlaylistViewModel::class.java]
     }
 
     override fun onCreateView(

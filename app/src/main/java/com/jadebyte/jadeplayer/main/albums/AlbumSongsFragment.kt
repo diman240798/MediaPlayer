@@ -26,7 +26,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class AlbumSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
 
-    private lateinit var viewModel: AlbumSongsViewModel
+    private val viewModel: AlbumSongsViewModel by sharedViewModel()
     private val playbackViewModel: PlaybackViewModel by sharedViewModel()
     private lateinit var album: Album
     private var items = emptyList<Song>()
@@ -36,8 +36,7 @@ class AlbumSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickList
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         album = arguments!!.getParcelable("album")!!
-        viewModel = ViewModelProviders.of(this)[AlbumSongsViewModel::class.java]
-        viewModel.init(album.id.toString())
+        viewModel.init(album.id)
 
     }
 

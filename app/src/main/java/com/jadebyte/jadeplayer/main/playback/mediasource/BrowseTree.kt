@@ -4,12 +4,14 @@
 package com.jadebyte.jadeplayer.main.playback.mediasource
 
 import android.content.Context
+import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaMetadataCompat
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.common.urlEncoded
 import com.jadebyte.jadeplayer.main.common.data.Constants
+import com.jadebyte.jadeplayer.main.genres.Genre
 import com.jadebyte.jadeplayer.main.playback.*
 import java.io.File
 
@@ -69,26 +71,32 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
         val albumsMetadata = MediaMetadataCompat.Builder().apply {
             id = Constants.ALBUMS_ROOT
             title = context.getString(R.string.albums)
-            albumArtUri = Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_album)
+            albumArtUri =
+                Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_album)
         }.build()
 
 
         val artistsMetadata = MediaMetadataCompat.Builder().apply {
             id = Constants.ARTISTS_ROOT
             title = context.getString(R.string.artists)
-            artist = Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_microphone)
+            artist =
+                Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_microphone)
         }.build()
 
-        val foldersMetadata = MediaMetadataCompat.Builder().apply { // make able to play folder???
+        val foldersMetadata = MediaMetadataCompat.Builder().apply {
+            // make able to play folder???
             id = Constants.FOLDERS_ROOT
             title = context.getString(R.string.folders)
-            artist = Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_folder)
+            artist =
+                Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_folder)
         }.build()
 
-        val genresMetadata = MediaMetadataCompat.Builder().apply { // make able to play folder???
+        val genresMetadata = MediaMetadataCompat.Builder().apply {
+            // make able to play folder???
             id = Constants.GENRES_ROOT
             title = context.getString(R.string.genres)
-            artist = Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_album)
+            artist =
+                Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_album)
         }.build()
 
 
@@ -118,10 +126,34 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
             foldersChildren += it
 
 
-            val genre = it.genre.urlEncoded
-            val genresChildren = mediaIdToChildren[genre] ?: buildGenresRoot(it)
-            genresChildren += it
+            val songId = it.id?.toInt()
+            val genre = songId?.let { getGenreForSongBySongId(context, songId) }
+            genre?.let { genre ->
+                val genresChildren = mediaIdToChildren[genre.name] ?: buildGenresRoot(it, genre)
+                genresChildren += it
+            }
         }
+    }
+
+    private val genresProjection = arrayOf(
+        MediaStore.Audio.Genres.NAME,
+        MediaStore.Audio.Genres._ID
+    )
+
+    fun getGenreForSongBySongId(context: Context, songId: Int): Genre? {
+        val uri = MediaStore.Audio.Genres.getContentUriForAudioId("external", songId)
+        var genresCursor = context.contentResolver.query(
+            uri, genresProjection, null, null, null
+        )
+        genresCursor?.use {
+            if (!genresCursor.moveToNext()) return null
+            val id =
+                genresCursor.getString(genresCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID))
+            val name =
+                genresCursor.getString(genresCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME))
+            return Genre(id, name)
+        }
+        return null
     }
 
     /**
@@ -132,8 +164,8 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
      */
     private fun buildAlbumRoot(metadata: MediaMetadataCompat): MutableList<MediaMetadataCompat> {
         val albumMetadata = MediaMetadataCompat.Builder().apply {
-            id = metadata.albumId.urlEncoded
-            title = metadata.album
+            albumId = metadata.albumId
+            album = metadata.album
             artist = metadata.artist
             albumArt = metadata.albumArt
             flag = MediaItem.FLAG_BROWSABLE
@@ -146,7 +178,7 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
 
         // Insert the album's root with an empty list for its children, and return the list.
         return mutableListOf<MediaMetadataCompat>().also {
-            mediaIdToChildren[albumMetadata.id!!] = it
+            mediaIdToChildren[albumMetadata.albumId.urlEncoded] = it
         }
     }
 
@@ -209,12 +241,13 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
      * marking the item as [MediaItem.FLAG_BROWSABLE], since it will have child
      * node(s) AKA at least 1 song.
      */
-    private fun buildGenresRoot(metadata: MediaMetadataCompat): MutableList<MediaMetadataCompat> {
+    private fun buildGenresRoot(
+        metadata: MediaMetadataCompat,
+        genre: Genre
+    ): MutableList<MediaMetadataCompat> {
         val genreMetadata = MediaMetadataCompat.Builder().apply {
-            id = metadata.artist.urlEncoded
-            title = metadata.artist
-            mediaUri = metadata.mediaUri.toString()
-            flag = MediaItem.FLAG_BROWSABLE
+            id = genre.id
+            title = genre.name
         }.build()
 
         // Adds this artist to the 'Artists' category.
@@ -223,9 +256,8 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
         mediaIdToChildren[Constants.GENRES_ROOT] = rootList
 
         // Insert the album's root with an empty list for its children, and return the list.
-        val path = metadata.genre.urlEncoded
         return mutableListOf<MediaMetadataCompat>().also {
-            mediaIdToChildren[path] = it
+            mediaIdToChildren[genre.name] = it
         }
     }
 }

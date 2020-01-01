@@ -18,31 +18,10 @@ class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        if (CloudKeys(preferences).isValid()) {
-        if (true) {
-            goToNextScreen()
-            return
-        }
+        goToNextScreen()
+        return
         setContentView(R.layout.activity_splash)
 
-        /*Firebase.firestore.collection("properties").document("keys").get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val result = task.result!!.toObject(CloudKeys::class.java)
-                result?.let {
-                    preferences.edit {
-                        putString(Constants.acrHost, it.acrHost)
-                        putString(Constants.acrKey, it.acrKey)
-                        putString(Constants.acrKeyFile, it.acrKeyFile)
-                        putString(Constants.acrSecret, it.acrSecret)
-                        putString(Constants.acrSecretFile, it.acrSecretFile)
-                        putString(Constants.lastFmKey, it.lastFmKey)
-                        putString(Constants.spotifyClientId, it.spotifyClientId)
-                        putString(Constants.spotifySecret, it.spotifySecret)
-                    }
-                    goToNextScreen()
-                }
-            }
-        }*/
     }
 
     private fun goToNextScreen() {

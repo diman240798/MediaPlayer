@@ -50,8 +50,7 @@ open class MediaStoreSource(
 
         val results = mutableListOf<MediaMetadataCompat>()
         val cursor =
-            context.contentResolver.query(uri,
-                songsProjection, selection, selectionArgs, sortOrder)
+            context.contentResolver.query(uri, songsProjection, selection, selectionArgs, sortOrder)
         cursor?.use {
             val count = it.count.toLong()
             while (it.moveToNext()) {
