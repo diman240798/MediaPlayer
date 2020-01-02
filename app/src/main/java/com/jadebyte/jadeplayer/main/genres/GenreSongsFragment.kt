@@ -9,22 +9,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
 import com.jadebyte.jadeplayer.BR
 import com.jadebyte.jadeplayer.R
+import com.jadebyte.jadeplayer.common.urlEncoded
 import com.jadebyte.jadeplayer.databinding.FragmentGenreSongsBinding
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
+import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
 import com.jadebyte.jadeplayer.main.songs.Song
 import kotlinx.android.synthetic.main.fragment_genre_songs.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class GenreSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
+    private val playbackViewModel: PlaybackViewModel by sharedViewModel()
     private val viewModel: GenreSongsViewModel by sharedViewModel()
     private lateinit var genre: Genre
     private var items = emptyList<Song>()
@@ -87,6 +89,7 @@ class GenreSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickList
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {
-
+        val genreId = genre.name
+        playbackViewModel.playGenre(genreId, items[position].id)
     }
 }

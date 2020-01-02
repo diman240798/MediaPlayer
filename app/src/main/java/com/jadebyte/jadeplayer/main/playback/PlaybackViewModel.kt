@@ -116,15 +116,19 @@ class PlaybackViewModel(
         }
     }
 
-    fun playFolder(folderPath: String, playId: String = Constants.PLAY_FIRST) {
+    fun playFolder(folderPath: String, playId: String = Constants.PLAY_FIRST) = playMedia(folderPath, playId)
+    fun playPlaylist(playlistId: String, playId: String = Constants.PLAY_FIRST) = playMedia(playlistId, playId)
+    fun playGenre(playlistId: String, playId: String = Constants.PLAY_FIRST) = playMedia(playlistId, playId)
+
+    private fun playMedia(listSourcePath: String, playStartId: String) {
         val parentId = lastParendId
         val list = mediaItems.value
-        if (parentId == folderPath && list != null) {
-            playMediaId(getItemFrmPlayId(playId, list)?.id)
+        if (parentId == listSourcePath && list != null) {
+            playMediaId(getItemFrmPlayId(playStartId, list)?.id)
         } else {
-            playMediaAfterLoad = playId
+            playMediaAfterLoad = playStartId
             mediaSessionConnection.unsubscribe(parentId, subscriptionCallback)
-            mediaSessionConnection.subscribe(folderPath, subscriptionCallback)
+            mediaSessionConnection.subscribe(listSourcePath, subscriptionCallback)
         }
     }
 

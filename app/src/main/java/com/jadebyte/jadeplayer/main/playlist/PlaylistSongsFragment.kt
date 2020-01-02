@@ -20,6 +20,7 @@ import com.jadebyte.jadeplayer.databinding.FragmentPlaylistSongsBinding
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
+import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
 import com.jadebyte.jadeplayer.main.songs.Song
 import kotlinx.android.synthetic.main.fragment_playlist_songs.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -28,7 +29,7 @@ class PlaylistSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickL
 
     private lateinit var binding: FragmentPlaylistSongsBinding
     private val songsViewModel: PlaylistSongsViewModel by sharedViewModel()
-    private val playlistViewModel: PlaylistViewModel by sharedViewModel()
+    private val playbackViewModel: PlaybackViewModel by sharedViewModel()
     private lateinit var playlist: Playlist
     private var items = emptyList<Song>()
 
@@ -38,8 +39,6 @@ class PlaylistSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickL
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         playlist = arguments!!.getParcelable("playlist")!!
         songsViewModel.init(playlist.id.urlEncoded)
-        playlistViewModel.init(playlist.id.urlEncoded)
-
     }
 
     override fun onCreateView(
@@ -63,14 +62,6 @@ class PlaylistSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickL
     private fun observeViewModel() {
         songsViewModel.items.observe(viewLifecycleOwner, Observer {
             updateViews(it)
-        })
-        playlistViewModel.items.observe(viewLifecycleOwner, Observer {
-            if (it.isEmpty()) {
-                findNavController().popBackStack()
-            } else {
-                playlist = it.first()
-                binding.playlist = Playlist(playlist)
-            }
         })
     }
 
@@ -101,7 +92,8 @@ class PlaylistSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickL
 
 
     override fun onItemClick(position: Int, sharableView: View?) {
-
+        val playListId = playlist.id.urlEncoded
+        playbackViewModel.playPlaylist(playListId, items[position].id)
     }
 
 
