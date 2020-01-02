@@ -14,14 +14,12 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
-    private val mediaSource: BasicMediaStoreSource by inject()
     private val browseTree: BrowseTree by inject()
     private val playlistMediaSource: PlaylistMediaSource by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playlistMediaSource.load(this)
-        mediaSource.load()
         browseTree.load(this)
         setContentView(R.layout.activity_main)
     }

@@ -61,6 +61,11 @@ class ExploreFragment : Fragment(), OnItemClickListener {
     @Suppress("UNCHECKED_CAST")
     private fun observeViewModel() {
         // We want to load the random albums before the recently played
+        if (playedList.isEmpty()) {
+            viewModel.inital.observeOnce(viewLifecycleOwner, Observer {
+                (playedRV.adapter as BaseAdapter<RecentlyPlayed>).updateItems(it)
+            })
+        }
 
         fun observePlayed() {
             viewModel.recentlyPlayed.observe(viewLifecycleOwner, Observer {

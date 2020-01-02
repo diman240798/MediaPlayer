@@ -50,7 +50,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
     internal lateinit var recentRepo: RecentlyPlayedRepository
 
     private val mediaSource: BasicMediaStoreSource by inject()
-    private val browseTree: BrowseTree  by inject()
+    private val browseTree: BrowseTree by inject()
 
     private val serviceJob = SupervisorJob()
     internal val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -113,9 +113,11 @@ class PlaybackService : MediaBrowserServiceCompat() {
                 it.setPlaybackPreparer(playbackPreparer)
                 it.setQueueNavigator(QueueNavigator(mediaSession))
                 it.setQueueEditor(QueueEditor(browseTree))
-                it.mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-                        or MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS
-                        or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+                it.mediaSession.setFlags(
+                    MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
+                            or MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS
+                            or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+                )
             }
         }
 
@@ -133,37 +135,22 @@ class PlaybackService : MediaBrowserServiceCompat() {
 
     // Returns a list of [MediaItem]s that match the given search query
     override fun onSearch(query: String, extras: Bundle?, result: Result<List<MediaItem>>) {
-        val resultSent = mediaSource.whenReady { initialized ->
-            if (initialized) {
-                val resultList =
-                    mediaSource.search(query, extras ?: Bundle.EMPTY)
-                        .map { MediaItem(it.description, it.flag) }
-                result.sendResult(resultList)
-            }
-        }
-        if (!resultSent) {
+
+        val resultList =
+            browseTree.search(query, extras ?: Bundle.EMPTY)
+                .map { MediaItem(it.description, it.flag) }
+        result.sendResult(resultList)
+        if (resultList.isEmpty()) {
             result.detach()
         }
     }
 
     override fun onLoadChildren(parentId: String, result: Result<List<MediaItem>>) {
-        // If the media source is ready, the results will be set synchronously here.
-        val resultsSent = mediaSource.whenReady { initialized ->
-            if (initialized) {
-                val children = browseTree[parentId]?.map {
-                    MediaItem(it.description, it.flag)
-                }
-                result.sendResult(children)
-            } else {
-                mediaSession.sendSessionEvent(Constants.NETWORK_FAILURE, null)
-                result.sendResult(null)
-            }
+        val children = browseTree[parentId]?.map {
+            MediaItem(it.description, it.flag)
         }
-
-        // If the results are not ready, the service must "detach" the results before
-        // the method returns. After the source is ready, the lambda above will run,
-        // and the caller will be notified that the results are ready.
-        if (!resultsSent) {
+        result.sendResult(children)
+        if (children?.isEmpty() ?: true) {
             result.detach()
         }
 

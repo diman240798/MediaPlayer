@@ -4,6 +4,7 @@
 package com.jadebyte.jadeplayer.main.playback.mediasource
 
 import android.content.Context
+import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaMetadataCompat
@@ -14,6 +15,12 @@ import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.genres.Genre
 import com.jadebyte.jadeplayer.main.playback.*
 import com.jadebyte.jadeplayer.main.playlist.Playlist
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.launch
 import java.io.File
 
 
@@ -46,7 +53,7 @@ class BrowseTree(
 ) {
     var currentMediaSource: ConcatenatingMediaSource? = null
 
-    private val mediaIdToChildren = mutableMapOf<String, MutableList<MediaMetadataCompat>>()
+    val mediaIdToChildren = mutableMapOf<String, MutableList<MediaMetadataCompat>>()
 
     operator fun get(parentId: String) = mediaIdToChildren[parentId]
 
@@ -124,39 +131,44 @@ class BrowseTree(
         }
 
         mediaIdToChildren[Constants.BROWSABLE_ROOT] = rootList
-        musicSource.forEach {
-            val albumMediaId = it.albumId.urlEncoded
-            val albumChildren = mediaIdToChildren[albumMediaId] ?: buildAlbumRoot(it)
-            albumChildren += it
+        val serviceJob = SupervisorJob()
+        val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
+
+        serviceScope.launch {
+            musicSource.load().collect {
+                val albumMediaId = it.albumId.urlEncoded
+                val albumChildren = mediaIdToChildren[albumMediaId] ?: buildAlbumRoot(it)
+                albumChildren += it
 
 
-            val artistMediaId = it.artist.urlEncoded
-            val artistChildren = mediaIdToChildren[artistMediaId] ?: buildArtistRoot(it)
-            artistChildren += it
+                val artistMediaId = it.artist.urlEncoded
+                val artistChildren = mediaIdToChildren[artistMediaId] ?: buildArtistRoot(it)
+                artistChildren += it
 
-            val songsChildren = mediaIdToChildren[Constants.SONGS_ROOT] ?: mutableListOf()
-            songsChildren += it
-            mediaIdToChildren[Constants.SONGS_ROOT] = songsChildren
+                val songsChildren = mediaIdToChildren[Constants.SONGS_ROOT] ?: mutableListOf()
+                songsChildren += it
+                mediaIdToChildren[Constants.SONGS_ROOT] = songsChildren
 
-            val path = File(it.mediaUri.toString()).parent
-            val foldersChildren = mediaIdToChildren[path] ?: buildFoldersRoot(it)
-            foldersChildren += it
+                val path = File(it.mediaUri.toString()).parent
+                val foldersChildren = mediaIdToChildren[path] ?: buildFoldersRoot(it)
+                foldersChildren += it
 
 
-            val songId = it.id?.toInt()
-            val genre = songId?.let { getGenreForSongBySongId(context, songId) }
-            genre?.let { genre ->
-                val genresChildren = mediaIdToChildren[genre.name] ?: buildGenresRoot(it, genre)
-                genresChildren += it
-            }
+                val songId = it.id?.toInt()
+                val genre = songId?.let { getGenreForSongBySongId(context, songId) }
+                genre?.let { genre ->
+                    val genresChildren = mediaIdToChildren[genre.name] ?: buildGenresRoot(it, genre)
+                    genresChildren += it
+                }
 
-            it.id?.let {songId ->
-                playlistMediaSource.playlists.forEach { playlist ->
-                    if (playlist.songIds.contains(songId)) {
-                        val url = playlist.id.urlEncoded
-                        val playlistSongs = mediaIdToChildren[url] ?: mutableListOf()
-                        playlistSongs += it
-                        mediaIdToChildren[url] = playlistSongs
+                it.id?.let {songId ->
+                    playlistMediaSource.playlists.forEach { playlist ->
+                        if (playlist.songIds.contains(songId)) {
+                            val url = playlist.id.urlEncoded
+                            val playlistSongs = mediaIdToChildren[url] ?: mutableListOf()
+                            playlistSongs += it
+                            mediaIdToChildren[url] = playlistSongs
+                        }
                     }
                 }
             }
@@ -286,6 +298,66 @@ class BrowseTree(
         // Insert the album's root with an empty list for its children, and return the list.
         return mutableListOf<MediaMetadataCompat>().also {
             mediaIdToChildren[genre.name] = it
+        }
+    }
+
+    fun search(query: String, bundle: Bundle): List<MediaMetadataCompat> {
+        // First attempt to search with the "focus" that's provided in the bundle
+        val focusSearchResult = when (bundle[MediaStore.EXTRA_MEDIA_FOCUS]) {
+            MediaStore.Audio.Genres.ENTRY_CONTENT_TYPE -> {
+                // For a Genre focused search, only genre is set.
+                val genre = bundle[MediaStore.EXTRA_MEDIA_GENRE]
+                mediaIdToChildren[Constants.SONGS_ROOT]!!.filter {
+                    it.genre == genre
+                }
+            }
+            MediaStore.Audio.Artists.ENTRY_CONTENT_TYPE -> {
+                // For an Artist focused search, only the artist is set.
+                val artist = bundle[MediaStore.EXTRA_MEDIA_ARTIST]
+                mediaIdToChildren[Constants.SONGS_ROOT]!!.filter {
+                    (it.artist == artist || it.albumArtist == artist)
+                }
+            }
+            MediaStore.Audio.Albums.ENTRY_CONTENT_TYPE -> {
+                // For an Album focused search, album and artist are set.
+                val artist = bundle[MediaStore.EXTRA_MEDIA_ARTIST]
+                val album = bundle[MediaStore.EXTRA_MEDIA_ALBUM]
+                mediaIdToChildren[Constants.SONGS_ROOT]!!.filter {
+                    (it.artist == artist || it.albumArtist == artist) && it.album == album
+                }
+            }
+            MediaStore.Audio.Media.ENTRY_CONTENT_TYPE -> {
+                // For a Song (aka Media) focused search, title, album, and artist are set.
+                val title = bundle[MediaStore.EXTRA_MEDIA_TITLE]
+                val album = bundle[MediaStore.EXTRA_MEDIA_ALBUM]
+                val artist = bundle[MediaStore.EXTRA_MEDIA_ARTIST]
+                mediaIdToChildren[Constants.SONGS_ROOT]!!.filter {
+                    (it.artist == artist || it.albumArtist == artist) && it.album == album
+                            && it.title == title
+                }
+            }
+            else -> {
+                // There isn't a focus, so no results yet.
+                emptyList()
+            }
+        }
+
+        // Check if we found any results from the focused search
+        if (focusSearchResult.isNotEmpty()) return focusSearchResult
+
+        // The query can be null if the user asked to "play music", or something similar.
+        // Let's just return them all, shuffled as something to play
+        if (query.isBlank()) return listOf()
+
+        // Let's check check the query against a few fields
+        return mediaIdToChildren[Constants.SONGS_ROOT]!!.filter {
+            it.title?.contains(query) ?: false
+                    || it.genre?.contains(query) ?: false
+                    || it.artist?.contains(query) ?: false
+                    || it.album?.contains(query) ?: false
+                    || it.author?.contains(query) ?: false
+                    || it.composer?.contains(query) ?: false
+                    || it.composer?.contains(query) ?: false
         }
     }
 }

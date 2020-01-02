@@ -30,7 +30,7 @@ class PlaybackPreparer(
     private val exoPlayer: ExoPlayer,
     private val dataSourceFactory: DataSource.Factory,
     private val preferences: SharedPreferences
-    ) : MediaSessionConnector.PlaybackPreparer {
+) : MediaSessionConnector.PlaybackPreparer {
 
     /**
      *  Handles callbacks to both [MediaSessionCompat.Callback.onPrepareFromSearch] *AND*
@@ -43,12 +43,10 @@ class PlaybackPreparer(
      *  - Play music on Jade Player
      */
     override fun onPrepareFromSearch(query: String?, playWhenReady: Boolean, extras: Bundle?) {
-        browseTree.musicSource.whenReady {
-            val metadataList = browseTree.musicSource.search(query ?: "", extras ?: Bundle.EMPTY)
-            if (metadataList.isNotEmpty()) {
-                val mediaSource = metadataList.toMediaSource(dataSourceFactory)
-                exoPlayer.prepare(mediaSource)
-            }
+        val metadataList = browseTree.search(query ?: "", extras ?: Bundle.EMPTY)
+        if (metadataList.isNotEmpty()) {
+            val mediaSource = metadataList.toMediaSource(dataSourceFactory)
+            exoPlayer.prepare(mediaSource)
         }
     }
 
@@ -74,37 +72,38 @@ class PlaybackPreparer(
      *  This is done with expectation that "play" is just "prepare" + "play".
      */
     override fun onPrepareFromMediaId(mediaId: String?, playWhenReady: Boolean, extras: Bundle?) {
-        browseTree.musicSource.whenReady { _ ->
-            val itemToPlay = browseTree.musicSource.find { it.id == mediaId }
-            if (itemToPlay == null) {
-                Timber.w("onPrepareFromMediaId: Song with id $mediaId not found")
-                return@whenReady
-            }
 
-            val lastParentId: String? = extras?.getString("uri")
-
-            val metadataList = if (lastParentId != null) {
-                browseTree[lastParentId]
-            } else {
-                browseTree.musicSource.toList()
-            }
-            val mediaSource = metadataList!!.toMediaSource(dataSourceFactory)
-
-            val positionMs = if (itemToPlay.id == preferences.getString(Constants.LAST_ID, null)) {
-                preferences.getLong(Constants.LAST_POSITION, 0)
-            } else {
-                0
-            }
-            browseTree.currentMediaSource = mediaSource
-
-            // Since the playlist was probably based on some ordering (such as tracks
-            // on an album), find which window index to play first so that the song the
-            // user actually wants to hear plays first.
-            val initialWindowIndex = metadataList.indexOf(itemToPlay)
-            exoPlayer.playWhenReady = playWhenReady
-            exoPlayer.prepare(mediaSource)
-            exoPlayer.seekTo(initialWindowIndex, positionMs)
+        val itemToPlay =
+            browseTree.mediaIdToChildren[Constants.SONGS_ROOT]?.find { it.id == mediaId }
+        if (itemToPlay == null) {
+            Timber.w("onPrepareFromMediaId: Song with id $mediaId not found")
+            return
         }
+
+        val lastParentId: String? = extras?.getString("uri")
+
+        val metadataList = if (lastParentId != null) {
+            browseTree[lastParentId]
+        } else {
+            browseTree.mediaIdToChildren[Constants.SONGS_ROOT]
+        }
+        val mediaSource = metadataList!!.toMediaSource(dataSourceFactory)
+
+        val positionMs = if (itemToPlay.id == preferences.getString(Constants.LAST_ID, null)) {
+            preferences.getLong(Constants.LAST_POSITION, 0)
+        } else {
+            0
+        }
+        browseTree.currentMediaSource = mediaSource
+
+        // Since the playlist was probably based on some ordering (such as tracks
+        // on an album), find which window index to play first so that the song the
+        // user actually wants to hear plays first.
+        val initialWindowIndex = metadataList.indexOf(itemToPlay)
+        exoPlayer.playWhenReady = playWhenReady
+        exoPlayer.prepare(mediaSource)
+        exoPlayer.seekTo(initialWindowIndex, positionMs)
+
     }
 
     /**
@@ -114,7 +113,7 @@ class PlaybackPreparer(
      * @return a [List] of [MediaMetadataCompat] objects representing a playlist
      */
     private fun buildPlaylist(itemToPlay: MediaMetadataCompat): List<MediaMetadataCompat> =
-        browseTree.musicSource.filter { it.album == itemToPlay.album }.sortedBy { it.trackNumber }
+        browseTree.mediaIdToChildren[Constants.SONGS_ROOT]!!.filter { it.album == itemToPlay.album }.sortedBy { it.trackNumber }
 
 
     override fun onPrepareFromUri(uri: Uri?, playWhenReady: Boolean, extras: Bundle?) = Unit

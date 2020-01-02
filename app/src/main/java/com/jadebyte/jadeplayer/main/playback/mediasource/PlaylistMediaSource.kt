@@ -30,8 +30,7 @@ class PlaylistMediaSource {
                 val projection = arrayOf(MediaStore.Audio.Playlists.Members.AUDIO_ID)
                 val selection = "${MediaStore.Audio.Media.IS_MUSIC} != ?"
                 val selectionArgs = arrayOf(id.toString())
-                val cursor =
-                    context.contentResolver.query(uri, projection, selection, selectionArgs, null)
+                val cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, null)
 
                 val songIds = mutableListOf<String>()
                 cursor?.use {

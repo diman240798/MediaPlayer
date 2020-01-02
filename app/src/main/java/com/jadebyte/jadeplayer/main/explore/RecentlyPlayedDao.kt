@@ -18,6 +18,9 @@ interface RecentlyPlayedDao {
     @Query("SELECT * FROM recently_played_table ORDER BY entryDate DESC")
     fun fetchAll(): LiveData<List<RecentlyPlayed>>
 
+    @Query("SELECT * FROM recently_played_table ORDER BY entryDate DESC")
+    fun fetchAllNow(): List<RecentlyPlayed>
+
     @Query("SELECT * FROM recently_played_table ORDER BY entryDate DESC LIMIT 1")
     suspend fun fetchFirst(): RecentlyPlayed?
 
