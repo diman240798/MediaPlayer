@@ -206,7 +206,12 @@ class PlaybackViewModel(
     }
 
     fun removeFromQueue() {
-        currentItem.value?.description?.let { mediaSessionConnection.removeFromQueue(it) }
+        currentItem.value?.description?.let {
+            mediaSessionConnection.removeFromQueue(it)
+            val items = _mediaItems.value?.toMutableList()
+            items!!.remove(currentItem.value!!)
+            _mediaItems.value = items.toList()
+        }
     }
 
 
