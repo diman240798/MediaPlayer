@@ -15,18 +15,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
 import com.jadebyte.jadeplayer.BR
 import com.jadebyte.jadeplayer.R
+import com.jadebyte.jadeplayer.common.urlEncoded
 import com.jadebyte.jadeplayer.databinding.FragmentPlaylistSongsBinding
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
 import com.jadebyte.jadeplayer.main.songs.Song
 import kotlinx.android.synthetic.main.fragment_playlist_songs.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PlaylistSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
 
     private lateinit var binding: FragmentPlaylistSongsBinding
-    private lateinit var songsViewModel: PlaylistSongsViewModel
-    private lateinit var playlistViewModel: PlaylistViewModel
+    private val songsViewModel: PlaylistSongsViewModel by sharedViewModel()
+    private val playlistViewModel: PlaylistViewModel by sharedViewModel()
     private lateinit var playlist: Playlist
     private var items = emptyList<Song>()
 
@@ -35,10 +37,8 @@ class PlaylistSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickL
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         playlist = arguments!!.getParcelable("playlist")!!
-        songsViewModel = ViewModelProviders.of(this)[PlaylistSongsViewModel::class.java]
-        playlistViewModel = ViewModelProviders.of(this)[PlaylistViewModel::class.java]
-        songsViewModel.init(playlist.id.toString())
-        playlistViewModel.init(playlist.id.toString())
+        songsViewModel.init(playlist.id.urlEncoded)
+        playlistViewModel.init(playlist.id.urlEncoded)
 
     }
 

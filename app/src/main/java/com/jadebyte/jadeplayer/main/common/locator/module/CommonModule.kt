@@ -18,6 +18,7 @@ import com.jadebyte.jadeplayer.main.playback.PlaybackService
 import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
 import com.jadebyte.jadeplayer.main.playback.mediasource.BasicMediaStoreSource
 import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
+import com.jadebyte.jadeplayer.main.playback.mediasource.PlaylistMediaSource
 import com.jadebyte.jadeplayer.main.playlist.AddSongsToPlaylistsViewModel
 import com.jadebyte.jadeplayer.main.playlist.PlaylistSongsEditorViewModel
 import com.jadebyte.jadeplayer.main.playlist.PlaylistSongsViewModel
@@ -53,8 +54,9 @@ val commonModule = module {
     viewModel { WebFragmentViewModel() }
 
     // metadata
+    single { PlaylistMediaSource() }
     single { BasicMediaStoreSource(get()) }
-    single { BrowseTree(get()) }
+    single { BrowseTree(get(), get()) }
     // metadata VMs
     viewModel { SongsViewModel(get(), get()) }
     viewModel { GenresViewModel(get(), get()) }

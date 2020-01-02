@@ -13,6 +13,7 @@ import com.jadebyte.jadeplayer.common.urlEncoded
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.genres.Genre
 import com.jadebyte.jadeplayer.main.playback.*
+import com.jadebyte.jadeplayer.main.playlist.Playlist
 import java.io.File
 
 
@@ -39,7 +40,10 @@ import java.io.File
  * item list "Album_A", and, finally, `browseTree["Album_A"]` would return "Song_1" and "Song_2". Since those are leaf
  * nodes, requesting `browseTree["Song_1"]` would return null (there aren't any children of it).
  */
-class BrowseTree(var musicSource: BasicMediaStoreSource) {
+class BrowseTree(
+    val musicSource: BasicMediaStoreSource,
+    val playlistMediaSource: PlaylistMediaSource
+) {
     var currentMediaSource: ConcatenatingMediaSource? = null
 
     private val mediaIdToChildren = mutableMapOf<String, MutableList<MediaMetadataCompat>>()
@@ -106,6 +110,19 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
         rootList += foldersMetadata
         rootList += genresMetadata
 
+        val playlistsIds = mutableListOf<String>()
+        playlistMediaSource.playlists.forEach {
+            val playlistMetadata = MediaMetadataCompat.Builder().apply {
+                id=it.id.toString()
+                title=it.name
+                flag = MediaItem.FLAG_BROWSABLE
+            }.build()
+            val playlistsList = mediaIdToChildren[Constants.PLAYLISTS_ROOT] ?: mutableListOf()
+            playlistsList += playlistMetadata
+            mediaIdToChildren[Constants.PLAYLISTS_ROOT] = playlistsList
+            playlistsIds += it.id.toString()
+        }
+
         mediaIdToChildren[Constants.BROWSABLE_ROOT] = rootList
         musicSource.forEach {
             val albumMediaId = it.albumId.urlEncoded
@@ -131,6 +148,17 @@ class BrowseTree(var musicSource: BasicMediaStoreSource) {
             genre?.let { genre ->
                 val genresChildren = mediaIdToChildren[genre.name] ?: buildGenresRoot(it, genre)
                 genresChildren += it
+            }
+
+            it.id?.let {songId ->
+                playlistMediaSource.playlists.forEach { playlist ->
+                    if (playlist.songIds.contains(songId)) {
+                        val url = playlist.id.urlEncoded
+                        val playlistSongs = mediaIdToChildren[url] ?: mutableListOf()
+                        playlistSongs += it
+                        mediaIdToChildren[url] = playlistSongs
+                    }
+                }
             }
         }
     }

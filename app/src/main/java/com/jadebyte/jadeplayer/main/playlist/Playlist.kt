@@ -9,6 +9,8 @@ import android.support.v4.media.MediaMetadataCompat
 import com.jadebyte.jadeplayer.common.dp
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.data.Model
+import com.jadebyte.jadeplayer.main.playback.id
+import com.jadebyte.jadeplayer.main.playback.title
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -19,9 +21,10 @@ import kotlinx.android.parcel.Parcelize
 data class Playlist(
     override val id: Long,
     var name: String,
-    val modified: Long,
+    val modified: Long = 0,
     var songsCount: Int = 0,
-    var selected: Boolean = false
+    var selected: Boolean = false,
+    var songIds : MutableList<String> = mutableListOf()
 ) : Model(),
     Parcelable {
 
@@ -32,9 +35,8 @@ data class Playlist(
     )
 
     constructor(data: MediaMetadataCompat) : this(
-        id = data.getLong(MediaStore.Audio.Playlists._ID),
-        name = data.getString(MediaStore.Audio.Playlists.NAME),
-        modified = data.getLong(MediaStore.Audio.Playlists.DATE_MODIFIED)
+        id = data.id?.toLong() ?: 0,
+        name = data.title ?: ""
     )
 
     constructor(p: Playlist) : this(id = p.id, name = p.name, modified = p.modified, songsCount = p.songsCount)

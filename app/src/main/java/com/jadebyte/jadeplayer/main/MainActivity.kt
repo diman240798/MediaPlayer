@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.playback.mediasource.BasicMediaStoreSource
 import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
+import com.jadebyte.jadeplayer.main.playback.mediasource.PlaylistMediaSource
 import org.koin.android.ext.android.inject
 
 
@@ -15,9 +16,11 @@ class MainActivity : AppCompatActivity() {
 
     private val mediaSource: BasicMediaStoreSource by inject()
     private val browseTree: BrowseTree by inject()
+    private val playlistMediaSource: PlaylistMediaSource by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        playlistMediaSource.load(this)
         mediaSource.load()
         browseTree.load(this)
         setContentView(R.layout.activity_main)
