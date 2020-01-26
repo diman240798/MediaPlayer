@@ -22,28 +22,6 @@ open class PlaylistViewModel(
     application: Application, browseTree: BrowseTree
 ) : BaseMediaStoreViewModel<Playlist>(application, browseTree, PlaylistSupplier()) {
 
-    override var repository: MediaStoreRepository<Playlist> = PlaylistRepository(application)
-
-    override var sortOrder: String? =
-        "${MediaStore.Audio.Playlists.DATE_MODIFIED} COLLATE NOCASE DESC"
-
-    override var uri: Uri = basePlaylistUri
-
-    override var projection: Array<String>? = basePlaylistProjection
-
-
-    @HunterDebug
-    override fun deliverResult(items: List<Playlist>) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                items.forEach {
-                    it.songsCount = (repository as PlaylistRepository).fetchSongCount(it.id)
-                }
-                if (data.value != items) data.postValue(items)
-            }
-        }
-    }
-
     fun reverseSelection(index: Int): Boolean {
         return data.value?.let {
             if (it.size > index) {

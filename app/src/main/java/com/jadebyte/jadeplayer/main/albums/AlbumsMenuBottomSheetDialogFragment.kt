@@ -14,8 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
 import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
-import com.jadebyte.jadeplayer.main.songs.basicSongsSelection
-import com.jadebyte.jadeplayer.main.songs.basicSongsSelectionArg
+import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelection
+import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelectionArg
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 

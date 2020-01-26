@@ -9,11 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
+import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelection
+import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelectionArg
 import com.jadebyte.jadeplayer.main.web.WebFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 

@@ -4,6 +4,7 @@ import android.support.v4.media.MediaMetadataCompat
 import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.artists.Artist
 import com.jadebyte.jadeplayer.main.common.data.Model
+import com.jadebyte.jadeplayer.main.folders.Folder
 import com.jadebyte.jadeplayer.main.genres.Genre
 import com.jadebyte.jadeplayer.main.playlist.Playlist
 import com.jadebyte.jadeplayer.main.songs.Song
@@ -30,4 +31,8 @@ class ArtistSupplier : ModelSupplier<Artist> {
 
 class PlaylistSupplier : ModelSupplier<Playlist> {
     override fun get(data: MediaMetadataCompat): Playlist = Playlist(data)
+}
+
+class FolderSupplier : ModelSupplier<Folder> {
+    override fun get(data: MediaMetadataCompat): Folder = Folder(data)
 }

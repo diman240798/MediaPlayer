@@ -13,12 +13,4 @@ import com.jadebyte.jadeplayer.main.songs.baseSongsProjection
 /**
  * Created by Wilberforce on 2019-06-07 at 03:38.
  */
-class PlaylistSongsViewModel(application: Application, browseTree: BrowseTree) : SongsViewModel(application, browseTree) {
-
-    override var repository: MediaStoreRepository<Song> = PlaylistSongsRepository(application)
-
-    override var sortOrder: String? = "${MediaStore.Audio.Media.DATE_ADDED} COLLATE NOCASE ASC"
-
-    override var projection: Array<String>? =
-        listOf(*baseSongsProjection, MediaStore.Audio.Playlists.Members.AUDIO_ID).toTypedArray()
-}
+class PlaylistSongsViewModel(application: Application, browseTree: BrowseTree) : SongsViewModel(application, browseTree)

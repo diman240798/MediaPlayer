@@ -6,7 +6,6 @@ package com.jadebyte.jadeplayer.main.playback
 import android.app.PendingIntent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -24,10 +23,9 @@ import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
 import com.jadebyte.jadeplayer.main.playback.mediasession.MediaControllerCallback
 import com.jadebyte.jadeplayer.main.playback.mediasession.QueueEditor
 import com.jadebyte.jadeplayer.main.playback.mediasession.QueueNavigator
-import com.jadebyte.jadeplayer.main.playback.mediasource.*
-import com.jadebyte.jadeplayer.main.songs.basicSongsOrder
-import com.jadebyte.jadeplayer.main.songs.basicSongsSelection
-import com.jadebyte.jadeplayer.main.songs.basicSongsSelectionArg
+import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
+import com.jadebyte.jadeplayer.main.playback.mediasource.MediaStoreSource
+import com.jadebyte.jadeplayer.main.playback.mediasource.PlaybackPreparer
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 
@@ -49,7 +47,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
     private lateinit var mediaSessionConnector: MediaSessionConnector
     internal lateinit var recentRepo: RecentlyPlayedRepository
 
-    private val mediaSource: BasicMediaStoreSource by inject()
+    private val mediaSource: MediaStoreSource by inject()
     private val browseTree: BrowseTree by inject()
 
     private val serviceJob = SupervisorJob()
@@ -139,9 +137,10 @@ class PlaybackService : MediaBrowserServiceCompat() {
         val resultList =
             browseTree.search(query, extras ?: Bundle.EMPTY)
                 .map { MediaItem(it.description, it.flag) }
-        result.sendResult(resultList)
         if (resultList.isEmpty()) {
             result.detach()
+        } else {
+            result.sendResult(resultList)
         }
     }
 
@@ -149,9 +148,10 @@ class PlaybackService : MediaBrowserServiceCompat() {
         val children = browseTree[parentId]?.map {
             MediaItem(it.description, it.flag)
         }
-        result.sendResult(children)
         if (children?.isEmpty() ?: true) {
             result.detach()
+        } else {
+            result.sendResult(children)
         }
 
     }

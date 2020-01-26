@@ -22,8 +22,6 @@ class ExploreViewModel(application: Application, browseTree: BrowseTree) :
     private val recentlyPlayedRepository: RecentlyPlayedRepository
     val recentlyPlayed: LiveData<List<RecentlyPlayed>>
 
-    override var sortOrder: String? = "RANDOM() LIMIT 5"
-
     init {
         val recentDao = AppRoomDatabase.getDatabase(application).recentDao()
         recentlyPlayedRepository = RecentlyPlayedRepository(recentDao)

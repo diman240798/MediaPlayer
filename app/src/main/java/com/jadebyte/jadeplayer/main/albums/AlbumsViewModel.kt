@@ -16,13 +16,7 @@ import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 open class AlbumsViewModel(application: Application, browseTree: BrowseTree) :
     BaseMediaStoreViewModel<Album>(application, browseTree, AlbumSupplier()) {
 
-    final override var repository: MediaStoreRepository<Album> = AlbumsRepository(application)
 
-    override var sortOrder: String? = "${MediaStore.Audio.Albums.ALBUM} COLLATE NOCASE ASC"
-
-    override var uri: Uri = baseAlbumUri
-
-    final override var projection: Array<String>? = baseAlbumProjection
 
 }
 

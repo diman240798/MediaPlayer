@@ -10,14 +10,16 @@ import com.jadebyte.jadeplayer.main.artists.ArtistAlbumsViewModel
 import com.jadebyte.jadeplayer.main.artists.ArtistsViewModel
 import com.jadebyte.jadeplayer.main.explore.ExploreViewModel
 import com.jadebyte.jadeplayer.main.folders.FolderSongsViewModel
+import com.jadebyte.jadeplayer.main.folders.FoldersViewModel
 import com.jadebyte.jadeplayer.main.genres.GenreSongsViewModel
 import com.jadebyte.jadeplayer.main.genres.GenresViewModel
 import com.jadebyte.jadeplayer.main.navigation.NavViewModel
 import com.jadebyte.jadeplayer.main.playback.MediaSessionConnection
 import com.jadebyte.jadeplayer.main.playback.PlaybackService
 import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
-import com.jadebyte.jadeplayer.main.playback.mediasource.BasicMediaStoreSource
 import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
+import com.jadebyte.jadeplayer.main.playback.mediasource.MediaStoreSource
+import com.jadebyte.jadeplayer.main.playback.mediasource.MediaUpdateNotifier
 import com.jadebyte.jadeplayer.main.playback.mediasource.PlaylistMediaSource
 import com.jadebyte.jadeplayer.main.playlist.AddSongsToPlaylistsViewModel
 import com.jadebyte.jadeplayer.main.playlist.PlaylistSongsEditorViewModel
@@ -49,15 +51,17 @@ val commonModule = module {
     viewModel { NavViewModel(get()) }
     viewModel { PlaybackViewModel(get(), get(), get()) }
     viewModel { SearchViewModel(get()) }
-    viewModel { FolderSongsViewModel() }
     viewModel { SongsMenuBottomSheetDialogFragmentViewModel() }
     viewModel { WebFragmentViewModel() }
 
     // metadata
     single { PlaylistMediaSource() }
-    single { BasicMediaStoreSource(get()) }
-    single { BrowseTree(get(), get()) }
+    single { MediaStoreSource(get()) }
+    single { MediaUpdateNotifier() }
+    single { BrowseTree(get(), get(), get()) }
     // metadata VMs
+    viewModel { FolderSongsViewModel(get(), get()) }
+    viewModel { FoldersViewModel(get(), get()) }
     viewModel { SongsViewModel(get(), get()) }
     viewModel { GenresViewModel(get(), get()) }
     viewModel { AlbumSongsViewModel(get(), get()) }

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
@@ -20,7 +19,7 @@ import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
 import com.jadebyte.jadeplayer.main.songs.Song
 import kotlinx.android.synthetic.main.fragment_folder_songs.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.Collections
+import java.util.*
 
 class FolderSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
 
@@ -30,10 +29,15 @@ class FolderSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition =
+            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = FragmentFolderSongsBinding.inflate(inflater, container, false)
         binding.folderSongsVM = viewModel
         return binding.root
@@ -41,24 +45,31 @@ class FolderSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.folder.value?.let { ViewCompat.setTransitionName(folderArt, it.id) }
+        viewModel.folder?.let { ViewCompat.setTransitionName(folderArt, it.id) }
         setupViews()
         observeViewModel()
         sectionBackButton.setOnClickListener { findNavController().popBackStack() }
     }
 
     private fun observeViewModel() {
-        viewModel.folder.observe(viewLifecycleOwner, Observer(this::updateViews))
+        viewModel.init(viewModel.folder?.path)
+        viewModel.items.observe(viewLifecycleOwner, Observer(this::updateViews))
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun updateViews(folder: Folder) {
-        folderSongsDuration.text = getSongsTotalTime(folder.songs)
-        (folderSongsRV.adapter as BaseAdapter<Song>).updateItems(folder.songs)
+    private fun updateViews(items: List<Song>) {
+        (folderSongsRV.adapter as BaseAdapter<Song>).updateItems(items)
     }
 
+
     private fun setupViews() {
-        val adapter = BaseAdapter(viewModel.folder.value?.songs ?: Collections.emptyList(), activity!!, R.layout.item_song, BR.song, itemClickListener = this)
+        val adapter = BaseAdapter(
+            viewModel.items.value ?: Collections.emptyList(),
+            activity!!,
+            R.layout.item_song,
+            BR.song,
+            itemClickListener = this
+        )
         folderSongsRV.adapter = adapter
         folderSongsRV.layoutManager = LinearLayoutManager(activity!!)
         moreOptions.setOnClickListener(this)
@@ -74,7 +85,7 @@ class FolderSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickLis
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {
-        val folder = viewModel.folder.value
-        playbackViewModel.playFolder(folder!!.path, folder.songs[position].id)
+        val folder = viewModel.items.value!!.get(position)
+        playbackViewModel.playFolder(folder!!.path, viewModel.items.value!!.get(position).id)
     }
 }

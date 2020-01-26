@@ -3,22 +3,23 @@
 package com.jadebyte.jadeplayer.main.search
 
 import android.app.Application
+import android.net.Uri
 import android.provider.MediaStore
 import androidx.annotation.WorkerThread
 import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.albums.baseAlbumProjection
 import com.jadebyte.jadeplayer.main.albums.baseAlbumUri
 import com.jadebyte.jadeplayer.main.artists.Artist
-import com.jadebyte.jadeplayer.main.artists.baseArtistProjection
-import com.jadebyte.jadeplayer.main.artists.baseArtistUri
 import com.jadebyte.jadeplayer.main.common.data.BaseMediaStoreRepository
 import com.jadebyte.jadeplayer.main.genres.Genre
-import com.jadebyte.jadeplayer.main.genres.baseGenreProjection
-import com.jadebyte.jadeplayer.main.genres.baseGenreUri
+import com.jadebyte.jadeplayer.main.playback.mediasource.baseSongUri
+import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelection
+import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelectionArg
 import com.jadebyte.jadeplayer.main.playlist.Playlist
 import com.jadebyte.jadeplayer.main.playlist.basePlaylistProjection
 import com.jadebyte.jadeplayer.main.playlist.basePlaylistUri
-import com.jadebyte.jadeplayer.main.songs.*
+import com.jadebyte.jadeplayer.main.songs.Song
+import com.jadebyte.jadeplayer.main.songs.baseSongsProjection
 
 
 /**
@@ -68,3 +69,21 @@ class SearchRepository(application: Application) : BaseMediaStoreRepository(appl
     }
 
 }
+
+
+val baseGenreProjection = arrayOf(
+    MediaStore.Audio.Genres._ID,
+    MediaStore.Audio.Genres.NAME
+)
+
+val baseGenreUri: Uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI
+
+
+val baseArtistProjection = arrayOf(
+    MediaStore.Audio.Artists.ARTIST,
+    MediaStore.Audio.Artists.NUMBER_OF_TRACKS,
+    MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
+    MediaStore.Audio.Artists._ID
+)
+
+val baseArtistUri: Uri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI

@@ -30,32 +30,21 @@ abstract class BaseMediaStoreViewModel<T : Model>(
     val itemFactory: ModelSupplier<T>
 ) : AndroidViewModel(application) {
 
+    private var sourceConst: String? = null
     protected val data = MutableLiveData<List<T>>()
     val items: LiveData<List<T>> get() = data
-    abstract var repository: MediaStoreRepository<T>
-    open var projection: Array<String>? = null
-    open var selection: String? = null
-    open var selectionArgs: Array<String>? = null
-    open var sortOrder: String? = null
-    abstract var uri: Uri
 
-
-    /*private val observer: ContentObserver = object : ContentObserver(null) {
-        override fun onChange(selfChange: Boolean) {
-            loadData(sourceConst)
-        }
-    }*/
+    /**/
 
     /**
      *  Fetch data from the [MediaStore] and watch it for changes to the data at [uri]]
      */
     @CallSuper
     open fun init(sourceConst: String?) {
+        this.sourceConst = sourceConst
         sourceConst?.let {
             loadData(sourceConst)
         }
-//        observer.onChange(false)
-//        getApplication<Application>().contentResolver.registerContentObserver(uri, true, observer)
     }
 
 
@@ -75,7 +64,6 @@ abstract class BaseMediaStoreViewModel<T : Model>(
 
     override fun onCleared() {
         super.onCleared()
-//        getApplication<Application>().contentResolver.unregisterContentObserver(observer)
     }
 
 
@@ -86,6 +74,10 @@ abstract class BaseMediaStoreViewModel<T : Model>(
 
     open fun overrideCurrentItems(items: List<T>) {
         data.value = items
+    }
+
+    fun update() {
+        init(sourceConst)
     }
 }
 

@@ -4,6 +4,7 @@
 package com.jadebyte.jadeplayer.main.playback.mediasource
 
 import android.content.Context
+import android.database.ContentObserver
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat.MediaItem
@@ -48,8 +49,9 @@ import java.util.concurrent.CopyOnWriteArrayList
  * nodes, requesting `browseTree["Song_1"]` would return null (there aren't any children of it).
  */
 class BrowseTree(
-    val musicSource: BasicMediaStoreSource,
-    val playlistMediaSource: PlaylistMediaSource
+    val musicSource: MediaStoreSource,
+    val playlistMediaSource: PlaylistMediaSource,
+    val mediaUpdateNotifier: MediaUpdateNotifier
 ) {
     var currentMediaSource: ConcatenatingMediaSource? = null
 
@@ -63,6 +65,15 @@ class BrowseTree(
      */
     val searchableByUnknownCaller = true
 
+
+
+    private val observer: ContentObserver = object : ContentObserver(null) {
+        override fun onChange(selfChange: Boolean) {
+            musicSource.loadNew()
+            mediaUpdateNotifier.update()
+        }
+    }
+
     /**
      * In this example, there's a single root note (identified by the constant [Constants.BROWSABLE_ROOT].
      * The root's children are each album included in the [MusicSource],
@@ -70,6 +81,20 @@ class BrowseTree(
      * TODO: Expand to allow more browsing types.
      */
     fun load(context: Context) {
+        buildRoots(context)
+
+        val serviceJob = SupervisorJob()
+        val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
+
+        serviceScope.launch {
+            musicSource.load().collect {
+                workoutItem(it, context)
+            }
+            context.contentResolver.registerContentObserver(baseSongUri, true, observer)
+        }
+    }
+
+    private fun buildRoots(context: Context) {
         val rootList = mediaIdToChildren[Constants.BROWSABLE_ROOT] ?: CopyOnWriteArrayList()
         val songsMetadata = MediaMetadataCompat.Builder().apply {
             id = Constants.SONGS_ROOT
@@ -132,46 +157,43 @@ class BrowseTree(
         }
 
         mediaIdToChildren[Constants.BROWSABLE_ROOT] = rootList
-        val serviceJob = SupervisorJob()
-        val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
+    }
 
-        serviceScope.launch {
-            musicSource.load().collect {
-                val albumMediaId = it.albumId.urlEncoded
-                val albumChildren = mediaIdToChildren[albumMediaId] ?: buildAlbumRoot(it)
-                albumChildren += it
+    private fun workoutItem(it: MediaMetadataCompat, context: Context) {
+        val albumMediaId = it.albumId.urlEncoded
+        val albumChildren = mediaIdToChildren[albumMediaId] ?: buildAlbumRoot(it)
+        albumChildren += it
 
 
-                val artistMediaId = it.artist.urlEncoded
-                val artistChildren = mediaIdToChildren[artistMediaId] ?: buildArtistRoot(it)
-                artistChildren += it
+        val artistMediaId = it.artist.urlEncoded
+        val artistChildren = mediaIdToChildren[artistMediaId] ?: buildArtistRoot(it)
+        artistChildren += it
 
-                val songsChildren =
-                    mediaIdToChildren[Constants.SONGS_ROOT] ?: CopyOnWriteArrayList()
-                songsChildren += it
-                mediaIdToChildren[Constants.SONGS_ROOT] = songsChildren
+        val songsChildren =
+            mediaIdToChildren[Constants.SONGS_ROOT] ?: CopyOnWriteArrayList()
+        songsChildren += it
+        mediaIdToChildren[Constants.SONGS_ROOT] = songsChildren
 
-                val path = File(it.mediaUri.toString()).parent
-                val foldersChildren = mediaIdToChildren[path] ?: buildFoldersRoot(it)
-                foldersChildren += it
+        val file = File(it.mediaUri.toString())
+        val parentFile = file.parentFile
+        val foldersChildren = mediaIdToChildren[parentFile.path] ?: buildFoldersRoot(it, parentFile.path, parentFile.name)
+        foldersChildren += it
 
 
-                val songId = it.id?.toInt()
-                val genre = songId?.let { getGenreForSongBySongId(context, songId) }
-                genre?.let { genre ->
-                    val genresChildren = mediaIdToChildren[genre.name] ?: buildGenresRoot(it, genre)
-                    genresChildren += it
-                }
+        val songId = it.id?.toInt()
+        val genre = songId?.let { getGenreForSongBySongId(context, songId) }
+        genre?.let { genre ->
+            val genresChildren = mediaIdToChildren[genre.name] ?: buildGenresRoot(it, genre)
+            genresChildren += it
+        }
 
-                it.id?.let { songId ->
-                    playlistMediaSource.playlists.forEach { playlist ->
-                        if (playlist.songIds.contains(songId)) {
-                            val url = playlist.id.urlEncoded
-                            val playlistSongs = mediaIdToChildren[url] ?: CopyOnWriteArrayList()
-                            playlistSongs += it
-                            mediaIdToChildren[url] = playlistSongs
-                        }
-                    }
+        it.id?.let { songId ->
+            playlistMediaSource.playlists.forEach { playlist ->
+                if (playlist.songIds.contains(songId)) {
+                    val url = playlist.id.urlEncoded
+                    val playlistSongs = mediaIdToChildren[url] ?: CopyOnWriteArrayList()
+                    playlistSongs += it
+                    mediaIdToChildren[url] = playlistSongs
                 }
             }
         }
@@ -257,11 +279,15 @@ class BrowseTree(
      * marking the item as [MediaItem.FLAG_BROWSABLE], since it will have child
      * node(s) AKA at least 1 song.
      */
-    private fun buildFoldersRoot(metadata: MediaMetadataCompat): MutableList<MediaMetadataCompat> {
+    private fun buildFoldersRoot(
+        metadata: MediaMetadataCompat,
+        path: String,
+        name: String
+    ): MutableList<MediaMetadataCompat> {
         val folderMetadata = MediaMetadataCompat.Builder().apply {
-            id = metadata.artist.urlEncoded
-            title = metadata.artist
-            mediaUri = metadata.mediaUri.toString()
+            id = metadata.id.urlEncoded
+            title = name
+            mediaUri = path
             flag = MediaItem.FLAG_BROWSABLE
         }.build()
 
@@ -271,7 +297,6 @@ class BrowseTree(
         mediaIdToChildren[Constants.FOLDERS_ROOT] = rootList
 
         // Insert the album's root with an empty list for its children, and return the list.
-        val path = File(metadata.mediaUri.toString()).parent
         return CopyOnWriteArrayList<MediaMetadataCompat>().also {
             mediaIdToChildren[path] = it
         }

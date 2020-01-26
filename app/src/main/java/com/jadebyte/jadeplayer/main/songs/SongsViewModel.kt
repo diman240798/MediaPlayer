@@ -16,20 +16,7 @@ import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 open class SongsViewModel(
     application: Application,
     browseTree: BrowseTree
-) : BaseMediaStoreViewModel<Song>(application, browseTree, SongSuplier()) {
-
-    override var repository: MediaStoreRepository<Song> = SongsRepository(application)
-
-    override var selection: String? = basicSongsSelection
-
-    override var selectionArgs: Array<String>? = basicSongsSelectionArgs
-
-    override var sortOrder: String? = basicSongsOrder
-
-    override var uri: Uri = baseSongUri
-
-    override var projection: Array<String>? = baseSongsProjection
-}
+) : BaseMediaStoreViewModel<Song>(application, browseTree, SongSuplier()) {}
 
 val baseSongsProjection = arrayOf(
     MediaStore.Audio.Media.TITLE,
@@ -46,14 +33,3 @@ val baseSongsProjection = arrayOf(
     MediaStore.Audio.Media.ALBUM_KEY,
     MediaStore.Audio.Media._ID
 )
-
-// Sort with the title in ascending case-insensitive order
-const val basicSongsOrder = "${MediaStore.Audio.Media.TITLE} COLLATE NOCASE ASC"
-
-const val basicSongsSelection = "${MediaStore.Audio.Media.IS_MUSIC} != ?"
-
-val baseSongUri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-
-val basicSongsSelectionArgs get() = arrayOf(basicSongsSelectionArg)
-
-const val basicSongsSelectionArg = "0"

@@ -1,14 +1,11 @@
 package com.jadebyte.jadeplayer.main.folders
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import com.jadebyte.jadeplayer.main.common.callbacks.SongSuplier
+import com.jadebyte.jadeplayer.main.common.view.BaseMediaStoreViewModel
+import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
+import com.jadebyte.jadeplayer.main.songs.Song
 
-class FolderSongsViewModel : ViewModel() {
-    public val folder: LiveData<Folder> get() =  _folder
-    private val _folder: MutableLiveData<Folder> = MutableLiveData<Folder>()
-
-    fun setFolder(folder: Folder) {
-        _folder.value = folder
-    }
+class FolderSongsViewModel(application: Application, browseTree: BrowseTree) : BaseMediaStoreViewModel<Song>(application, browseTree, SongSuplier()) {
+    var folder: Folder? = null
 }
