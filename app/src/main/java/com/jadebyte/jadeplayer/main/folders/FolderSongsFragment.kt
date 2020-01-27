@@ -85,7 +85,8 @@ class FolderSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickLis
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {
-        val folder = viewModel.items.value!!.get(position)
-        playbackViewModel.playFolder(folder!!.path, viewModel.items.value!!.get(position).id)
+        val song = viewModel.items.value!!.get(position)
+        val folder = viewModel.folder
+        playbackViewModel.playFolder(folder!!.path, song.id)
     }
 }
