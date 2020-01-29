@@ -49,6 +49,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  * nodes, requesting `browseTree["Song_1"]` would return null (there aren't any children of it).
  */
 class BrowseTree(
+    val context: Context,
     val musicSource: MediaStoreSource,
     val playlistMediaSource: PlaylistMediaSource,
     val mediaUpdateNotifier: MediaUpdateNotifier
@@ -69,8 +70,19 @@ class BrowseTree(
 
     private val observer: ContentObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean) {
-            musicSource.loadNew()
+            loadNew(context)
             mediaUpdateNotifier.update()
+        }
+    }
+
+    private fun loadNew(context: Context) {
+        val serviceJob = SupervisorJob()
+        val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
+
+        serviceScope.launch {
+            musicSource.loadNew(context).collect {
+                workoutItem(it, context)
+            }
         }
     }
 
@@ -80,14 +92,14 @@ class BrowseTree(
      * and the childrenn of each album are songs on that album. See [buildAlbum] for details
      * TODO: Expand to allow more browsing types.
      */
-    fun load(context: Context) {
+    fun load() {
         buildRoots(context)
 
         val serviceJob = SupervisorJob()
         val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
         serviceScope.launch {
-            musicSource.load().collect {
+            musicSource.load(context).collect {
                 workoutItem(it, context)
             }
             context.contentResolver.registerContentObserver(baseSongUri, true, observer)

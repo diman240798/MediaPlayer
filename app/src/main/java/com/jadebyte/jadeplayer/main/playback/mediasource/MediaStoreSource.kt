@@ -6,10 +6,13 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.support.v4.media.MediaMetadataCompat
+import android.util.Log
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.utils.ImageUtils
 import com.jadebyte.jadeplayer.main.playback.from
 import com.jadebyte.jadeplayer.main.playback.id
+import com.jadebyte.jadeplayer.main.playback.mediaUri
+import com.jadebyte.jadeplayer.main.playback.title
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -19,19 +22,21 @@ import kotlinx.coroutines.flow.flow
  *
  * Source of [MediaMetadataCompat] objects created from songs in the MediaStore
  */
-class MediaStoreSource(val context: Context) {
+class MediaStoreSource {
 
 
-    private lateinit var lastId: String
+    private var lastId: String = "-1"
 
-    fun loadNew() {
-
+    fun loadNew(context: Context): Flow<MediaMetadataCompat> {
+        Log.d("Loading new songs: ", "id > then $lastId")
+        return load(context, baseSongUri, songsProjection, "${MediaStore.Audio.Media._ID} > ?", arrayOf(lastId), basicSongsOrder)
     }
 
-    fun load(): Flow<MediaMetadataCompat> =
-        load(baseSongUri, songsProjection, basicSongsSelection, basicSongsSelectionArgs, basicSongsOrder)
+    fun load(context: Context): Flow<MediaMetadataCompat> =
+        load(context, baseSongUri, songsProjection, basicSongsSelection, basicSongsSelectionArgs, basicSongsOrder)
 
     fun load(
+        context: Context,
         uri: Uri,
         songsProjection: Array<String>,
         selection: String,
@@ -51,7 +56,9 @@ class MediaStoreSource(val context: Context) {
                 val metadata = MediaMetadataCompat.Builder().from(it, count, art)
                 val build = metadata.build()
                 build.description.extras?.putAll(build.bundle)
-                if (it.isLast) lastId = build.id.toString()
+                val id = build.id
+                Log.d("Loading song: ", "id: ${id}, title: ${build.title}, mediaUri: ${build.mediaUri}")
+                if (id?.toInt()!! > lastId.toInt()) lastId = id
                 emit(build)
             }
         }
@@ -61,7 +68,7 @@ class MediaStoreSource(val context: Context) {
 
 
 // Sort with the title in ascending case-insensitive order
-const val basicSongsOrder = "${MediaStore.Audio.Media.TITLE} COLLATE NOCASE ASC"
+const val basicSongsOrder = MediaStore.Audio.Media._ID
 
 const val basicSongsSelection = "${MediaStore.Audio.Media.IS_MUSIC} != ?"
 

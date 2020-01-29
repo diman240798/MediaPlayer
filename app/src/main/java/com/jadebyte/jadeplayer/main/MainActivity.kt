@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playlistMediaSource.load(this)
-        browseTree.load(this)
+        browseTree.load()
         setContentView(R.layout.activity_main)
     }
 

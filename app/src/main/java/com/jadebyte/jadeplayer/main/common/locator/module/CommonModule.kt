@@ -56,9 +56,9 @@ val commonModule = module {
 
     // metadata
     single { PlaylistMediaSource() }
-    single { MediaStoreSource(get()) }
+    single { MediaStoreSource() }
     single { MediaUpdateNotifier() }
-    single { BrowseTree(get(), get(), get()) }
+    single { BrowseTree(get(),  get(), get(), get()) }
     // metadata VMs
     viewModel { FolderSongsViewModel(get(), get()) }
     viewModel { FoldersViewModel(get(), get()) }
