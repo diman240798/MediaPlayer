@@ -36,6 +36,8 @@ class WebFragment : Fragment() {
     }
 
     private fun setUpVM() {
+        viewModel.urls = resources.getStringArray(R.array.web_urls).toMutableList()
+        viewModel.setUrl(viewModel.urls[0])
         viewModel.url.observe(viewLifecycleOwner, Observer { updateViews(it) })
     }
 

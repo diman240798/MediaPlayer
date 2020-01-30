@@ -177,6 +177,9 @@
         <action
             android:id="@+id/action_navigationDialogFragment_to_shazamFragment"
             app:destination="@id/shazamFragment" />
+        <action
+            android:id="@+id/action_navigationDialogFragment_to_webFragment"
+            app:destination="@id/webFragment" />
     </dialog>
     <fragment
         android:id="@+id/albumSongsFragment"

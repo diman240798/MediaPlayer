@@ -16,7 +16,8 @@ object Constants {
     const val NAV_RADIO = "com.jadebyte.jadeplayer.nav.radio"
     const val NAV_SETTINGS = "com.jadebyte.jadeplayer.nav.settings"
     const val NAV_VIDEOS = "com.jadebyte.jadeplayer.nav.videos"
-    const val NAV_FOLDERS: String = "com.jadebyte.jadeplayer.nav.folders"
+    const val NAV_FOLDERS = "com.jadebyte.jadeplayer.nav.folders"
+    const val NAV_WEB = "com.jadebyte.jadeplayer.nav.web"
 
 
     // Media playback

@@ -68,7 +68,7 @@ class MediaStoreSource {
 
 
 // Sort with the title in ascending case-insensitive order
-const val basicSongsOrder = MediaStore.Audio.Media._ID
+const val basicSongsOrder = "${MediaStore.Audio.Media.TITLE} COLLATE NOCASE ASC"
 
 const val basicSongsSelection = "${MediaStore.Audio.Media.IS_MUSIC} != ?"
 

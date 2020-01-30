@@ -15,7 +15,7 @@ class NavRepository(private var origin: Int?, private val preferences: SharedPre
     val liveItems = MediatorLiveData<List<NavItem>>()
 
     init {
-        val items = arrayOfNulls<NavItem?>(10)
+        val items = arrayOfNulls<NavItem?>(11)
         items[preferences.getInt(Constants.NAV_SONGS, 0)] =
             NavItem(Constants.NAV_SONGS, R.string.songs, R.drawable.ic_song_thin, isFrom(0))
         items[preferences.getInt(Constants.NAV_IDENTIFY, 1)] =
@@ -36,6 +36,8 @@ class NavRepository(private var origin: Int?, private val preferences: SharedPre
             NavItem(Constants.NAV_VIDEOS, R.string.videos, R.drawable.ic_video, isFrom(8))
         items[preferences.getInt(Constants.NAV_FOLDERS, 9)] =
             NavItem(Constants.NAV_FOLDERS, R.string.folders, R.drawable.ic_folder, isFrom(9))
+        items[preferences.getInt(Constants.NAV_WEB, 10)] =
+            NavItem(Constants.NAV_WEB, R.string.web, R.drawable.ic_web, isFrom(10))
         liveItems.value = items.filterNotNull()
     }
 

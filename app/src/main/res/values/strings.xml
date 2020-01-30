@@ -66,6 +66,7 @@
     <string name="videos">Videos</string>
     <string name="filter_results">Filter results</string>
     <string name="folders">Folders</string>
+    <string name="web">Web</string>
 
 
     <!--Plurals-->
@@ -175,8 +176,6 @@
     <string name="ask_permissions">For this app function we require next permissions</string>
 
     <string-array name="web_urls">
-        <item>https://rux.hotmo.org/search?q=</item>
-        <item>https://mixmuz.ru/mp3/</item>
         <item>https://ru.megapesni.com/?do=search&amp;subaction=search&amp;story=</item>
         <item>https://ru-drivemusic.net/?do=search&amp;subaction=search&amp;story=</item>
     </string-array>
