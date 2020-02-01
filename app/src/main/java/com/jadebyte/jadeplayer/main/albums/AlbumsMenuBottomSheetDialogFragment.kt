@@ -3,6 +3,7 @@
 package com.jadebyte.jadeplayer.main.albums
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.annotation.IdRes
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.R
+import com.jadebyte.jadeplayer.main.common.utils.Utils
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
 import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
 import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelection
@@ -67,6 +69,6 @@ class AlbumsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun share() {
-        findNavController().popBackStack()
+        context?.also { Utils.share(it, "${album.name} - ${album.artist}", album.artist, "Share Album") }
     }
 }

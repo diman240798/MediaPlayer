@@ -12,6 +12,7 @@ import androidx.annotation.IdRes
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.R
+import com.jadebyte.jadeplayer.main.common.utils.Utils
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
 import com.jadebyte.jadeplayer.main.db.favourite.FavouriteSongsRepository
 import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelection
@@ -82,7 +83,12 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun shareTrack() {
-        // TODO: Implement
+        context?.also { context ->
+            val song = viewModel.song.value
+            song?.also {
+                Utils.share(context, "${song.title} - ${song.album.artist}", song.album.artist, "Share Song")
+            }
+        }
     }
 
     private fun playNextTrack() {

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.databinding.FragmentShazamResultDialogBinding
+import com.jadebyte.jadeplayer.main.common.utils.Utils
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
 import com.jadebyte.jadeplayer.main.shazam.model.ResultTrack
 import kotlinx.coroutines.*
@@ -66,6 +67,6 @@ class FragmentShazamBottomDialog : BaseMenuBottomSheet() {
     }
 
     private fun shareTrack() {
-
+        context?.also { context -> Utils.share(context, "${resultTrack.title} - ${resultTrack.artist}", resultTrack.artist, "Share Song") }
     }
 }

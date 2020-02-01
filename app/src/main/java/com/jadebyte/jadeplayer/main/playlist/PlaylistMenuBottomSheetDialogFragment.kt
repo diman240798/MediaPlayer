@@ -94,7 +94,7 @@ class PlaylistMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun sharePlaylist() {
-        findNavController().popBackStack()
+        context?.also { Utils.share(it, playlist.name, "count: ${playlist.songsCount}", "Share Playlist") }
     }
 
     private fun editSongs() {

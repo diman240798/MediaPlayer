@@ -12,6 +12,7 @@ import androidx.annotation.IdRes
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.R
+import com.jadebyte.jadeplayer.main.common.utils.Utils
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
 
 class GenresMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
@@ -60,6 +61,6 @@ class GenresMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun share() {
-        findNavController().popBackStack()
+        context?.let { Utils.share(it, genre.name, "", "Share Genre") }
     }
 }

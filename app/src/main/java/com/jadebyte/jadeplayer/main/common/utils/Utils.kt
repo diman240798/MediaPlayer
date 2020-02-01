@@ -3,6 +3,7 @@
 package com.jadebyte.jadeplayer.main.common.utils
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -49,4 +50,17 @@ object Utils {
     }
 
     val artworkUri = Uri.parse("content://media/external/audio/albumart")
+
+    fun share(
+        context: Context,
+        text: String,
+        subject: String,
+        title: String
+    ) {
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+        sharingIntent.type = "text/plain"
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, text)
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
+        context.startActivity(Intent.createChooser(sharingIntent, title))
+    }
 }
