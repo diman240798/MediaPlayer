@@ -9,6 +9,7 @@ import com.jadebyte.jadeplayer.main.albums.AlbumsViewModel
 import com.jadebyte.jadeplayer.main.artists.ArtistAlbumsViewModel
 import com.jadebyte.jadeplayer.main.artists.ArtistsViewModel
 import com.jadebyte.jadeplayer.main.explore.ExploreViewModel
+import com.jadebyte.jadeplayer.main.favourite.FavouriteSongsViewModel
 import com.jadebyte.jadeplayer.main.folders.FolderSongsViewModel
 import com.jadebyte.jadeplayer.main.folders.FoldersViewModel
 import com.jadebyte.jadeplayer.main.genres.GenreSongsViewModel
@@ -51,7 +52,8 @@ val commonModule = module {
     viewModel { NavViewModel(get()) }
     viewModel { PlaybackViewModel(get(), get(), get()) }
     viewModel { SearchViewModel(get()) }
-    viewModel { SongsMenuBottomSheetDialogFragmentViewModel() }
+    viewModel { SongsMenuBottomSheetDialogFragmentViewModel(get()) }
+    viewModel { FavouriteSongsViewModel(get()) }
     viewModel { WebFragmentViewModel() }
 
     // metadata

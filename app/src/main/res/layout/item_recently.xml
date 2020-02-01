@@ -16,7 +16,7 @@
 
         <variable
             name="recentlyPlayed"
-            type="com.jadebyte.jadeplayer.main.explore.RecentlyPlayed" />
+            type="com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayed" />
 
     </data>
 

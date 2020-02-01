@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
@@ -24,6 +23,8 @@ import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
+import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayed
+import com.jadebyte.jadeplayer.main.favourite.FavouriteSongsViewModel
 import kotlinx.android.synthetic.main.fragment_explore.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -33,6 +34,7 @@ class ExploreFragment : Fragment(), OnItemClickListener {
     private var albums: List<Album> = emptyList()
     private var playedList: List<RecentlyPlayed> = emptyList()
     private val viewModel: ExploreViewModel by sharedViewModel()
+    private val favouriteSongsViewModel: FavouriteSongsViewModel by sharedViewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +45,7 @@ class ExploreFragment : Fragment(), OnItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        favouriteSongsViewModel.favouriteSongsRepository.load()
         return inflater.inflate(R.layout.fragment_explore, container, false)
     }
 

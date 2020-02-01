@@ -147,12 +147,21 @@ class BrowseTree(
                 Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_album)
         }.build()
 
+        val favouritesMetadata = MediaMetadataCompat.Builder().apply {
+            // make able to play folder???
+            id = Constants.FAVOURITES_ROOT
+            title = context.getString(R.string.favourites)
+            artist =
+                Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_heart)
+        }.build()
+
 
         rootList += songsMetadata
         rootList += albumsMetadata
         rootList += artistsMetadata
         rootList += foldersMetadata
         rootList += genresMetadata
+        rootList += favouritesMetadata
 
         val playlistsIds = mutableListOf<String>()
         playlistMediaSource.playlists.forEach {
@@ -167,6 +176,10 @@ class BrowseTree(
             mediaIdToChildren[Constants.PLAYLISTS_ROOT] = playlistsList
             playlistsIds += it.id.toString()
         }
+
+        
+
+
 
         mediaIdToChildren[Constants.BROWSABLE_ROOT] = rootList
     }

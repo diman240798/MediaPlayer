@@ -49,6 +49,12 @@
             android:drawableEnd="@drawable/ic_add_playlist"
             android:text="@string/add_to_playlist" />
 
+        <Button
+            android:id="@+id/delete"
+            style="@style/AppTheme.MenuButton"
+            android:drawableEnd="@drawable/ic_garbage"
+            android:text="@string/delete_frm_queue" />
+
     </LinearLayout>
 
 </FrameLayout>

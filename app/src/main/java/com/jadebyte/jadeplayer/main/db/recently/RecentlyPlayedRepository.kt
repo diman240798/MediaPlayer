@@ -1,8 +1,10 @@
 // Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
 
-package com.jadebyte.jadeplayer.main.explore
+package com.jadebyte.jadeplayer.main.db.recently
 
 import androidx.lifecycle.LiveData
+import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayed
+import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayedDao
 
 
 /**

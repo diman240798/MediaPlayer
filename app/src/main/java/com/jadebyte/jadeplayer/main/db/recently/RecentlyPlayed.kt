@@ -1,6 +1,6 @@
 // Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
 
-package com.jadebyte.jadeplayer.main.explore
+package com.jadebyte.jadeplayer.main.db.recently
 
 import android.support.v4.media.MediaMetadataCompat
 import androidx.room.Entity

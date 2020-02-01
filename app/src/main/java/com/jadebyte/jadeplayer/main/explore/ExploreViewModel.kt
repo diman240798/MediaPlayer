@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.albums.AlbumsViewModel
+import com.jadebyte.jadeplayer.main.db.AppRoomDatabase
+import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayed
+import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayedRepository
 import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,7 +27,10 @@ class ExploreViewModel(application: Application, browseTree: BrowseTree) :
 
     init {
         val recentDao = AppRoomDatabase.getDatabase(application).recentDao()
-        recentlyPlayedRepository = RecentlyPlayedRepository(recentDao)
+        recentlyPlayedRepository =
+            RecentlyPlayedRepository(
+                recentDao
+            )
         recentlyPlayed = recentlyPlayedRepository.recentlyPlayed
 
         viewModelScope.launch {

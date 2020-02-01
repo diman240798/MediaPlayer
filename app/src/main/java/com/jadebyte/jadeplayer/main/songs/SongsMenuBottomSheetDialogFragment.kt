@@ -13,6 +13,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
+import com.jadebyte.jadeplayer.main.favourite.FavouriteSongsViewModel
+import com.jadebyte.jadeplayer.main.favourite.addRemoveToFavourite
 import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelection
 import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelectionArg
 import com.jadebyte.jadeplayer.main.web.WebFragmentViewModel
@@ -23,6 +25,7 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private val viewModel: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
     private val webVM: WebFragmentViewModel by sharedViewModel()
+    private val favouriteSongsViewModel: FavouriteSongsViewModel by sharedViewModel()
 
     @IdRes private var popUpTo: Int = 0
 
@@ -45,7 +48,6 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
             R.id.playNext -> playNextTrack()
             R.id.favourite -> favouriteTrack()
             R.id.addToPlayList -> addTrackToPlayList()
-            R.id.delete -> deleteTrack()
         }
     }
 
@@ -71,7 +73,7 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun favouriteTrack() {
-        // TODO: Implement
+        viewModel.song.value?.id?.let { addRemoveToFavourite(it, favouriteSongsViewModel.favouriteSongsRepository) }
     }
 
     private fun shareTrack() {

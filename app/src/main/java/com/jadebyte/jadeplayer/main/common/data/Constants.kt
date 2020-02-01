@@ -18,10 +18,10 @@ object Constants {
     const val NAV_VIDEOS = "com.jadebyte.jadeplayer.nav.videos"
     const val NAV_FOLDERS = "com.jadebyte.jadeplayer.nav.folders"
     const val NAV_WEB = "com.jadebyte.jadeplayer.nav.web"
-
-
     // Media playback
     const val MEDIA_SEARCH_SUPPORTED = "android.media.browse.SEARCH_SUPPORTED"
+
+
     const val CONTENT_STYLE_BROWSABLE_HINT = "android.media.browse.CONTENT_STYLE_BROWSABLE_HINT"
     const val CONTENT_STYLE_PLAYABLE_HINT = "android.media.browse.CONTENT_STYLE_PLAYABLE_HINT"
     const val CONTENT_STYLE_SUPPORTED = "android.media.browse.CONTENT_STYLE_SUPPORTED"
@@ -35,6 +35,7 @@ object Constants {
     const val SONGS_ROOT = "_SONGS__"
     const val GENRES_ROOT = "_GENRES__"
     const val PLAYLISTS_ROOT = "__PLAYLISTS__"
+    const val FAVOURITES_ROOT = "__FAVOUTITES__"
     const val NETWORK_FAILURE = "com.jadebyte.jadeplayer.playback.NETWORK_FAILURE"
     const val LAST_SHUFFLE_MODE = "com.jadebyte.jadeplayer.playback.LAST_SHUFFLE_MODE"
     const val LAST_REPEAT_MODE = "com.jadebyte.jadeplayer.playback.LAST_REPEAT_MODE"

@@ -16,7 +16,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.utils.UriFileUtils
-import com.jadebyte.jadeplayer.main.explore.RecentlyPlayed
+import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayed
 import com.jadebyte.jadeplayer.main.playback.*
 import com.jadebyte.jadeplayer.main.playback.mediasource.NOTIFICATION_LARGE_ICON_SIZE
 import kotlinx.coroutines.launch
@@ -132,7 +132,10 @@ class MediaControllerCallback(private val playbackService: PlaybackService) : Me
     ) {
         if (metadata?.id != null && state?.isPlaying == true) {
             playbackService.serviceScope.launch {
-                val played = RecentlyPlayed(metadata)
+                val played =
+                    RecentlyPlayed(
+                        metadata
+                    )
                 val recentRepo = playbackService.recentRepo
                 recentRepo.insert(played)
                 recentRepo.trim()

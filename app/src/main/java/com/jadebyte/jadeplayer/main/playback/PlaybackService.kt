@@ -18,8 +18,8 @@ import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.FileDataSourceFactory
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.data.Constants
-import com.jadebyte.jadeplayer.main.explore.AppRoomDatabase
-import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
+import com.jadebyte.jadeplayer.main.db.AppRoomDatabase
+import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayedRepository
 import com.jadebyte.jadeplayer.main.playback.mediasession.MediaControllerCallback
 import com.jadebyte.jadeplayer.main.playback.mediasession.QueueEditor
 import com.jadebyte.jadeplayer.main.playback.mediasession.QueueNavigator
@@ -66,7 +66,10 @@ class PlaybackService : MediaBrowserServiceCompat() {
                 PendingIntent.getActivity(this, 0, it, 0)
             }
 
-        recentRepo = RecentlyPlayedRepository(AppRoomDatabase.getDatabase(application).recentDao())
+        recentRepo =
+            RecentlyPlayedRepository(
+                AppRoomDatabase.getDatabase(application).recentDao()
+            )
 
         // Create a MediaSession
         mediaSession = MediaSessionCompat(this, this.javaClass.name).apply {

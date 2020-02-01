@@ -16,11 +16,10 @@ import androidx.lifecycle.*
 import com.jadebyte.jadeplayer.common.urlEncoded
 import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.common.data.Constants
-import com.jadebyte.jadeplayer.main.explore.RecentlyPlayedRepository
-import com.jadebyte.jadeplayer.main.explore.AppRoomDatabase
+import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayedRepository
+import com.jadebyte.jadeplayer.main.db.AppRoomDatabase
 import com.jadebyte.jadeplayer.main.lyrics.Lyrics
 import com.jadebyte.jadeplayer.main.lyrics.LyricsFetcher
-import com.jadebyte.jadeplayer.main.lyrics.LyricsDao
 import com.jadebyte.jadeplayer.main.lyrics.LyricsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -116,9 +115,14 @@ class PlaybackViewModel(
         }
     }
 
-    fun playFolder(folderPath: String, playId: String = Constants.PLAY_FIRST) = playMedia(folderPath, playId)
-    fun playPlaylist(playlistId: String, playId: String = Constants.PLAY_FIRST) = playMedia(playlistId, playId)
-    fun playGenre(playlistId: String, playId: String = Constants.PLAY_FIRST) = playMedia(playlistId, playId)
+    fun playFolder(folderPath: String, playId: String = Constants.PLAY_FIRST) =
+        playMedia(folderPath, playId)
+
+    fun playPlaylist(playlistId: String, playId: String = Constants.PLAY_FIRST) =
+        playMedia(playlistId, playId)
+
+    fun playGenre(playlistId: String, playId: String = Constants.PLAY_FIRST) =
+        playMedia(playlistId, playId)
 
     private fun playMedia(listSourcePath: String, playStartId: String) {
         val parentId = lastParendId
@@ -213,7 +217,6 @@ class PlaybackViewModel(
             _mediaItems.value = items.toList()
         }
     }
-
 
 
     // When the session's [PlaybackStateCompat] changes, the [mediaItems] needs to be updated
@@ -403,7 +406,8 @@ class PlaybackViewModel(
 
     fun getLyrics(id: String, artist: String, song: String): Job {
         return viewModelScope.launch {
-            lyrics.value = withContext(Dispatchers.IO) { // todo: move to lyricsRepository
+            lyrics.value = withContext(Dispatchers.IO) {
+                // todo: move to lyricsRepository
                 val lyricsFromBd: Lyrics? = lyricsRepository.getLyrics(id)
                 if (lyricsFromBd != null) {
                     return@withContext lyricsFromBd

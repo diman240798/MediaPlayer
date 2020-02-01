@@ -1,12 +1,16 @@
 package com.jadebyte.jadeplayer.main.songs
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.jadebyte.jadeplayer.main.albums.Album
+import com.jadebyte.jadeplayer.main.db.AppRoomDatabase
+import com.jadebyte.jadeplayer.main.db.favourite.FavouriteSongsRepository
 import com.jadebyte.jadeplayer.main.playback.MediaItemData
 
-class SongsMenuBottomSheetDialogFragmentViewModel : ViewModel() {
-    val song get() = _song
+class SongsMenuBottomSheetDialogFragmentViewModel(application: Application) : AndroidViewModel(application) {
+    val song: LiveData<Song> get() = _song
     private val _song = MutableLiveData<Song>()
 
     fun setSong(song: Song) {

@@ -1,6 +1,6 @@
 // Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
 
-package com.jadebyte.jadeplayer.main.explore
+package com.jadebyte.jadeplayer.main.db.recently
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -8,6 +8,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.jadebyte.jadeplayer.main.common.data.Constants
+import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayed
 
 
 /**

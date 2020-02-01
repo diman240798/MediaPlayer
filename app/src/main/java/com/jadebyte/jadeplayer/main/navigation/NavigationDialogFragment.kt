@@ -125,10 +125,14 @@ class NavigationDialogFragment : BaseFullscreenDialogFragment(), OnStartDragList
     override fun onItemClick(position: Int, sharableView: View?) {
         val navId = when (items[position].id) {
             Constants.NAV_SONGS -> R.id.action_navigationDialogFragment_to_songsFragment
-            Constants.NAV_PLAYLIST -> R.id.action_navigationDialogFragment_to_playlistFragment
-            Constants.NAV_ARTISTS -> R.id.action_navigationDialogFragment_to_artistsFragment
-            Constants.NAV_GENRES -> R.id.action_navigationDialogFragment_to_genresFragment
             Constants.NAV_IDENTIFY -> R.id.action_navigationDialogFragment_to_shazamFragment
+            Constants.NAV_ARTISTS -> R.id.action_navigationDialogFragment_to_artistsFragment
+            Constants.NAV_FAVOURITES -> R.id.
+            Constants.NAV_GENRES -> R.id.action_navigationDialogFragment_to_genresFragment
+            Constants.NAV_PLAYLIST -> R.id.action_navigationDialogFragment_to_playlistFragment
+            Constants.NAV_RADIO -> TODO()
+            Constants.NAV_SETTINGS -> TODO()
+            Constants.NAV_VIDEOS -> TODO()
             Constants.NAV_FOLDERS -> R.id.action_navigationDialogFragment_to_foldersFragment
             Constants.NAV_WEB -> R.id.action_navigationDialogFragment_to_webFragment
             else -> null

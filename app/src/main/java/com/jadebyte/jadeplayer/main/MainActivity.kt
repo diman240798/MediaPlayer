@@ -1,5 +1,3 @@
-// Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
-
 package com.jadebyte.jadeplayer.main
 
 import android.content.Intent
@@ -15,6 +13,7 @@ class MainActivity : AppCompatActivity() {
 
     private val browseTree: BrowseTree by inject()
     private val playlistMediaSource: PlaylistMediaSource by inject()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

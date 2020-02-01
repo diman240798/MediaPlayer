@@ -16,7 +16,7 @@ import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.albums.Album
 import com.jadebyte.jadeplayer.main.artists.Artist
 import com.jadebyte.jadeplayer.main.common.image.CircularTransparentCenter
-import com.jadebyte.jadeplayer.main.explore.RecentlyPlayed
+import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayed
 import com.jadebyte.jadeplayer.main.genres.Genre
 import com.jadebyte.jadeplayer.main.playback.MediaItemData
 import com.jadebyte.jadeplayer.main.playlist.Playlist
