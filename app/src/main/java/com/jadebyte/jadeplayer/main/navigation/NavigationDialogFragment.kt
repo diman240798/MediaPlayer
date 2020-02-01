@@ -127,7 +127,7 @@ class NavigationDialogFragment : BaseFullscreenDialogFragment(), OnStartDragList
             Constants.NAV_SONGS -> R.id.action_navigationDialogFragment_to_songsFragment
             Constants.NAV_IDENTIFY -> R.id.action_navigationDialogFragment_to_shazamFragment
             Constants.NAV_ARTISTS -> R.id.action_navigationDialogFragment_to_artistsFragment
-            Constants.NAV_FAVOURITES -> R.id.
+            Constants.NAV_FAVOURITES -> R.id.action_navigationDialogFragment_to_favouriteSongsFragment
             Constants.NAV_GENRES -> R.id.action_navigationDialogFragment_to_genresFragment
             Constants.NAV_PLAYLIST -> R.id.action_navigationDialogFragment_to_playlistFragment
             Constants.NAV_RADIO -> TODO()

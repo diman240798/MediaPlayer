@@ -18,16 +18,16 @@ import kotlinx.android.parcel.Parcelize
 data class Album(
     override var id: String = "",
     val name: String,
-    val artist: String,
-    val tracks: Long? = 0,
-    val year: String? = "" // TODO:
+    val artist: String
+//    val tracks: Long? = 0,
+//    val year: String? = "" // TODO:
 ) : Model(), Parcelable {
 
     constructor(data: Cursor) : this(
         name = data.getString(data.getColumnIndex(MediaStore.Audio.Albums.ALBUM)),
         artist = data.getString(data.getColumnIndex(MediaStore.Audio.Albums.ARTIST)),
-        year = data.getString(data.getColumnIndex(MediaStore.Audio.Albums.FIRST_YEAR)),
-        tracks = data.getInt(data.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS)).toLong(),
+//        year = data.getString(data.getColumnIndex(MediaStore.Audio.Albums.FIRST_YEAR)),
+//        tracks = data.getInt(data.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS)).toLong(),
         id = data.getString(data.getColumnIndex(MediaStore.Audio.Albums._ID))
     )
 
@@ -40,7 +40,7 @@ data class Album(
     constructor(data: MediaMetadataCompat) : this(
         name = data.album ?: "",
         artist = data.artist ?: "",
-        tracks = data.trackNumber,
+//        tracks = data.trackNumber,
         id = data.albumId.urlEncoded
     )
 }

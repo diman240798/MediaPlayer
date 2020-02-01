@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.provider.MediaStore
 import android.support.v4.media.MediaMetadataCompat
 import com.jadebyte.jadeplayer.main.common.data.Model
+import com.jadebyte.jadeplayer.main.playback.title
 import kotlinx.android.parcel.Parcelize
 
 
@@ -30,7 +31,7 @@ data class Artist(
     )
 
     constructor(data: MediaMetadataCompat) : this(
-        name = data.getString(MediaStore.Audio.Artists.ARTIST),
+        name = data.title!!,
         songsCount = data.getLong(MediaStore.Audio.Artists.NUMBER_OF_TRACKS),
         albumsCount = data.getLong(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS),
         id = data.getLong(MediaStore.Audio.Artists._ID)

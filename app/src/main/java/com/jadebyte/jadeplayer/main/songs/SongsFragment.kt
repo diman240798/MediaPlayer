@@ -26,7 +26,7 @@ class SongsFragment : BasePlayerFragment<Song>() {
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {
-        playbackViewModel.playAll(items[position].id.toString())
+        playbackViewModel.playAll(items[position].id)
     }
 
     override fun onOverflowMenuClick(position: Int) {

@@ -18,6 +18,6 @@ class SongsMenuBottomSheetDialogFragmentViewModel(application: Application) : An
     }
 
     fun setSong(mediaItemData: MediaItemData) { // TODO: FixMe: Send Real Song, not this stub
-        _song.value = Song(mediaItemData.id, mediaItemData.title, "", Album("0", "", mediaItemData.subtitle, 1), "", 0, "", "", true, true, 0)
+        _song.value = Song(mediaItemData.id, mediaItemData.title, "", Album("0", "", mediaItemData.subtitle), "", 0, "", "", true, true, 0)
     }
 }

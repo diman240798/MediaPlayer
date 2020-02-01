@@ -3,9 +3,6 @@
 package com.jadebyte.jadeplayer.main.songs
 
 
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,11 +11,12 @@ import androidx.annotation.IdRes
 import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
+import com.jadebyte.jadeplayer.main.db.favourite.FavouriteSongsRepository
 import com.jadebyte.jadeplayer.main.favourite.FavouriteSongsViewModel
-import com.jadebyte.jadeplayer.main.favourite.addRemoveToFavourite
 import com.jadebyte.jadeplayer.main.playback.PlaybackViewModel
 import com.jadebyte.jadeplayer.main.web.WebFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_playback_songs_menu_bottom_sheet_dialog.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -26,8 +24,7 @@ class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private val webVM: WebFragmentViewModel by sharedViewModel()
     private val playbackViewModel: PlaybackViewModel by sharedViewModel()
-    private val favouriteSongsViewModel: FavouriteSongsViewModel by sharedViewModel()
-
+    private val favouriteSongsRepository: FavouriteSongsRepository by inject()
 
     private val viewModel: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
     @IdRes
@@ -59,13 +56,17 @@ class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun updateFavourite() {
-        val ids = favouriteSongsViewModel.favouriteSongsRepository.get().ids
         val currentId = viewModel.song.value?.id
-        val heartImageId = if (ids.contains(currentId)) R.drawable.ic_heart_filled
-        else R.drawable.ic_heart
-        val heartImageDrawable = resources.getDrawable(heartImageId)
-        heartImageDrawable.setBounds( 0, 0, 40, 40 )
-        favourite.setCompoundDrawables(null, null, heartImageDrawable,null)
+        currentId?.let {
+            val contains = favouriteSongsRepository.containsId(currentId)
+            val heartImageId =
+                if (contains) R.drawable.ic_heart_filled
+                else R.drawable.ic_heart
+            val heartImageDrawable = resources.getDrawable(heartImageId)
+            heartImageDrawable.setBounds(0, 0, 40, 40)
+            favourite.setCompoundDrawables(null, null, heartImageDrawable, null)
+        }
+
     }
 
     override fun onClick(v: View?) {
@@ -103,10 +104,7 @@ class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private fun favouriteTrack() {
         viewModel.song.value?.id?.let {
-            addRemoveToFavourite(
-                it,
-                favouriteSongsViewModel.favouriteSongsRepository
-            )
+            favouriteSongsRepository.addRemove(it)
         }
         updateViews()
     }

@@ -103,17 +103,11 @@ class PlaybackViewModel(
         }
     }
 
-    fun playAlbum(album: Album, playId: String = Constants.PLAY_FIRST) {
-        val parentId = lastParendId
-        val list = mediaItems.value
-        if (parentId == album.id.urlEncoded && list != null && !list.isEmpty()) {
-            playMediaId(getItemFrmPlayId(playId, list)?.id)
-        } else {
-            playMediaAfterLoad = playId
-            mediaSessionConnection.unsubscribe(parentId, subscriptionCallback)
-            mediaSessionConnection.subscribe(album.id.urlEncoded, subscriptionCallback)
-        }
-    }
+    fun playAlbum(album: Album, playId: String = Constants.PLAY_FIRST) =
+        playMedia(album.id.urlEncoded, playId)
+
+    fun playFavourites(playId: String = Constants.PLAY_FIRST) =
+        playMedia(Constants.FAVOURITES_ROOT, playId)
 
     fun playFolder(folderPath: String, playId: String = Constants.PLAY_FIRST) =
         playMedia(folderPath, playId)
@@ -127,7 +121,7 @@ class PlaybackViewModel(
     private fun playMedia(listSourcePath: String, playStartId: String) {
         val parentId = lastParendId
         val list = mediaItems.value
-        if (parentId == listSourcePath && list != null) {
+        if (parentId == listSourcePath && list != null && !list.isEmpty()) {
             playMediaId(getItemFrmPlayId(playStartId, list)?.id)
         } else {
             playMediaAfterLoad = playStartId

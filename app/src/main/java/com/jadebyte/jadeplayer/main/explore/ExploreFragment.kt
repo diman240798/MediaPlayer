@@ -24,7 +24,6 @@ import com.jadebyte.jadeplayer.main.common.callbacks.OnItemClickListener
 import com.jadebyte.jadeplayer.main.common.data.Constants
 import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.db.recently.RecentlyPlayed
-import com.jadebyte.jadeplayer.main.favourite.FavouriteSongsViewModel
 import kotlinx.android.synthetic.main.fragment_explore.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -34,7 +33,6 @@ class ExploreFragment : Fragment(), OnItemClickListener {
     private var albums: List<Album> = emptyList()
     private var playedList: List<RecentlyPlayed> = emptyList()
     private val viewModel: ExploreViewModel by sharedViewModel()
-    private val favouriteSongsViewModel: FavouriteSongsViewModel by sharedViewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +43,6 @@ class ExploreFragment : Fragment(), OnItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        favouriteSongsViewModel.favouriteSongsRepository.load()
         return inflater.inflate(R.layout.fragment_explore, container, false)
     }
 
@@ -78,7 +75,8 @@ class ExploreFragment : Fragment(), OnItemClickListener {
                         emptyPlaylist.crossFadeWidth(progressBar)
                         return@Observer
                     } else {
-                        val otherView = if (emptyPlaylist.visibility == View.VISIBLE) emptyPlaylist else progressBar
+                        val otherView =
+                            if (emptyPlaylist.visibility == View.VISIBLE) emptyPlaylist else progressBar
                         playedRV.crossFadeWidth(otherView)
                     }
                 }
@@ -110,7 +108,13 @@ class ExploreFragment : Fragment(), OnItemClickListener {
         randomAlbumsRV.layoutManager = layoutManager
 
         val playedAdapter =
-            BaseAdapter(playedList, activity!!, R.layout.item_recently, BR.recentlyPlayed, animSet = null)
+            BaseAdapter(
+                playedList,
+                activity!!,
+                R.layout.item_recently,
+                BR.recentlyPlayed,
+                animSet = null
+            )
         playedRV.adapter = playedAdapter
         playedRV.layoutManager = LinearLayoutManager(activity)
         scrollView.isNestedScrollingEnabled = true
@@ -122,13 +126,18 @@ class ExploreFragment : Fragment(), OnItemClickListener {
             .addSharedElement(sharableView, transitionName)
             .build()
         val action =
-            ExploreFragmentDirections.actionExploreFragmentToAlbumSongsFragment(albums[position], transitionName)
+            ExploreFragmentDirections.actionExploreFragmentToAlbumSongsFragment(
+                albums[position],
+                transitionName
+            )
         findNavController().navigate(action, extras)
     }
 
     override fun onItemLongClick(position: Int) {
         val action =
-            ExploreFragmentDirections.actionExploreFragmentToAlbumsMenuBottomSheetDialogFragment(album = albums[position])
+            ExploreFragmentDirections.actionExploreFragmentToAlbumsMenuBottomSheetDialogFragment(
+                album = albums[position]
+            )
         findNavController().navigate(action)
     }
 

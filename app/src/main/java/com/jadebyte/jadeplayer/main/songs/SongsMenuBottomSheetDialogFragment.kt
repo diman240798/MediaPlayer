@@ -13,11 +13,11 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.main.common.view.BaseMenuBottomSheet
-import com.jadebyte.jadeplayer.main.favourite.FavouriteSongsViewModel
-import com.jadebyte.jadeplayer.main.favourite.addRemoveToFavourite
+import com.jadebyte.jadeplayer.main.db.favourite.FavouriteSongsRepository
 import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelection
 import com.jadebyte.jadeplayer.main.playback.mediasource.basicSongsSelectionArg
 import com.jadebyte.jadeplayer.main.web.WebFragmentViewModel
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -25,9 +25,10 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private val viewModel: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
     private val webVM: WebFragmentViewModel by sharedViewModel()
-    private val favouriteSongsViewModel: FavouriteSongsViewModel by sharedViewModel()
+    private val favouriteSongsRepository: FavouriteSongsRepository by inject()
 
-    @IdRes private var popUpTo: Int = 0
+    @IdRes
+    private var popUpTo: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +56,8 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
         // update vm
         webVM.setSearchString(this.viewModel.song.value!!)
         // change fragment
-        val action = SongsMenuBottomSheetDialogFragmentDirections.actionSongsMenuBottomSheetDialogFragmentToWebFragment()
+        val action =
+            SongsMenuBottomSheetDialogFragmentDirections.actionSongsMenuBottomSheetDialogFragmentToWebFragment()
         findNavController().navigate(action)
     }
 
@@ -67,13 +69,16 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
         val selection = "$basicSongsSelection AND ${MediaStore.Audio.Media._ID} = ?"
         val selectionArgs = arrayOf(basicSongsSelectionArg, viewModel.song.value!!.id.toString())
         val action = SongsMenuBottomSheetDialogFragmentDirections
-            .actionSongsMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(selectionArgs, selection)
+            .actionSongsMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(
+                selectionArgs,
+                selection
+            )
         val navOptions = NavOptions.Builder().setPopUpTo(popUpTo, false).build()
         findNavController().navigate(action, navOptions)
     }
 
     private fun favouriteTrack() {
-        viewModel.song.value?.id?.let { addRemoveToFavourite(it, favouriteSongsViewModel.favouriteSongsRepository) }
+        viewModel.song.value?.id?.let { favouriteSongsRepository.addRemove(it) }
     }
 
     private fun shareTrack() {

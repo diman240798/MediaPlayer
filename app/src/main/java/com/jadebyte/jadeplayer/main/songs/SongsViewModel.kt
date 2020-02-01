@@ -16,7 +16,7 @@ import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
 open class SongsViewModel(
     application: Application,
     browseTree: BrowseTree
-) : BaseMediaStoreViewModel<Song>(application, browseTree, SongSuplier()) {}
+) : BaseMediaStoreViewModel<Song>(application, browseTree, SongSuplier())
 
 val baseSongsProjection = arrayOf(
     MediaStore.Audio.Media.TITLE,

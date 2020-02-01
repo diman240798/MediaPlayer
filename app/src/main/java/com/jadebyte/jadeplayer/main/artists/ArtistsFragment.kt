@@ -21,11 +21,12 @@ import com.jadebyte.jadeplayer.main.common.view.BaseAdapter
 import com.jadebyte.jadeplayer.main.common.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_artists.*
 import kotlinx.android.synthetic.main.fragment_explore.navigationIcon
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ArtistsFragment : BaseFragment(), OnItemClickListener {
 
     private var items: List<Artist> = emptyList()
-    private lateinit var viewModel: ArtistsViewModel
+    private val viewModel: ArtistsViewModel by sharedViewModel()
 
 
     override fun onCreateView(
@@ -38,7 +39,6 @@ class ArtistsFragment : BaseFragment(), OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this)[ArtistsViewModel::class.java]
         viewModel.init(Constants.ARTISTS_ROOT)
         setupRecyclerView()
         observeViewModel()

@@ -8,6 +8,8 @@ import com.jadebyte.jadeplayer.main.albums.AlbumSongsViewModel
 import com.jadebyte.jadeplayer.main.albums.AlbumsViewModel
 import com.jadebyte.jadeplayer.main.artists.ArtistAlbumsViewModel
 import com.jadebyte.jadeplayer.main.artists.ArtistsViewModel
+import com.jadebyte.jadeplayer.main.db.AppRoomDatabase
+import com.jadebyte.jadeplayer.main.db.favourite.FavouriteSongsRepository
 import com.jadebyte.jadeplayer.main.explore.ExploreViewModel
 import com.jadebyte.jadeplayer.main.favourite.FavouriteSongsViewModel
 import com.jadebyte.jadeplayer.main.folders.FolderSongsViewModel
@@ -52,15 +54,16 @@ val commonModule = module {
     viewModel { NavViewModel(get()) }
     viewModel { PlaybackViewModel(get(), get(), get()) }
     viewModel { SearchViewModel(get()) }
+    viewModel { FavouriteSongsViewModel(get(), get()) }
     viewModel { SongsMenuBottomSheetDialogFragmentViewModel(get()) }
-    viewModel { FavouriteSongsViewModel(get()) }
     viewModel { WebFragmentViewModel() }
 
     // metadata
     single { PlaylistMediaSource() }
+    single { FavouriteSongsRepository(AppRoomDatabase.getDatabase(get()).favouriteSongsDao()) }
     single { MediaStoreSource() }
     single { MediaUpdateNotifier() }
-    single { BrowseTree(get(),  get(), get(), get()) }
+    single { BrowseTree(get(),  get(), get(), get(), get()) }
     // metadata VMs
     viewModel { FolderSongsViewModel(get(), get()) }
     viewModel { FoldersViewModel(get(), get()) }

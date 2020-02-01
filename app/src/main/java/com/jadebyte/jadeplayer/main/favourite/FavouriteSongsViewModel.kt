@@ -1,15 +1,10 @@
 package com.jadebyte.jadeplayer.main.favourite
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import com.jadebyte.jadeplayer.main.db.AppRoomDatabase
-import com.jadebyte.jadeplayer.main.db.favourite.FavouriteSongsRepository
+import com.jadebyte.jadeplayer.main.playback.mediasource.BrowseTree
+import com.jadebyte.jadeplayer.main.songs.SongsViewModel
 
-class FavouriteSongsViewModel(application: Application) : AndroidViewModel(application) {
-    var favouriteSongsRepository: FavouriteSongsRepository
-
-    init {
-        val database = AppRoomDatabase.getDatabase(application)
-        favouriteSongsRepository = FavouriteSongsRepository(database.favouriteSongsDao())
-    }
-}
+class FavouriteSongsViewModel(
+    application: Application,
+    browseTree: BrowseTree
+) : SongsViewModel(application, browseTree)

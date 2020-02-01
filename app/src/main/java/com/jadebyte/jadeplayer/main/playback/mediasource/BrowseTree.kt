@@ -13,6 +13,8 @@ import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.jadebyte.jadeplayer.R
 import com.jadebyte.jadeplayer.common.urlEncoded
 import com.jadebyte.jadeplayer.main.common.data.Constants
+import com.jadebyte.jadeplayer.main.db.favourite.FavouriteSongsRepository
+import com.jadebyte.jadeplayer.main.favourite.FavouriteSongsViewModel
 import com.jadebyte.jadeplayer.main.genres.Genre
 import com.jadebyte.jadeplayer.main.playback.*
 import kotlinx.coroutines.CoroutineScope
@@ -52,8 +54,10 @@ class BrowseTree(
     val context: Context,
     val musicSource: MediaStoreSource,
     val playlistMediaSource: PlaylistMediaSource,
+    val favouriteSongsRepository: FavouriteSongsRepository,
     val mediaUpdateNotifier: MediaUpdateNotifier
 ) {
+
     var currentMediaSource: ConcatenatingMediaSource? = null
 
     val mediaIdToChildren = ConcurrentHashMap<String, CopyOnWriteArrayList<MediaMetadataCompat>>()
@@ -99,6 +103,7 @@ class BrowseTree(
         val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
         serviceScope.launch {
+            favouriteSongsRepository.load()
             musicSource.load(context).collect {
                 workoutItem(it, context)
             }
@@ -177,49 +182,56 @@ class BrowseTree(
             playlistsIds += it.id.toString()
         }
 
-        
+
 
 
 
         mediaIdToChildren[Constants.BROWSABLE_ROOT] = rootList
     }
 
-    private fun workoutItem(it: MediaMetadataCompat, context: Context) {
-        val albumMediaId = it.albumId.urlEncoded
-        val albumChildren = mediaIdToChildren[albumMediaId] ?: buildAlbumRoot(it)
-        albumChildren += it
+    private fun workoutItem(mediaItem: MediaMetadataCompat, context: Context) {
+        val albumMediaId = mediaItem.albumId.urlEncoded
+        val albumChildren = mediaIdToChildren[albumMediaId] ?: buildAlbumRoot(mediaItem)
+        albumChildren += mediaItem
 
 
-        val artistMediaId = it.artist.urlEncoded
-        val artistChildren = mediaIdToChildren[artistMediaId] ?: buildArtistRoot(it)
-        artistChildren += it
+        val artistMediaId = mediaItem.artist.urlEncoded
+        val artistChildren = mediaIdToChildren[artistMediaId] ?: buildArtistRoot(mediaItem)
+        artistChildren += mediaItem
 
         val songsChildren =
             mediaIdToChildren[Constants.SONGS_ROOT] ?: CopyOnWriteArrayList()
-        songsChildren += it
+        songsChildren += mediaItem
         mediaIdToChildren[Constants.SONGS_ROOT] = songsChildren
 
-        val file = File(it.mediaUri.toString())
+        val file = File(mediaItem.mediaUri.toString())
         val parentFile = file.parentFile
-        val foldersChildren = mediaIdToChildren[parentFile.path] ?: buildFoldersRoot(it, parentFile.path, parentFile.name)
-        foldersChildren += it
+        val foldersChildren = mediaIdToChildren[parentFile.path] ?: buildFoldersRoot(mediaItem, parentFile.path, parentFile.name)
+        foldersChildren += mediaItem
 
 
-        val songId = it.id?.toInt()
+        val songId = mediaItem.id?.toInt()
         val genre = songId?.let { getGenreForSongBySongId(context, songId) }
         genre?.let { genre ->
-            val genresChildren = mediaIdToChildren[genre.name] ?: buildGenresRoot(it, genre)
-            genresChildren += it
+            val genresChildren = mediaIdToChildren[genre.name] ?: buildGenresRoot(mediaItem, genre)
+            genresChildren += mediaItem
         }
 
-        it.id?.let { songId ->
+        mediaItem.id?.also { songId ->
             playlistMediaSource.playlists.forEach { playlist ->
                 if (playlist.songIds.contains(songId)) {
                     val url = playlist.id.urlEncoded
                     val playlistSongs = mediaIdToChildren[url] ?: CopyOnWriteArrayList()
-                    playlistSongs += it
+                    playlistSongs += mediaItem
                     mediaIdToChildren[url] = playlistSongs
                 }
+            }
+
+            val songIsFavourite = favouriteSongsRepository.containsId(songId)
+            if (songIsFavourite) {
+                val favRoot = mediaIdToChildren[Constants.FAVOURITES_ROOT] ?: CopyOnWriteArrayList()
+                favRoot += mediaItem
+                mediaIdToChildren[Constants.FAVOURITES_ROOT] = favRoot
             }
         }
     }
@@ -411,5 +423,17 @@ class BrowseTree(
                     || it.composer?.contains(query) ?: false
                     || it.composer?.contains(query) ?: false
         }
+    }
+
+    fun removeFromFavourites(id: String) {
+        val favRoot = mediaIdToChildren[Constants.FAVOURITES_ROOT]
+        val song = favRoot!!.first { it.id == id }
+        favRoot.remove(song)
+    }
+
+    fun addToFavourites(id: String) {
+        val favRoot = mediaIdToChildren[Constants.FAVOURITES_ROOT]
+        val song = mediaIdToChildren[Constants.SONGS_ROOT]!!.first { it.id == id }
+        favRoot!!.add(song)
     }
 }
