@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.ViewTreeObserver
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -54,5 +55,14 @@ object ViewUtils {
             fragment.postponeEnterTransition()
             viewTreeObserver?.addOnPreDrawListener(MyPreDrawListener())
         }
+    }
+
+    fun changeDarkTheme(isDarkTheme: Boolean) {
+        val theme = if (isDarkTheme) {
+            AppCompatDelegate.MODE_NIGHT_YES
+        } else {
+            AppCompatDelegate.MODE_NIGHT_NO
+        }
+        AppCompatDelegate.setDefaultNightMode(theme)
     }
 }

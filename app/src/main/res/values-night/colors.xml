@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
-  -->
 
 <resources>
-    <!--<color name="colorPrimary">#070E21</color>
+    <color name="colorPrimary">#070E21</color>
     <color name="colorPrimaryDark">#03060F</color>
     <color name="colorAccent">#FF4060</color>
     <color name="colorBackground">@color/colorPrimary</color>
@@ -19,5 +16,5 @@
     <color name="fadedColorPrimary">#161C2C</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="textColorSecondary">#B2FFFFFF</color>
-    <color name="search_icon_tint">#3A424D</color>-->
+    <color name="search_icon_tint">#3A424D</color>
 </resources>

@@ -183,6 +183,9 @@
         <action
             android:id="@+id/action_navigationDialogFragment_to_favouriteSongsFragment"
             app:destination="@id/favouriteSongsFragment" />
+        <action
+            android:id="@+id/action_navigationDialogFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </dialog>
     <fragment
         android:id="@+id/albumSongsFragment"
@@ -482,4 +485,20 @@
         </action>
     </fragment>
 
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.jadebyte.jadeplayer.main.settings.SettingsFragment">
+        <action
+            android:id="@+id/action_settingsFragment_to_navigationDialogFragment"
+            app:destination="@id/navigationDialogFragment">
+            <argument
+                android:name="origin"
+                android:defaultValue="7" />
+        </action>
+    </fragment>
+
 </navigation>
+
+
+    <!--<action android:id="@+id/open_settings_fragment"
+           app:destination="@id/settingsFragment"/>-->
