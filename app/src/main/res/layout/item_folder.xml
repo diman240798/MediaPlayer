@@ -10,7 +10,7 @@
 
         <variable
             name="folder"
-            type="com.jadebyte.jadeplayer.main.folders.Folder" />
+            type="com.nanicky.devteam.main.folders.Folder" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

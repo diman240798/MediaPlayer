@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.jadebyte.jadeplayer.main.MainFragment"
+        android:name="com.nanicky.devteam.main.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/playbackFragment"
-        android:name="com.jadebyte.jadeplayer.main.playback.PlaybackFragment"
+        android:name="com.nanicky.devteam.main.playback.PlaybackFragment"
         android:label="fragment_playback"
         tools:layout="@layout/fragment_playback" >
         <argument
@@ -35,7 +35,7 @@
     </fragment>
     <fragment
         android:id="@+id/lyricsFragment"
-        android:name="com.jadebyte.jadeplayer.main.lyrics.LyricsFragment"
+        android:name="com.nanicky.devteam.main.lyrics.LyricsFragment"
         android:label="fragment_lyrics"
         tools:layout="@layout/fragment_lyrics" >
         <argument
@@ -44,7 +44,7 @@
     </fragment>
     <dialog
         android:id="@+id/playbackSongsMenuBottomSheetDialogFragment"
-        android:name="com.jadebyte.jadeplayer.main.songs.PlaybackSongsMenuBottomSheetDialogFragment"
+        android:name="com.nanicky.devteam.main.songs.PlaybackSongsMenuBottomSheetDialogFragment"
         android:label="PlaybackSongsMenuBottomSheetDialogFragment" >
         <action
             android:id="@+id/action_playbackSongsMenuBottomSheetDialogFragment_to_webFragment"
@@ -52,6 +52,6 @@
     </dialog>
     <fragment
         android:id="@+id/webFragment"
-        android:name="com.jadebyte.jadeplayer.main.web.WebFragment"
+        android:name="com.nanicky.devteam.main.web.WebFragment"
         android:label="WebFragment" />
 </navigation>

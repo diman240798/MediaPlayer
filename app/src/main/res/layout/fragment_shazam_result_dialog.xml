@@ -8,7 +8,7 @@
     <data>
         <variable
             name="resutTrack"
-            type="com.jadebyte.jadeplayer.main.shazam.model.ResultTrack" />
+            type="com.nanicky.devteam.main.shazam.model.ResultTrack" />
     </data>
 
     <FrameLayout

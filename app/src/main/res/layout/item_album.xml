@@ -9,7 +9,7 @@
     <data>
         <variable
             name="album"
-            type="com.jadebyte.jadeplayer.main.albums.Album" />
+            type="com.nanicky.devteam.main.albums.Album" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -8,8 +8,4 @@
         android:bottom="150dp"
         android:drawable="@drawable/ic_launcher"
         android:gravity="center" />
-    <item
-        android:bottom="100dp"
-        android:drawable="@drawable/ic_jadeplayer"
-        android:gravity="bottom|center_horizontal" />
 </layer-list>

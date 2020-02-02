@@ -14,7 +14,7 @@ android {
     compileSdkVersion 28
     useLibrary 'android.test.base'
     defaultConfig {
-        applicationId "com.jadebyte.jadeplayer"
+        applicationId "com.nanicky.devteam.player"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1

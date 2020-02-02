@@ -12,7 +12,7 @@
 
         <variable
             name="viewModel"
-            type="com.jadebyte.jadeplayer.main.playback.PlaybackViewModel" />
+            type="com.nanicky.devteam.main.playback.PlaybackViewModel" />
 
     </data>
 

@@ -10,7 +10,7 @@
 
         <variable
             name="item"
-            type="com.jadebyte.jadeplayer.main.navigation.NavItem" />
+            type="com.nanicky.devteam.main.navigation.NavItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

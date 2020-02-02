@@ -12,7 +12,7 @@
 
         <variable
             name="playlist"
-            type="com.jadebyte.jadeplayer.main.playlist.Playlist" />
+            type="com.nanicky.devteam.main.playlist.Playlist" />
 
         <variable
             name="selectable"

@@ -1,0 +1,92 @@
+package com.nanicky.devteam.main.genres
+
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.TransitionInflater
+import com.nanicky.devteam.BR
+import com.nanicky.devteam.R
+import com.nanicky.devteam.databinding.FragmentGenreSongsBinding
+import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
+import com.nanicky.devteam.main.common.view.BaseAdapter
+import com.nanicky.devteam.main.common.view.BaseFragment
+import com.nanicky.devteam.main.playback.PlaybackViewModel
+import com.nanicky.devteam.main.songs.Song
+import kotlinx.android.synthetic.main.fragment_genre_songs.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+
+
+class GenreSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
+    private val playbackViewModel: PlaybackViewModel by sharedViewModel()
+    private val viewModel: GenreSongsViewModel by sharedViewModel()
+    private lateinit var genre: Genre
+    private var items = emptyList<Song>()
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        genre = arguments!!.getParcelable("genre")!!
+        viewModel.init(genre.name)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val binding = FragmentGenreSongsBinding.inflate(inflater, container, false)
+        binding.genre = genre
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        ViewCompat.setTransitionName(genreNameField, arguments!!.getString("transitionName"))
+        setupViews()
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewModel.items.observe(viewLifecycleOwner, Observer(this::updateViews))
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun updateViews(items: List<Song>) {
+        if (items.isEmpty()) {
+            findNavController().popBackStack()
+            return
+        }
+        this.items = items
+        genreSongsDuration.text = getSongsTotalTime(items)
+        (genreSongsRV.adapter as BaseAdapter<Song>).updateItems(items)
+    }
+
+    private fun setupViews() {
+        val adapter = BaseAdapter(items, activity!!, R.layout.item_model_song, BR.song, itemClickListener = this)
+        genreSongsRV.adapter = adapter
+        genreSongsRV.layoutManager = LinearLayoutManager(activity!!)
+        sectionBackButton.setOnClickListener(this)
+        moreOptions.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.sectionBackButton -> findNavController().popBackStack()
+            R.id.moreOptions -> findNavController().navigate(
+                GenreSongsFragmentDirections
+                    .actionGenreSongsFragmentToGenresMenuBottomSheetDialogFragment(genre = genre)
+            )
+        }
+    }
+
+    override fun onItemClick(position: Int, sharableView: View?) {
+        val genreId = genre.name
+        playbackViewModel.playGenre(genreId, items[position].id)
+    }
+}

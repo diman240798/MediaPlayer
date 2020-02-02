@@ -10,7 +10,7 @@
 
         <variable
             name="genre"
-            type="com.jadebyte.jadeplayer.main.genres.Genre" />
+            type="com.nanicky.devteam.main.genres.Genre" />
 
     </data>
 

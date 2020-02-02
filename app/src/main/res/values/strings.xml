@@ -1,9 +1,5 @@
-<!--
-  Copyright (c) 2019 . Wilberforce Uwadiegwu. All Rights Reserved.
-  -->
-
 <resources>
-    <string name="app_name">Jade Player</string>
+    <string name="app_name">Media Viewer</string>
 
     <!--OnBoarding Slides-->
     <string name="got_it">Got it</string>
@@ -162,7 +158,7 @@
     <string name="remove_picture">Remove picture</string>
     <string name="success">Success</string>
     <string name="notification_channel">Now Playing</string>
-    <string name="notification_channel_description">Shows what music is currently playing in Jade Player</string>
+    <string name="notification_channel_description">Shows what music is currently playing in Media Viewer</string>
     <string name="playing_now">Playing Now</string>
     <string name="search_hint">Search title, album, artist, genre or playlist</string>
     <string name="no_results">No results found for \"%s\"</string>

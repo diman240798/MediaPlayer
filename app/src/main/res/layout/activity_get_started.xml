@@ -23,24 +23,25 @@
         app:layout_constraintBottom_toBottomOf="@+id/guideLine1"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/jadeplayer"
+        app:layout_constraintRight_toLeftOf="@+id/title"
         app:layout_constraintTop_toTopOf="@+id/guideLine1"
         app:srcCompat="@drawable/ic_launcher" />
 
-    <ImageView
-        android:id="@+id/jadeplayer"
+    <TextView
+        android:id="@+id/title"
+        android:textColor="#fff"
+        style="@style/AppTheme.SectionTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_small"
         android:layout_marginEnd="@dimen/margin_small"
-        android:contentDescription="@string/app_name"
+        android:text="@string/app_name"
         android:tint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/launcherIcon"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@+id/launcherIcon"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/launcherIcon"
-        app:srcCompat="@drawable/ic_jadeplayer" />
+        app:layout_constraintTop_toTopOf="@+id/launcherIcon" />
 
     <Button
         android:id="@+id/getStarted"

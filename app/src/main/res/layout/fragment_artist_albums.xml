@@ -11,7 +11,7 @@
 
         <variable
             name="artist"
-            type="com.jadebyte.jadeplayer.main.artists.Artist" />
+            type="com.nanicky.devteam.main.artists.Artist" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

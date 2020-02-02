@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/exploreFragment"
-        android:name="com.jadebyte.jadeplayer.main.explore.ExploreFragment"
+        android:name="com.nanicky.devteam.main.explore.ExploreFragment"
         android:label="fragment_explore"
         tools:layout="@layout/fragment_explore">
         <action
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/songsFragment"
-        android:name="com.jadebyte.jadeplayer.main.songs.SongsFragment"
+        android:name="com.nanicky.devteam.main.songs.SongsFragment"
         android:label="SongsFragment"
         tools:layout="@layout/fragment_base_player">
         <action
@@ -51,7 +51,7 @@
     </fragment>
     <fragment
         android:id="@+id/albumsFragment"
-        android:name="com.jadebyte.jadeplayer.main.albums.AlbumsFragment"
+        android:name="com.nanicky.devteam.main.albums.AlbumsFragment"
         android:label="AlbumsFragment"
         tools:layout="@layout/fragment_base_player">
         <action
@@ -71,7 +71,7 @@
     </fragment>
     <fragment
         android:id="@+id/playlistFragment"
-        android:name="com.jadebyte.jadeplayer.main.playlist.PlaylistFragment"
+        android:name="com.nanicky.devteam.main.playlist.PlaylistFragment"
         android:label="PlaylistFragment"
         tools:layout="@layout/fragment_playlist">
         <action
@@ -98,7 +98,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.jadebyte.jadeplayer.main.search.SearchFragment"
+        android:name="com.nanicky.devteam.main.search.SearchFragment"
         android:label="SearchFragment"
         tools:layout="@layout/fragment_search" >
         <action
@@ -142,7 +142,7 @@
 
     <dialog
         android:id="@+id/navigationDialogFragment"
-        android:name="com.jadebyte.jadeplayer.main.navigation.NavigationDialogFragment"
+        android:name="com.nanicky.devteam.main.navigation.NavigationDialogFragment"
         android:label="fragment_navigation_dialog"
         tools:layout="@layout/fragment_navigation_dialog">
         <argument
@@ -189,12 +189,12 @@
     </dialog>
     <fragment
         android:id="@+id/albumSongsFragment"
-        android:name="com.jadebyte.jadeplayer.main.albums.AlbumSongsFragment"
+        android:name="com.nanicky.devteam.main.albums.AlbumSongsFragment"
         android:label="albumSongsFragment"
         tools:layout="@layout/fragment_album_songs">
         <argument
             android:name="album"
-            app:argType="com.jadebyte.jadeplayer.main.albums.Album" />
+            app:argType="com.nanicky.devteam.main.albums.Album" />
         <argument
             android:name="transitionName"
             app:argType="string" />
@@ -207,7 +207,7 @@
     </fragment>
     <fragment
         android:id="@+id/artistsFragment"
-        android:name="com.jadebyte.jadeplayer.main.artists.ArtistsFragment"
+        android:name="com.nanicky.devteam.main.artists.ArtistsFragment"
         android:label="fragment_artists"
         tools:layout="@layout/fragment_artists">
         <action
@@ -224,7 +224,7 @@
     </fragment>
     <fragment
         android:id="@+id/artistAlbumsFragment"
-        android:name="com.jadebyte.jadeplayer.main.artists.ArtistAlbumsFragment"
+        android:name="com.nanicky.devteam.main.artists.ArtistAlbumsFragment"
         android:label="ArtistAlbumsFragment"
         tools:layout="@layout/fragment_artist_albums">
         <action
@@ -233,7 +233,7 @@
             app:launchSingleTop="false" />
         <argument
             android:name="artist"
-            app:argType="com.jadebyte.jadeplayer.main.artists.Artist" />
+            app:argType="com.nanicky.devteam.main.artists.Artist" />
         <argument
             android:name="transitionName"
             app:argType="string" />
@@ -251,7 +251,7 @@
     </fragment>
     <dialog
         android:id="@+id/songsMenuBottomSheetDialogFragment"
-        android:name="com.jadebyte.jadeplayer.main.songs.SongsMenuBottomSheetDialogFragment"
+        android:name="com.nanicky.devteam.main.songs.SongsMenuBottomSheetDialogFragment"
         android:label="fragment_songs_menu_bottom_sheet_dialog"
         tools:layout="@layout/fragment_songs_menu_bottom_sheet_dialog">
         <action
@@ -267,7 +267,7 @@
     </dialog>
     <fragment
         android:id="@+id/playlistSongsFragment"
-        android:name="com.jadebyte.jadeplayer.main.playlist.PlaylistSongsFragment"
+        android:name="com.nanicky.devteam.main.playlist.PlaylistSongsFragment"
         android:label="PlaylistSongsFragment"
         tools:layout="@layout/fragment_playlist_songs">
         <argument
@@ -275,7 +275,7 @@
             app:argType="string" />
         <argument
             android:name="playlist"
-            app:argType="com.jadebyte.jadeplayer.main.playlist.Playlist" />
+            app:argType="com.nanicky.devteam.main.playlist.Playlist" />
         <action
             android:id="@+id/action_playlistSongsFragment_to_playlistMenuBottomSheetDialogFragment"
             app:destination="@id/playlistMenuBottomSheetDialogFragment"
@@ -287,23 +287,23 @@
     </fragment>
     <dialog
         android:id="@+id/writePlaylistDialogFragment"
-        android:name="com.jadebyte.jadeplayer.main.playlist.WritePlaylistDialogFragment"
+        android:name="com.nanicky.devteam.main.playlist.WritePlaylistDialogFragment"
         android:label="fragment_new_playlist_dialog"
         tools:layout="@layout/fragment_write_playlist_dialog">
         <argument
             android:name="playlist"
             android:defaultValue="@null"
-            app:argType="com.jadebyte.jadeplayer.main.playlist.Playlist"
+            app:argType="com.nanicky.devteam.main.playlist.Playlist"
             app:nullable="true" />
     </dialog>
     <dialog
         android:id="@+id/playlistMenuBottomSheetDialogFragment"
-        android:name="com.jadebyte.jadeplayer.main.playlist.PlaylistMenuBottomSheetDialogFragment"
+        android:name="com.nanicky.devteam.main.playlist.PlaylistMenuBottomSheetDialogFragment"
         android:label="fragment_playlist_menu_bottom_sheet_dialog"
         tools:layout="@layout/fragment_playlist_menu_bottom_sheet_dialog">
         <argument
             android:name="playlist"
-            app:argType="com.jadebyte.jadeplayer.main.playlist.Playlist" />
+            app:argType="com.nanicky.devteam.main.playlist.Playlist" />
         <argument
             android:name="popUpTo"
             app:argType="reference" />
@@ -318,16 +318,16 @@
     </dialog>
     <dialog
         android:id="@+id/playlistSongsEditorDialogFragment"
-        android:name="com.jadebyte.jadeplayer.main.playlist.PlaylistSongsEditorDialogFragment"
+        android:name="com.nanicky.devteam.main.playlist.PlaylistSongsEditorDialogFragment"
         android:label="PlaylistSongsEditorDialogFragment"
         tools:layout="@layout/fragment_playlist_songs_editor_dialog">
         <argument
             android:name="playlist"
-            app:argType="com.jadebyte.jadeplayer.main.playlist.Playlist" />
+            app:argType="com.nanicky.devteam.main.playlist.Playlist" />
     </dialog>
     <fragment
         android:id="@+id/genresFragment"
-        android:name="com.jadebyte.jadeplayer.main.genres.GenresFragment"
+        android:name="com.nanicky.devteam.main.genres.GenresFragment"
         android:label="fragment_genres"
         tools:layout="@layout/fragment_genres">
         <action
@@ -351,12 +351,12 @@
     </fragment>
     <fragment
         android:id="@+id/genreSongsFragment"
-        android:name="com.jadebyte.jadeplayer.main.genres.GenreSongsFragment"
+        android:name="com.nanicky.devteam.main.genres.GenreSongsFragment"
         android:label="GenreSongsFragment"
         tools:layout="@layout/fragment_genre_songs">
         <argument
             android:name="genre"
-            app:argType="com.jadebyte.jadeplayer.main.genres.Genre" />
+            app:argType="com.nanicky.devteam.main.genres.Genre" />
         <argument
             android:name="transitionName"
             app:argType="string" />
@@ -371,12 +371,12 @@
     </fragment>
     <dialog
         android:id="@+id/genresMenuBottomSheetDialogFragment"
-        android:name="com.jadebyte.jadeplayer.main.genres.GenresMenuBottomSheetDialogFragment"
+        android:name="com.nanicky.devteam.main.genres.GenresMenuBottomSheetDialogFragment"
         android:label="fragment_genres_menu_bottom_sheet_dialog"
         tools:layout="@layout/fragment_genres_menu_bottom_sheet_dialog" >
         <argument
             android:name="genre"
-            app:argType="com.jadebyte.jadeplayer.main.genres.Genre" />
+            app:argType="com.nanicky.devteam.main.genres.Genre" />
         <argument
             android:name="popUpTo"
             app:argType="reference" />
@@ -387,7 +387,7 @@
     </dialog>
     <dialog
         android:id="@+id/addSongsToPlaylistsFragment"
-        android:name="com.jadebyte.jadeplayer.main.playlist.AddSongsToPlaylistsFragment"
+        android:name="com.nanicky.devteam.main.playlist.AddSongsToPlaylistsFragment"
         android:label="fragment_add_songs_to_playlists"
         tools:layout="@layout/fragment_add_songs_to_playlists" >
         <argument
@@ -412,7 +412,7 @@
     </dialog>
     <dialog
         android:id="@+id/albumsMenuBottomSheetDialogFragment"
-        android:name="com.jadebyte.jadeplayer.main.albums.AlbumsMenuBottomSheetDialogFragment"
+        android:name="com.nanicky.devteam.main.albums.AlbumsMenuBottomSheetDialogFragment"
         android:label="fragment_albums_menu_bottom_sheet_dialog"
         tools:layout="@layout/fragment_albums_menu_bottom_sheet_dialog" >
         <action
@@ -423,11 +423,11 @@
             app:argType="reference" />
         <argument
             android:name="album"
-            app:argType="com.jadebyte.jadeplayer.main.albums.Album" />
+            app:argType="com.nanicky.devteam.main.albums.Album" />
     </dialog>
     <fragment
         android:id="@+id/shazamFragment"
-        android:name="com.jadebyte.jadeplayer.main.shazam.ShazamFragment"
+        android:name="com.nanicky.devteam.main.shazam.ShazamFragment"
         android:label="ShazamFragment" >
         <action
             android:id="@+id/action_shazamFragment_to_fragmentShazamBottomDialog"
@@ -442,7 +442,7 @@
     <dialog
         tools:layout="@layout/fragment_shazam_result_dialog"
         android:id="@+id/fragmentShazamBottomDialog"
-        android:name="com.jadebyte.jadeplayer.main.shazam.FragmentShazamBottomDialog"
+        android:name="com.nanicky.devteam.main.shazam.FragmentShazamBottomDialog"
         android:label="FragmentShazamBottomDialog" >
         <argument
             android:name="resultTrackJson"
@@ -450,7 +450,7 @@
     </dialog>
     <fragment
         android:id="@+id/foldersFragment"
-        android:name="com.jadebyte.jadeplayer.main.folders.FoldersFragment"
+        android:name="com.nanicky.devteam.main.folders.FoldersFragment"
         android:label="fragment_folders"
         tools:layout="@layout/fragment_folders" >
         <action
@@ -466,15 +466,15 @@
     </fragment>
     <fragment
         android:id="@+id/folderSongsFragment"
-        android:name="com.jadebyte.jadeplayer.main.folders.FolderSongsFragment"
+        android:name="com.nanicky.devteam.main.folders.FolderSongsFragment"
         android:label="FolderSongsFragment" />
     <fragment
         android:id="@+id/webFragment"
-        android:name="com.jadebyte.jadeplayer.main.web.WebFragment"
+        android:name="com.nanicky.devteam.main.web.WebFragment"
         android:label="WebFragment" />
     <fragment
         android:id="@+id/favouriteSongsFragment"
-        android:name="com.jadebyte.jadeplayer.main.favourite.FavouriteSongsFragment"
+        android:name="com.nanicky.devteam.main.favourite.FavouriteSongsFragment"
         android:label="FavouriteSongsFragment" >
         <action
             android:id="@+id/action_favouriteSongsFragment_to_navigationDialogFragment"
@@ -487,7 +487,7 @@
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.jadebyte.jadeplayer.main.settings.SettingsFragment">
+        android:name="com.nanicky.devteam.main.settings.SettingsFragment">
         <action
             android:id="@+id/action_settingsFragment_to_navigationDialogFragment"
             app:destination="@id/navigationDialogFragment">
