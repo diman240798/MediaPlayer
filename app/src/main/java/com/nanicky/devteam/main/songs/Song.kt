@@ -7,7 +7,6 @@ import android.support.v4.media.MediaMetadataCompat
 import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.common.data.Model
 import com.nanicky.devteam.main.common.utils.ImageUtils
-import com.nanicky.devteam.main.common.utils.Utils.getTrackNumber
 import com.nanicky.devteam.main.playback.*
 import kotlinx.android.parcel.Parcelize
 
@@ -20,7 +19,6 @@ data class Song(
     val album: Album,
     val path: String,
     val duration: Long,
-    val number: String,
     val artPath: String,
     var isCurrent: Boolean = false,
     var selected: Boolean = false,
@@ -33,8 +31,7 @@ data class Song(
         album = Album(cursor, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))),
         path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)),
         duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)),
-        artPath = ImageUtils.getAlbumArtUri(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))).toString(),
-        number = getTrackNumber(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)))
+        artPath = ImageUtils.getAlbumArtUri(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))).toString()
     )
 
     constructor(cursor: Cursor, audioId: Long?) : this(
@@ -45,7 +42,6 @@ data class Song(
         path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)),
         duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION)),
         artPath = ImageUtils.getAlbumArtUri(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_ID))).toString(),
-        number = getTrackNumber(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK))),
         audioId = audioId
     )
 
@@ -55,7 +51,6 @@ data class Song(
         album = Album(data),
         path = data.mediaUri.toString(),
         duration = data.duration,
-        artPath = ImageUtils.getAlbumArtUri(data.albumId).toString(),
-        number = data.trackNumber?.toString() ?: ""
+        artPath = ImageUtils.getAlbumArtUri(data.albumId).toString()
     )
 }

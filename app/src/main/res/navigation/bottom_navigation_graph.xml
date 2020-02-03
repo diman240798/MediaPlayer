@@ -483,6 +483,13 @@
                 android:name="origin"
                 android:defaultValue="3" />
         </action>
+        <action
+            android:id="@+id/action_favouriteSongsFragment_to_songsMenuBottomSheetDialogFragment"
+            app:destination="@id/songsMenuBottomSheetDialogFragment">
+            <argument
+                android:name="popUpTo"
+                android:defaultValue="@id/favouriteSongsFragment" />
+        </action>
     </fragment>
 
     <fragment

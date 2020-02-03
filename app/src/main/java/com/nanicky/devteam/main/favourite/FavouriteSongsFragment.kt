@@ -2,6 +2,7 @@ package com.nanicky.devteam.main.favourite
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.BR
 import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.data.Constants
@@ -28,13 +29,12 @@ class FavouriteSongsFragment : BasePlayerFragment<Song>() {
     }
 
     override fun onOverflowMenuClick(position: Int) {
-        TODO()
-        /*// update vm
+        // update vm
         val song = items[position]
         songsMenuBottomDialogVM.setSong(song)
         // change fragment
-        val action = FavouriteSongsFragmentDirections.actionFavouriteSongsFragmentToNavigationDialogFragment()
-        findNavController().navigate(action)*/
+        val action = FavouriteSongsFragmentDirections.actionFavouriteSongsFragmentToSongsMenuBottomSheetDialogFragment()
+        findNavController().navigate(action)
     }
 
     override var itemLayoutId: Int = R.layout.item_song

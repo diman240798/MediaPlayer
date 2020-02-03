@@ -183,6 +183,7 @@ class BrowseTree(
 
 
 
+        mediaIdToChildren[Constants.FAVOURITES_ROOT] = CopyOnWriteArrayList()
         mediaIdToChildren[Constants.BROWSABLE_ROOT] = rootList
     }
 
@@ -226,7 +227,7 @@ class BrowseTree(
 
             val songIsFavourite = favouriteSongsRepository.containsId(songId)
             if (songIsFavourite) {
-                val favRoot = mediaIdToChildren[Constants.FAVOURITES_ROOT] ?: CopyOnWriteArrayList()
+                val favRoot = mediaIdToChildren[Constants.FAVOURITES_ROOT]!!
                 favRoot += mediaItem
                 mediaIdToChildren[Constants.FAVOURITES_ROOT] = favRoot
             }

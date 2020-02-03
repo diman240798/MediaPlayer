@@ -275,8 +275,6 @@ fun MediaMetadataCompat.Builder.from(cursor: Cursor, count: Long, art: Bitmap?):
         Utils.artworkUri,
         cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
     )
-    val songNumber = Utils.getTrackNumber(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK))).toLongOrNull() ?: 0
-
     id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID)).toString()
     title = songTitle
     artist = songArtist
@@ -284,7 +282,6 @@ fun MediaMetadataCompat.Builder.from(cursor: Cursor, count: Long, art: Bitmap?):
     albumId = songAlbumId
     duration = durationMs
     mediaUri = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
-    trackNumber = songNumber
     trackCount = count
     flag = MediaItem.FLAG_PLAYABLE
     albumArt = art

@@ -16,6 +16,7 @@ import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
 import com.nanicky.devteam.main.playback.mediasource.basicSongsSelection
 import com.nanicky.devteam.main.playback.mediasource.basicSongsSelectionArg
 import com.nanicky.devteam.main.web.WebFragmentViewModel
+import kotlinx.android.synthetic.main.fragment_songs_menu_bottom_sheet_dialog.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -41,6 +42,24 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
         return inflater.inflate(R.layout.fragment_songs_menu_bottom_sheet_dialog, container, false)
     }
 
+    fun updateViews() {
+        updateFavourite()
+    }
+
+    private fun updateFavourite() {
+        val currentId = viewModel.song.value?.id
+        currentId?.let {
+            val contains = favouriteSongsRepository.containsId(currentId)
+            val heartImageId =
+                if (contains) R.drawable.ic_heart_filled
+                else R.drawable.ic_heart
+            val heartImageDrawable = resources.getDrawable(heartImageId)
+            heartImageDrawable.setBounds(0, 0, 40, 40)
+            favourite.setCompoundDrawables(null, null, heartImageDrawable, null)
+        }
+
+    }
+
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.searchAuthor -> searchAuthorWeb()
@@ -60,10 +79,6 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
         findNavController().navigate(action)
     }
 
-    private fun deleteTrack() {
-        // TODO: Implement
-    }
-
     private fun addTrackToPlayList() {
         val selection = "$basicSongsSelection AND ${MediaStore.Audio.Media._ID} = ?"
         val selectionArgs = arrayOf(basicSongsSelectionArg, viewModel.song.value!!.id.toString())
@@ -78,13 +93,14 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private fun favouriteTrack() {
         viewModel.song.value?.id?.let { favouriteSongsRepository.addRemove(it) }
+        updateViews()
     }
 
     private fun shareTrack() {
         context?.also { context ->
             val song = viewModel.song.value
             song?.also {
-                Utils.share(context, "${song.title} - ${song.album.artist}", song.album.artist, "Share Song")
+                Utils.share(context, "${song.album.artist}- ${song.title}", song.album.artist, "Share Song")
             }
         }
     }

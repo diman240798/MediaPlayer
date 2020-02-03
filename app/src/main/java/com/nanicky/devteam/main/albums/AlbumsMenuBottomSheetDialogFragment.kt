@@ -66,6 +66,6 @@ class AlbumsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun share() {
-        context?.also { Utils.share(it, "${album.name} - ${album.artist}", album.artist, "Share Album") }
+        context?.also { Utils.share(it, "${album.artist} - ${album.name}", album.artist, "Share Album") }
     }
 }

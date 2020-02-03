@@ -70,6 +70,7 @@
                             android:contentDescription="@string/folder_art"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_folder"
+                            android:tint="?android:textColorPrimary"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
