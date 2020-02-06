@@ -12,6 +12,7 @@ import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.nanicky.devteam.R
 import com.nanicky.devteam.common.urlEncoded
 import com.nanicky.devteam.main.common.data.Constants
+import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playback.*
@@ -52,6 +53,7 @@ class BrowseTree(
     val musicSource: MediaStoreSource,
     val playlistMediaSource: PlaylistMediaSource,
     val favouriteSongsRepository: FavouriteSongsRepository,
+    val currentSongRepository: CurrentQueueSongsRepository,
     val mediaUpdateNotifier: MediaUpdateNotifier
 ) {
 
@@ -100,6 +102,7 @@ class BrowseTree(
         val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
         serviceScope.launch {
+            currentSongRepository.load()
             favouriteSongsRepository.load()
             musicSource.load(context).collect {
                 workoutItem(it, context)

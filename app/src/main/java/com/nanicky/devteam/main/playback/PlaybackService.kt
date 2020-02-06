@@ -4,6 +4,7 @@ package com.nanicky.devteam.main.playback
 
 import android.app.PendingIntent
 import android.content.SharedPreferences
+import android.media.MediaDescription
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.session.MediaControllerCompat
@@ -18,12 +19,12 @@ import com.google.android.exoplayer2.upstream.FileDataSourceFactory
 import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.db.AppRoomDatabase
+import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.recently.RecentlyPlayedRepository
 import com.nanicky.devteam.main.playback.mediasession.MediaControllerCallback
 import com.nanicky.devteam.main.playback.mediasession.QueueEditor
 import com.nanicky.devteam.main.playback.mediasession.QueueNavigator
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
-import com.nanicky.devteam.main.playback.mediasource.MediaStoreSource
 import com.nanicky.devteam.main.playback.mediasource.PlaybackPreparer
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
@@ -46,7 +47,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
     private lateinit var mediaSessionConnector: MediaSessionConnector
     internal lateinit var recentRepo: RecentlyPlayedRepository
 
-    private val mediaSource: MediaStoreSource by inject()
+    private val currentSongRepository: CurrentQueueSongsRepository by inject()
     private val browseTree: BrowseTree by inject()
 
     private val serviceJob = SupervisorJob()
@@ -107,6 +108,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
                         browseTree,
                         exoPlayer,
                         dataSourceFactory,
+                        currentSongRepository,
                         preferences
                     )
                 it.setPlayer(exoPlayer)
@@ -147,6 +149,18 @@ class PlaybackService : MediaBrowserServiceCompat() {
     }
 
     override fun onLoadChildren(parentId: String, result: Result<List<MediaItem>>) {
+        if (parentId == Constants.CURRENT_QUEUE_ROOT) {
+            val currentQueueItems = currentSongRepository.get()?.map {
+                MediaItem(it.description, it.flag)
+            }
+            if (currentQueueItems?.isEmpty() != false) {
+                result.detach()
+            } else {
+                result.sendResult(currentQueueItems)
+            }
+            return
+        }
+
         val children = browseTree[parentId]?.map {
             MediaItem(it.description, it.flag)
         }

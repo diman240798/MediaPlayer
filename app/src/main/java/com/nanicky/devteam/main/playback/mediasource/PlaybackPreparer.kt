@@ -4,6 +4,9 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.ResultReceiver
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.exoplayer2.ControlDispatcher
@@ -12,8 +15,8 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.DataSource
 import com.nanicky.devteam.main.common.data.Constants
-import com.nanicky.devteam.main.playback.id
-import com.nanicky.devteam.main.playback.toMediaSource
+import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
+import com.nanicky.devteam.main.playback.*
 import timber.log.Timber
 
 
@@ -21,6 +24,7 @@ class PlaybackPreparer(
     private val browseTree: BrowseTree,
     private val exoPlayer: ExoPlayer,
     private val dataSourceFactory: DataSource.Factory,
+    private val currentSongRepository: CurrentQueueSongsRepository,
     private val preferences: SharedPreferences
 ) : MediaSessionConnector.PlaybackPreparer {
 
@@ -65,19 +69,43 @@ class PlaybackPreparer(
      */
     override fun onPrepareFromMediaId(mediaId: String?, playWhenReady: Boolean, extras: Bundle?) {
 
+        val lastParentId: String? = extras?.getString("uri")
+
+        if (lastParentId == Constants.CURRENT_QUEUE_ROOT) {
+            currentSongRepository.get()?.map {
+                MediaMetadataCompat.Builder().apply {
+                    id = it.id!!
+                    title = it.title
+                    artist = it.artist
+                    album = it.album
+                    albumId = it.albumId
+                    albumArtUri = it.albumArtUri.toString()
+
+                    mediaUri = it.description.mediaUri.toString()
+                    albumArtUri = it.albumArtUri.toString()
+                    flag = MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                    displayTitle = it.title
+                    displaySubtitle = it.artist
+                    displayDescription = it.description.title.toString()
+                    downloadStatus = MediaDescriptionCompat.STATUS_DOWNLOADED
+                }
+            }
+            return
+        }
+
         val itemToPlay =
-            browseTree.mediaIdToChildren[Constants.SONGS_ROOT]?.find { it.id == mediaId }
+            browseTree[Constants.SONGS_ROOT]?.find { it.id == mediaId }
         if (itemToPlay == null) {
             Timber.w("onPrepareFromMediaId: Song with id $mediaId not found")
             return
         }
 
-        val lastParentId: String? = extras?.getString("uri")
+
 
         val metadataList = if (lastParentId != null) {
-            browseTree[lastParentId]
+            browseTree.mediaIdToChildren[lastParentId]
         } else {
-            browseTree.mediaIdToChildren[Constants.SONGS_ROOT]
+            browseTree[Constants.SONGS_ROOT]
         }
         val mediaSource = metadataList!!.toMediaSource(dataSourceFactory)
 

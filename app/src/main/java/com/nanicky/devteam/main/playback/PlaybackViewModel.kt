@@ -16,6 +16,7 @@ import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.db.recently.RecentlyPlayedRepository
 import com.nanicky.devteam.main.db.AppRoomDatabase
+import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.lyrics.Lyrics
 import com.nanicky.devteam.main.lyrics.LyricsFetcher
 import com.nanicky.devteam.main.lyrics.LyricsRepository
@@ -27,7 +28,8 @@ import kotlinx.coroutines.withContext
 class PlaybackViewModel(
     application: Application,
     mediaSessionConnection: MediaSessionConnection,
-    private val preferences: SharedPreferences
+    private val preferences: SharedPreferences,
+    private val currentQueueSongsRepository: CurrentQueueSongsRepository
 ) :
     AndroidViewModel(application) {
 
@@ -35,7 +37,7 @@ class PlaybackViewModel(
     var lyrics = MutableLiveData<Lyrics?>()
     private val playedRepository: RecentlyPlayedRepository
     private val lyricsRepository: LyricsRepository
-    private val _mediaItems = MutableLiveData<List<MediaItemData>>()
+    private val _mediaItems = MutableLiveData<MutableList<MediaItemData>>()
     private val _currentItem = MutableLiveData<MediaItemData?>()
     private val _playbackState =
         MutableLiveData<PlaybackStateCompat>().apply { value = EMPTY_PLAYBACK_STATE }
@@ -57,7 +59,7 @@ class PlaybackViewModel(
     private val handler = Handler(Looper.getMainLooper())
     private var playMediaAfterLoad: String? = null
 
-    val mediaItems: LiveData<List<MediaItemData>> = _mediaItems
+    val mediaItems: LiveData<MutableList<MediaItemData>> = _mediaItems
     val currentItem: LiveData<MediaItemData?> = _currentItem
     val playbackState: LiveData<PlaybackStateCompat> = _playbackState
     val mediaPosition: LiveData<Long> = _mediaPosition
@@ -186,13 +188,13 @@ class PlaybackViewModel(
     }
 
 
-    fun addToQueue(mediaDescription: MediaDescriptionCompat) {
+    /*fun addToQueue(mediaDescription: MediaDescriptionCompat) {
         mediaSessionConnection.addToQueue(mediaDescription)
     }
 
     fun removeFromQueue(mediaDescription: MediaDescriptionCompat) {
         mediaSessionConnection.removeFromQueue(mediaDescription)
-    }
+    }*/
 
     fun addToQueue() {
         currentItem.value?.description?.let { mediaSessionConnection.addToQueue(it) }
@@ -201,9 +203,10 @@ class PlaybackViewModel(
     fun removeFromQueue() {
         currentItem.value?.description?.let {
             mediaSessionConnection.removeFromQueue(it)
-            val items = _mediaItems.value?.toMutableList()
-            items!!.remove(currentItem.value!!)
-            _mediaItems.value = items.toList()
+            val items = _mediaItems.value!!
+            items.remove(currentItem.value!!)
+            _mediaItems.value = items
+            currentQueueSongsRepository.remove(it)
         }
     }
 
@@ -213,7 +216,7 @@ class PlaybackViewModel(
         val state = it ?: EMPTY_PLAYBACK_STATE
         val metadata = mediaSessionConnection.nowPlaying.value ?: NOTHING_PLAYING
         if (metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID) != null) {
-            _mediaItems.postValue(updateState(state, metadata))
+            _mediaItems.postValue(updateState(state, metadata)?.toMutableList())
         }
     }
 
@@ -222,7 +225,7 @@ class PlaybackViewModel(
         val playbackState = mediaSessionConnection.playbackState.value ?: EMPTY_PLAYBACK_STATE
         val metadata = it ?: NOTHING_PLAYING
         if (metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID) != null) {
-            _mediaItems.postValue(updateState(playbackState, metadata))
+            _mediaItems.postValue(updateState(playbackState, metadata)?.toMutableList())
         }
     }
 
@@ -296,7 +299,7 @@ class PlaybackViewModel(
                         current.duration = value?.duration ?: 0
                     }
                 }
-                _mediaItems.postValue(items)
+                _mediaItems.postValue(items.toMutableList())
                 _currentItem.postValue(current)
                 // Re-post the media position so views like SeekBars can pickup the new view
                 _mediaPosition.postValue(mediaPosition.value)
@@ -305,6 +308,8 @@ class PlaybackViewModel(
                     playMediaId(current.id)
                     playMediaAfterLoad = null
                 }
+
+                currentQueueSongsRepository.insert(lastParendId)
             }
         }
     }
@@ -346,7 +351,8 @@ class PlaybackViewModel(
      *  which can also change [MediaItemData.isPlaying]s in the list.
      */
     private val mediaSessionConnection = mediaSessionConnection.also {
-        it.subscribe(lastParendId, subscriptionCallback)
+        preferences.edit().putString(Constants.LAST_PARENT_ID, Constants.CURRENT_QUEUE_ROOT).commit()
+        it.subscribe(Constants.CURRENT_QUEUE_ROOT, subscriptionCallback)
         it.playbackState.observeForever(playbackStateObserver)
         it.nowPlaying.observeForever(mediaMetadataObserver)
         it.repeatMode.observeForever(repeatObserver)

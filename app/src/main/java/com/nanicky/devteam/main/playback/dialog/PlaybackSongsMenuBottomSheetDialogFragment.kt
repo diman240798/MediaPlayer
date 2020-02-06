@@ -71,7 +71,6 @@ class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
         when (v?.id) {
             R.id.searchAuthor -> searchAuthorWeb()
             R.id.share -> shareTrack()
-            R.id.playNext -> playNextTrack()
             R.id.favourite -> favouriteTrack()
             R.id.addToPlayList -> addTrackToPlayList()
             R.id.delete -> deleteTrackFromQueue()
@@ -115,10 +114,5 @@ class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
             }
         }
     }
-
-    private fun playNextTrack() {
-
-    }
-
 
 }

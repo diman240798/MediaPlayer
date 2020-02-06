@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.utils.ViewUtils
+import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import com.nanicky.devteam.main.playback.mediasource.PlaylistMediaSource
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private val browseTree: BrowseTree by inject()
     private val playlistMediaSource: PlaylistMediaSource by inject()
     private val favouriteSongsRepository: FavouriteSongsRepository by inject()
+    private val currentQueueSongsRepository: CurrentQueueSongsRepository by inject()
     private val preferences: SharedPreferences by inject()
 
 
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) { // activity onCreate called twice
             playlistMediaSource.load(this)
             favouriteSongsRepository.browseTree = browseTree
+            currentQueueSongsRepository.browseTree = browseTree
             browseTree.load()
             val isDarkTheme = preferences.getBoolean("dark_theme", false)
             ViewUtils.changeDarkTheme(isDarkTheme)

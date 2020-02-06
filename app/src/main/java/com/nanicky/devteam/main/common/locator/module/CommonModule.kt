@@ -7,6 +7,7 @@ import com.nanicky.devteam.main.albums.AlbumsViewModel
 import com.nanicky.devteam.main.artists.ArtistAlbumsViewModel
 import com.nanicky.devteam.main.artists.ArtistsViewModel
 import com.nanicky.devteam.main.db.AppRoomDatabase
+import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
 import com.nanicky.devteam.main.explore.ExploreViewModel
 import com.nanicky.devteam.main.favourite.FavouriteSongsViewModel
@@ -49,7 +50,7 @@ val commonModule = module {
     }
 
     viewModel { NavViewModel(get()) }
-    viewModel { PlaybackViewModel(get(), get(), get()) }
+    viewModel { PlaybackViewModel(get(), get(), get(), get()) }
     viewModel { SearchViewModel(get()) }
     viewModel { FavouriteSongsViewModel(get(), get()) }
     viewModel { SongsMenuBottomSheetDialogFragmentViewModel(get()) }
@@ -58,9 +59,10 @@ val commonModule = module {
     // metadata
     single { PlaylistMediaSource() }
     single { FavouriteSongsRepository(AppRoomDatabase.getDatabase(get()).favouriteSongsDao()) }
+    single { CurrentQueueSongsRepository(AppRoomDatabase.getDatabase(get()).currentQueueSongsDao()) }
     single { MediaStoreSource() }
     single { MediaUpdateNotifier() }
-    single { BrowseTree(get(),  get(), get(), get(), get()) }
+    single { BrowseTree(get(),  get(), get(), get(), get(), get()) }
     // metadata VMs
     viewModel { FolderSongsViewModel(get(), get()) }
     viewModel { FoldersViewModel(get(), get()) }

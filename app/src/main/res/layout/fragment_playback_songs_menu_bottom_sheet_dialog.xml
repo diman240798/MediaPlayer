@@ -32,12 +32,6 @@
             android:text="@string/share" />
 
         <Button
-            android:id="@+id/playNext"
-            style="@style/AppTheme.MenuButton"
-            android:drawableEnd="@drawable/ic_play_next"
-            android:text="@string/play_next" />
-
-        <Button
             android:id="@+id/favourite"
             style="@style/AppTheme.MenuButton"
             android:drawableEnd="@drawable/ic_heart"
