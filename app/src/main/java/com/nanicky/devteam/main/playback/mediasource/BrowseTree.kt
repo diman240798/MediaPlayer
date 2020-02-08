@@ -294,7 +294,6 @@ class BrowseTree(
         val artistMetadata = MediaMetadataCompat.Builder().apply {
             id = metadata.artist.urlEncoded
             title = metadata.artist
-            albumArt = metadata.albumArt
             //            albumArtUri = metadata.albumArtUri.toString()
             flag = MediaItem.FLAG_BROWSABLE
         }.build()

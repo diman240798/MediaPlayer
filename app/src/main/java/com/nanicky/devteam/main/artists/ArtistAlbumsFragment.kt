@@ -25,18 +25,18 @@ import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_artist_albums.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ArtistAlbumsFragment : BaseFragment(), OnItemClickListener {
     lateinit var artist: Artist
-    lateinit var viewModel: ArtistAlbumsViewModel
+    private val viewModel: ArtistAlbumsViewModel by sharedViewModel()
     private var albums = emptyList<Album>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         artist = arguments!!.getParcelable("artist")!!
-        viewModel = ViewModelProviders.of(this)[ArtistAlbumsViewModel::class.java]
-        viewModel.init(artist.id.toString())
+        viewModel.init(artist.id)
     }
 
     override fun onCreateView(
@@ -81,13 +81,14 @@ class ArtistAlbumsFragment : BaseFragment(), OnItemClickListener {
             albums, activity!!, R.layout.item_album, BR.album, itemClickListener = this,
             longClick = true
         )
-        if (artist.albumsCount == 1L) {
+        /*if (artist.albumsCount == 1L) {
             artistAlbumsRV.setPadding(20.px, 0, 0, 0)
-        }
+        }*/
         artistAlbumsRV.adapter = adapter
         artistAlbumsRV.layoutManager = FlexboxLayoutManager(activity).apply {
             flexDirection = FlexDirection.ROW
-            justifyContent = if (artist.albumsCount > 1) JustifyContent.SPACE_EVENLY else JustifyContent.FLEX_START
+            justifyContent = JustifyContent.SPACE_EVENLY
+//            justifyContent = if (artist.albumsCount > 1) JustifyContent.SPACE_EVENLY else JustifyContent.FLEX_START
         }
 
 
