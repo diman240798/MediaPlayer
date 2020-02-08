@@ -134,13 +134,13 @@
             android:id="@+id/nextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/next_button"
             android:onClick="@{(v) -> viewModel.skipToNext()}"
             android:padding="@dimen/padding_large"
             android:src="@drawable/ic_next"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/closeBottom"
             app:layout_constraintStart_toEndOf="@+id/playButton"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -149,7 +149,6 @@
             android:id="@+id/playbackSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_large"
             android:layout_marginBottom="@dimen/margin_medium"
             android:background="@null"
             android:max="@{(int)viewModel.currentItem.duration}"
@@ -159,9 +158,20 @@
             android:progressDrawable="@drawable/seek_bar"
             android:thumb="@drawable/seek_bar_thumb"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/nextButton"
+            app:layout_constraintEnd_toEndOf="@+id/closeBottom"
             app:layout_constraintStart_toStartOf="@+id/songArtist"
             tools:progress="50" />
+
+        <ImageView
+            android:id="@+id/closeBottom"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/clickableView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/close_sign"
+            android:contentDescription="@string/close" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

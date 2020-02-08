@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -62,6 +63,11 @@ class BottomPlaybackFragment : BaseFragment() {
                 val action = MainFragmentDirections.actionMainFragmentToPlaybackFragment(transitionName)
                 activity?.findNavController(R.id.mainNavHostFragment)?.navigate(action, extras)
             }
+        }
+
+        closeBottom.setOnClickListener {
+            val parent = it.parent as ConstraintLayout
+            parent.visibility = View.GONE
         }
     }
 
