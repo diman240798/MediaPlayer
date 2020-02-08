@@ -88,6 +88,7 @@ class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private fun deleteTrackFromQueue() {
         playbackViewModel.removeFromQueue()
+        findNavController().popBackStack()
     }
 
     private fun addTrackToPlayList() {
