@@ -48,8 +48,7 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName, 
 
     fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.subscribe(parentId, callback)
-        if (parentId != Constants.CURRENT_QUEUE_ROOT)
-            preferences.edit().putString(Constants.LAST_PARENT_ID, parentId).apply()
+        preferences.edit().putString(Constants.LAST_PARENT_ID, parentId).apply()
     }
 
     fun unsubscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {

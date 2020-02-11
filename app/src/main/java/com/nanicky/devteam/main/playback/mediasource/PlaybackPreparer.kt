@@ -18,6 +18,7 @@ import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.playback.*
 import timber.log.Timber
+import java.util.concurrent.CopyOnWriteArrayList
 
 
 class PlaybackPreparer(
@@ -71,8 +72,10 @@ class PlaybackPreparer(
 
         val lastParentId: String? = extras?.getString("uri")
 
+        val metadataList: List<MediaMetadataCompat>
+
         if (lastParentId == Constants.CURRENT_QUEUE_ROOT) {
-            currentSongRepository.get()?.map {
+            metadataList = currentSongRepository.get()?.map {
                 MediaMetadataCompat.Builder().apply {
                     id = it.id!!
                     title = it.title
@@ -88,28 +91,28 @@ class PlaybackPreparer(
                     displaySubtitle = it.artist
                     displayDescription = it.description.title.toString()
                     downloadStatus = MediaDescriptionCompat.STATUS_DOWNLOADED
-                }
-            }
-            return
-        }
-
-        val itemToPlay =
-            browseTree[Constants.SONGS_ROOT]?.find { it.id == mediaId }
-        if (itemToPlay == null) {
-            Timber.w("onPrepareFromMediaId: Song with id $mediaId not found")
-            return
-        }
-
-
-
-        val metadataList = if (lastParentId != null) {
-            browseTree.mediaIdToChildren[lastParentId]
+                }.build()
+            }!!
         } else {
-            browseTree[Constants.SONGS_ROOT]
-        }
-        val mediaSource = metadataList!!.toMediaSource(dataSourceFactory)
+            val itemToPlay = browseTree[Constants.SONGS_ROOT]?.find { it.id == mediaId }
+            if (itemToPlay == null) {
+                Timber.w("onPrepareFromMediaId: Song with id $mediaId not found")
+                return
+            }
 
-        val positionMs = if (itemToPlay.id == preferences.getString(Constants.LAST_ID, null)) {
+
+
+            metadataList = if (lastParentId != null) {
+                browseTree.mediaIdToChildren[lastParentId]!!
+            } else {
+                browseTree[Constants.SONGS_ROOT]!!
+            }
+        }
+
+
+        val mediaSource = metadataList.toMediaSource(dataSourceFactory)
+
+        val positionMs = if (mediaId == preferences.getString(Constants.LAST_ID, null)) {
             preferences.getLong(Constants.LAST_POSITION, 0)
         } else {
             0
@@ -119,7 +122,8 @@ class PlaybackPreparer(
         // Since the playlist was probably based on some ordering (such as tracks
         // on an album), find which window index to play first so that the song the
         // user actually wants to hear plays first.
-        val initialWindowIndex = metadataList.indexOf(itemToPlay)
+        var initialWindowIndex = metadataList.indexOfFirst { it.id == mediaId }
+        if (initialWindowIndex == -1) initialWindowIndex = 0
         exoPlayer.playWhenReady = playWhenReady
         exoPlayer.prepare(mediaSource)
         exoPlayer.seekTo(initialWindowIndex, positionMs)
