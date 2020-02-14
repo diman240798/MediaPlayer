@@ -17,7 +17,24 @@
         <item name="android:scrollbarThumbVertical">@drawable/scrollbar_thumb_vertical</item>
         <item name="android:scrollbarTrackHorizontal">@drawable/scrollbar_track_vertical</item>
         <item name="indicatorFastScrollerThumbStyle">@style/Widget.FastScrollSample.FastScrollerThumb</item>
+        <item name="preferenceTheme">
+            @style/AppPreferenceTheme
+        </item>
     </style>
+
+    <!-- Custom Preference Theme -->
+    <style name="AppPreferenceTheme"
+        parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceFragmentCompatStyle">
+            @style/AppPreferenceFragmentCompatStyle
+        </item>
+    </style>
+    <!-- Custom Style for PreferenceFragmentCompat -->
+    <style name="AppPreferenceFragmentCompatStyle"
+        parent="@style/PreferenceFragment.Material">
+        <item name="android:layout">@layout/pref_screen</item>
+    </style>
+
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

@@ -28,6 +28,7 @@ import com.nanicky.devteam.main.playlist.PlaylistSongsEditorViewModel
 import com.nanicky.devteam.main.playlist.PlaylistSongsViewModel
 import com.nanicky.devteam.main.playlist.PlaylistViewModel
 import com.nanicky.devteam.main.search.SearchViewModel
+import com.nanicky.devteam.main.settings.ColorChangeSharedObject
 import com.nanicky.devteam.main.songs.SongsMenuBottomSheetDialogFragmentViewModel
 import com.nanicky.devteam.main.songs.SongsViewModel
 import com.nanicky.devteam.main.web.WebFragmentViewModel
@@ -78,4 +79,6 @@ val commonModule = module {
     viewModel { AddSongsToPlaylistsViewModel(get(), get()) }
     viewModel { PlaylistSongsViewModel(get(), get()) }
     viewModel { PlaylistSongsEditorViewModel(get(), get()) }
+    // colorTheme change
+    single { ColorChangeSharedObject() }
 }

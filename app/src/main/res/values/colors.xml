@@ -19,4 +19,14 @@
     <color name="textColorPrimary">#DD000000</color>
     <color name="textColorSecondary">#89000000</color>
     <color name="search_icon_tint">#BABFCF</color>
+
+    <color name="colorBackgroundWhite">#F3F3F3</color>
+    <color name="colorBackgroundBlack">@color/colorPrimary</color>
+
+    <color name="fadedColorPrimaryWhite">#EEEEEE</color>
+    <color name="fadedColorPrimaryBlack">#161C2C</color>
+
+    <color name="bottomNavViewBackgrColorWhite">#F1F3F0</color>
+    <color name="bottomNavViewBackgrColorBlack">#060F1E</color>
+
 </resources>

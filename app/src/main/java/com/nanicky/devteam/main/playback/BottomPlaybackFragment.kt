@@ -16,12 +16,15 @@ import com.nanicky.devteam.common.crossFadeWidth
 import com.nanicky.devteam.databinding.FragmentBottomPlaybackBinding
 import com.nanicky.devteam.main.MainFragmentDirections
 import com.nanicky.devteam.main.common.view.BaseFragment
+import com.nanicky.devteam.main.settings.ColorChangeSharedObject
 import kotlinx.android.synthetic.main.fragment_bottom_playback.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class BottomPlaybackFragment : BaseFragment() {
 
     private val viewModel: PlaybackViewModel by sharedViewModel()
+    private val colorChangeSharedObject: ColorChangeSharedObject by inject()
 
 
     override fun onCreateView(
@@ -36,10 +39,10 @@ class BottomPlaybackFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        observeViewModel()
+        observeViewModel(view)
     }
 
-    private fun observeViewModel() {
+    private fun observeViewModel(view: View) {
         var animatorSet: AnimatorSet? = null
         viewModel.playbackState.observe(viewLifecycleOwner, Observer {
             animatorSet?.cancel()
@@ -49,6 +52,8 @@ class BottomPlaybackFragment : BaseFragment() {
                 playButton.crossFadeWidth(progressBar, visibility = View.INVISIBLE)
             }
         })
+        val container = view.findViewById<ConstraintLayout>(R.id.container)
+        colorChangeSharedObject.backgrColorBottomPlayBack.observe(viewLifecycleOwner, Observer { container.setBackgroundColor(resources.getColor(it)) })
     }
 
     private fun setupViews() {

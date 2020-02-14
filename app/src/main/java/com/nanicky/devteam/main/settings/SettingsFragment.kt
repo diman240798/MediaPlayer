@@ -2,71 +2,49 @@ package com.nanicky.devteam.main.settings
 
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.view.ViewAnimationUtils
+import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnEnd
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener
 import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.utils.ViewUtils
 import org.koin.android.ext.android.inject
+import kotlin.math.hypot
 
 
 private val TAG = SettingsFragment::class.java.simpleName
 
 class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeListener {
 
-    /*override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val root = FrameLayout(context!!)
+    private val colorChangeSharedObject: ColorChangeSharedObject by inject()
 
-        val textView = TextView(ContextThemeWrapper(context, R.style.AppTheme_SectionTitle))
-        textView.setText(R.string.settings)
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20F)
-        textView.setTextColor(Color.BLACK)
-        root.addView(
-            textView,
-            FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                Gravity.START
-            )
-        )
-
-        val navIcon = ImageView(ContextThemeWrapper(context, R.style.AppTheme_SectionIcon))
-        navIcon.setImageResource(R.drawable.ic_nav)
-        navIcon.setPadding(0, 40, 30, 0)
-
-        root.addView(
-            navIcon,
-            FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                Gravity.END
-            )
-        )
-
-        val listView = ListView(context)
-        listView.id = android.R.id.list
-        root.addView(listView)
-
-        return root
-    }*/
-
-    private val preferences: SharedPreferences by inject()
+    private lateinit var revealImage: ImageView
+    private lateinit var container: ConstraintLayout
 
     override fun onCreatePreferences(bundle: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.fragment_settings, rootKey)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        container = view.findViewById<ConstraintLayout>(R.id.container)
+        revealImage = view.findViewById<ImageView>(R.id.revealImage)
+
+        val navigationIcon = view.findViewById<ImageButton>(R.id.navigationIcon)
+        navigationIcon.setOnClickListener {
+            val action = SettingsFragmentDirections.actionSettingsFragmentToNavigationDialogFragment()
+            findNavController().navigate(action)
+        }
+
     }
 
     override fun onResume() {
@@ -79,56 +57,62 @@ class SettingsFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeLis
         key: String
     ) {
         if (key == "dark_theme") {
-            val darkThemeSwitch = findPreference(key) as SwitchPreference
+            revealImage.postDelayed({
+                setTheme(key)
+            }, 300)
+
+        }
+
+    }
+
+    private fun setTheme(key: String) {
+        if (revealImage.isVisible) {
+            return
+        }
+
+        val w = container.measuredWidth
+        val h = container.measuredHeight
+
+        val bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        container.draw(canvas)
+
+        val darkThemeSwitch = findPreference(key) as SwitchPreference
+
+        revealImage.setBackgroundColor(
+            if (darkThemeSwitch.isChecked) resources.getColor(R.color.colorBackgroundBlack) else resources.getColor(R.color.colorBackgroundWhite)
+        )
+        revealImage.setImageBitmap(bitmap)
+        revealImage.isVisible = true
+
+        val finalRadius = hypot(w.toDouble(), h.toDouble()).toFloat()
+
+        val anim = ViewAnimationUtils.createCircularReveal(container, w / 2, h / 2, 0f, finalRadius)
+        anim.duration = 700L
+        anim.doOnEnd {
+            revealImage.setImageDrawable(null)
+            revealImage.isVisible = false
+        }
+        anim.start()
+
+        revealImage.postDelayed({
+            colorChangeSharedObject.backgrColorBottomPlayBack.postValue(
+                if (darkThemeSwitch.isChecked) R.color.fadedColorPrimaryBlack else R.color.fadedColorPrimaryWhite
+            )
+        }, 400)
+
+        revealImage.postDelayed({
+            colorChangeSharedObject.backgrColorBottomNavView.postValue(
+                if (darkThemeSwitch.isChecked) R.color.bottomNavViewBackgrColorBlack else R.color.bottomNavViewBackgrColorWhite
+            )
+        }, 500)
+
+        revealImage.postDelayed({
             ViewUtils.changeDarkTheme(darkThemeSwitch.isChecked)
-        }
+        }, 600)
 
     }
 
-    override fun onCreateRecyclerView(
-        inflater: LayoutInflater?,
-        parent: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): RecyclerView? {
-        val recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
-        recyclerView.addOnChildAttachStateChangeListener(object : OnChildAttachStateChangeListener {
-            override fun onChildViewAttachedToWindow(view: View) {
-                if (view is ConstraintLayout) {
-                    val views = getAllChildren(view)
-                    val sectionTitle = views[1] as TextView
-                    sectionTitle.setText(R.string.settings)
-
-                    val navigationIcon = views[3] as ImageView
-                    navigationIcon.setOnClickListener {
-                        val action =
-                            SettingsFragmentDirections.actionSettingsFragmentToNavigationDialogFragment()
-                        findNavController().navigate(action)
-                    }
-                }
-            }
-
-            override fun onChildViewDetachedFromWindow(view: View) {}
-        })
-        return recyclerView
-    }
-
-    private fun getAllChildren(v: View): ArrayList<View> {
-        if (v !is ViewGroup) {
-            val viewArrayList = ArrayList<View>()
-            viewArrayList.add(v)
-            return viewArrayList
-        }
-        val result = ArrayList<View>()
-        val viewGroup = v
-        for (i in 0 until viewGroup.childCount) {
-            val child = viewGroup.getChildAt(i)
-            val viewArrayList = ArrayList<View>()
-            viewArrayList.add(v)
-            viewArrayList.addAll(getAllChildren(child))
-            result.addAll(viewArrayList)
-        }
-        return result
-    }
 
     override fun onPause() {
         super.onPause()
