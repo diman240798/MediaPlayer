@@ -14,6 +14,7 @@ import com.nanicky.devteam.common.urlEncoded
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
 import com.nanicky.devteam.main.db.playlist.PlaylistRepository
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playback.*
@@ -220,7 +221,7 @@ class BrowseTree(
             // check playlists
             playlistRepository.getPlaylists().forEach { playlist ->
                 if (playlist.songIds.contains(songId)) {
-                    val url = playlist.id.urlEncoded
+                    val url = playlist.getUniqueKey()
                     val playlistSongs = mediaIdToChildren[url] ?: CopyOnWriteArrayList()
                     playlistSongs += mediaItem
                     mediaIdToChildren[url] = playlistSongs
@@ -435,5 +436,61 @@ class BrowseTree(
         val favRoot = mediaIdToChildren[Constants.FAVOURITES_ROOT]
         val song = mediaIdToChildren[Constants.SONGS_ROOT]!!.first { it.id == id }
         favRoot!!.add(song)
+    }
+
+    fun addPlaylist(playlist: PlaylistDb) {
+        val url = playlist.getUniqueKey()
+        val playlistSongs = CopyOnWriteArrayList<MediaMetadataCompat>()
+        playlist.songIds.forEach { id ->
+            val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
+            val song = songsRoot!!.firstOrNull { it.id == id }
+            song?.also {
+                playlistSongs += song
+            }
+
+        }
+        mediaIdToChildren[url] = playlistSongs
+    }
+
+    fun updatePlaylist(playlist: PlaylistDb) {
+        val url = playlist.getUniqueKey()
+        val playlistSongs = mediaIdToChildren[url]!!
+        playlistSongs.clear()// remove old songs list and fill new
+        playlist.songIds.forEach { id ->
+            val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
+            val song = songsRoot!!.firstOrNull { it.id == id }
+            song?.also {
+                playlistSongs += song
+            }
+
+        }
+        mediaIdToChildren[url] = playlistSongs
+    }
+
+    fun addToPlaylist(songId: String, playlist: PlaylistDb): Boolean {
+        val playlistSongs = mediaIdToChildren[playlist.getUniqueKey()]
+        val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
+        val song = songsRoot!!.firstOrNull { it.id == songId }
+        return if (song == null) {
+            false
+        } else {
+            playlistSongs!!.add(song)
+            true
+        }
+    }
+
+    fun removeFromPlaylist(songId: String, playlist: PlaylistDb): Boolean {
+        val playlistSongs = mediaIdToChildren[playlist.getUniqueKey()]
+        val song = playlistSongs!!.firstOrNull { it.id == songId }
+        return if (song == null) {
+            false
+        } else {
+            playlistSongs.remove(song)
+            true
+        }
+    }
+
+    fun removePlaylist(playlist: PlaylistDb) {
+        mediaIdToChildren.remove(playlist.getUniqueKey())
     }
 }

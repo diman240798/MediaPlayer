@@ -21,16 +21,17 @@ import com.nanicky.devteam.main.common.event.Event
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFullscreenDialogFragment
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
 import kotlinx.android.synthetic.main.fragment_add_songs_to_playlists.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class AddSongsToPlaylistsFragment : BaseFullscreenDialogFragment(), OnItemClickListener, View.OnClickListener {
-    private var playlists = emptyList<Playlist>()
-    private lateinit var viewModel: AddSongsToPlaylistsViewModel
+    private var playlists = emptyList<PlaylistDb>()
+    private val viewModel: AddSongsToPlaylistsViewModel by sharedViewModel()
     private var crossFadeAnimatorSet: AnimatorSet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this)[AddSongsToPlaylistsViewModel::class.java]
         val strUri = arguments!!.getString("songsUri")
         var uri: Uri? = null; if (strUri != null) uri = Uri.parse(strUri)
         val selection = arguments!!.getString("songsSelection")
@@ -70,8 +71,8 @@ class AddSongsToPlaylistsFragment : BaseFullscreenDialogFragment(), OnItemClickL
                 }
             }
         } else {
-            this.playlists = data as List<Playlist>
-            (playlistRV.adapter as BaseAdapter<Playlist>).updateItems(playlists)
+            this.playlists = data as List<PlaylistDb>
+            (playlistRV.adapter as BaseAdapter<PlaylistDb>).updateItems(playlists)
             updateSelectedCount()
             content.crossFadeWidth(largeProgressBar)
         }

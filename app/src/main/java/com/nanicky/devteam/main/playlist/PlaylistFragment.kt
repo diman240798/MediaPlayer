@@ -16,12 +16,13 @@ import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFragment
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
 import kotlinx.android.synthetic.main.fragment_playlist.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
 
-    private var items: List<Playlist> = emptyList()
+    private var items: List<PlaylistDb> = emptyList()
     private val viewModel: PlaylistFragmentViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +47,7 @@ class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListen
         viewModel.init(Constants.PLAYLISTS_ROOT)
         viewModel.items.observe(viewLifecycleOwner, Observer {
             this.items = it
-            (playlistRV.adapter as BaseAdapter<Playlist>).updateItems(it)
+            (playlistRV.adapter as BaseAdapter<PlaylistDb>).updateItems(it)
             updateViews()
         })
     }
@@ -81,7 +82,7 @@ class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListen
             .build()
         val action =
             PlaylistFragmentDirections.actionPlaylistFragmentToPlaylistSongsFragment(transitionName, items[position])
-        findNavController().navigate(action, extras) 
+        findNavController().navigate(action, extras)
     }
 
     override fun onItemLongClick(position: Int) {

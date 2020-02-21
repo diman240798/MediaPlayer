@@ -30,7 +30,9 @@ import com.nanicky.devteam.main.common.dataBinding.DataBindingAdapters
 import com.nanicky.devteam.main.common.utils.ImageUtils
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseFullscreenDialogFragment
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
 import kotlinx.android.synthetic.main.fragment_write_playlist_dialog.*
+import org.koin.android.ext.android.inject
 import java.io.File
 
 
@@ -38,14 +40,13 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
     private val permissionRequestExternalStorage = 0
     private val imageRequestCode = 1
     private var tempThumbUri: Uri? = null
-    private var playlist: Playlist? = null
-    lateinit var viewModel: WritePlaylistViewModel
+    private var playlist: PlaylistDb? = null
+    val viewModel : WritePlaylistViewModel by inject()
     var deleteImageFile = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playlist = arguments?.getParcelable("playlist")
-        viewModel = ViewModelProviders.of(this)[WritePlaylistViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -79,7 +80,7 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
         if (playlist != null) {
             writePlaylist.setText(R.string.save_changes)
             playlistNameField.setText(playlist!!.name)
-            displayImage(Playlist(playlist!!).modForViewWidth(getPlaylistArtWidth()))
+            displayImage(PlaylistDb(playlist!!).modForViewWidth(getPlaylistArtWidth()))
         }
     }
 

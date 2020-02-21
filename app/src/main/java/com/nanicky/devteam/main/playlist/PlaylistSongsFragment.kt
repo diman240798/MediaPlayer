@@ -17,6 +17,7 @@ import com.nanicky.devteam.databinding.FragmentPlaylistSongsBinding
 import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFragment
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
 import com.nanicky.devteam.main.playback.PlaybackViewModel
 import com.nanicky.devteam.main.songs.Song
 import kotlinx.android.synthetic.main.fragment_playlist_songs.*
@@ -27,7 +28,7 @@ class PlaylistSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickL
     private lateinit var binding: FragmentPlaylistSongsBinding
     private val songsViewModel: PlaylistSongsViewModel by sharedViewModel()
     private val playbackViewModel: PlaybackViewModel by sharedViewModel()
-    private lateinit var playlist: Playlist
+    private lateinit var playlist: PlaylistDb
     private var items = emptyList<Song>()
 
 

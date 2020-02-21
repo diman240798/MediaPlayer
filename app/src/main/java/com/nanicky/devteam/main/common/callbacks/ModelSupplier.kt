@@ -4,6 +4,7 @@ import android.support.v4.media.MediaMetadataCompat
 import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.artists.Artist
 import com.nanicky.devteam.main.common.data.Model
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
 import com.nanicky.devteam.main.folders.Folder
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playlist.Playlist
@@ -29,8 +30,8 @@ class ArtistSupplier : ModelSupplier<Artist> {
     override fun get(data: MediaMetadataCompat): Artist = Artist(data)
 }
 
-class PlaylistSupplier : ModelSupplier<Playlist> {
-    override fun get(data: MediaMetadataCompat): Playlist = Playlist(data)
+class PlaylistSupplier : ModelSupplier<PlaylistDb> {
+    override fun get(data: MediaMetadataCompat): PlaylistDb = PlaylistDb(data)
 }
 
 class FolderSupplier : ModelSupplier<Folder> {

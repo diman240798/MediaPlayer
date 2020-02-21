@@ -1,10 +1,7 @@
 package com.nanicky.devteam.main.playlist
 
 import android.app.Application
-import android.content.ContentUris
-import android.content.ContentValues
 import android.net.Uri
-import android.provider.MediaStore
 import androidx.annotation.StringRes
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.AndroidViewModel
@@ -16,13 +13,18 @@ import com.nanicky.devteam.R
 import com.nanicky.devteam.common.App
 import com.nanicky.devteam.main.common.utils.ImageUtils
 import com.nanicky.devteam.main.common.utils.UriFileUtils
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.PlaylistRepository
+import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.lang.Exception
 
 
-class WritePlaylistViewModel(application: Application) : AndroidViewModel(application) {
+class WritePlaylistViewModel(application: Application, val playlistRepo: PlaylistRepository, val browseTree: BrowseTree) :
+    AndroidViewModel(application) {
 
     private val _data = MutableLiveData<WriteResult>()
     internal val data: LiveData<WriteResult> get() = _data
@@ -30,55 +32,52 @@ class WritePlaylistViewModel(application: Application) : AndroidViewModel(applic
     fun createPlaylist(playlistName: String, tempThumbUri: Uri?) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val uri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI
-                val values = ContentValues(1)
-                values.put(MediaStore.Audio.Playlists.NAME, playlistName)
-                val playlistUri = getApplication<App>().contentResolver.insert(uri, values)
+                try {
+                    var newPlaylist = PlaylistDb(playlistName)
+                    val id = playlistRepo.insert(newPlaylist)
+                    newPlaylist = PlaylistDb(id, playlistName)
 
-                if (playlistUri?.toString().isNullOrEmpty()) {
+                    writeImageFile(newPlaylist, tempThumbUri)
+                    _data.postValue(WriteResult(true))
+
+                } catch (ex: Exception) {
                     _data.postValue(WriteResult(false, R.string.something_went_wrong))
                     return@withContext
                 }
-
-                writeImageFile(Playlist(ContentUris.parseId(playlistUri)), tempThumbUri)
-                _data.postValue(WriteResult(true))
             }
         }
 
     }
 
-    fun editPlaylist(name: String, playlist: Playlist, tempThumbUri: Uri?, deleteImageFile: Boolean) {
+    fun editPlaylist(
+        name: String,
+        playlist: PlaylistDb,
+        tempThumbUri: Uri?,
+        deleteImageFile: Boolean
+    ) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val uri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI
-                val values = ContentValues(2)
-                val where = MediaStore.Audio.Playlists._ID + " =? "
-                val whereVal = arrayOf(playlist.id.toString())
-                values.put(MediaStore.Audio.Playlists.NAME, name)
-                values.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis())
-                val rowsUpdated = getApplication<App>().contentResolver.update(uri, values, where, whereVal)
-                if (rowsUpdated < 1) {
+                try {
+                    playlistRepo.insert(playlist)
+                    browseTree.updatePlaylist(playlist)
+                    writeImageFile(playlist, tempThumbUri, deleteImageFile)
+                    _data.postValue(WriteResult(true))
+
+                } catch (ex: Exception) {
                     _data.postValue(WriteResult(false, R.string.sth_went_wrong))
-                    return@withContext
                 }
-
-                writeImageFile(playlist, tempThumbUri, deleteImageFile)
-                _data.postValue(WriteResult(true))
             }
         }
     }
 
-    fun deletePlaylist(playlist: Playlist) {
+    fun deletePlaylist(playlist: PlaylistDb) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val where = MediaStore.Audio.Playlists._ID + "=?"
-                val whereVal = arrayOf(playlist.id.toString())
-                val rows = getApplication<Application>().contentResolver
-                    .delete(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, where, whereVal)
-                if (rows > 0) {
-                    writeImageFile(playlist, deleteImageFile = true)
-                    _data.postValue(WriteResult(true, R.string.sth_deleted))
-                } else {
+                try {
+                    playlistRepo.remove(playlist)
+                    browseTree.removePlaylist(playlist)
+
+                } catch (ex: Exception) {
                     _data.postValue(WriteResult(false, R.string.sth_went_wrong))
                 }
             }
@@ -87,7 +86,11 @@ class WritePlaylistViewModel(application: Application) : AndroidViewModel(applic
 
     @HunterDebug
     @WorkerThread
-    private fun writeImageFile(playlist: Playlist, tempThumbUri: Uri? = null, deleteImageFile: Boolean = false) {
+    private fun writeImageFile(
+        playlist: PlaylistDb,
+        tempThumbUri: Uri? = null,
+        deleteImageFile: Boolean = false
+    ) {
         val app = getApplication<App>()
         val resultPath = ImageUtils.getImagePathForModel(playlist, app)
 

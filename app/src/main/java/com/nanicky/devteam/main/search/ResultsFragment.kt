@@ -23,6 +23,7 @@ import com.nanicky.devteam.main.artists.Artist
 import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.data.Model
 import com.nanicky.devteam.main.common.view.BaseAdapter
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playlist.Playlist
 import com.nanicky.devteam.main.songs.Song
@@ -93,10 +94,25 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
                     flexDirection = FlexDirection.ROW
                     justifyContent = JustifyContent.SPACE_EVENLY
                 }
-                BaseAdapter(items, activity!!, R.layout.item_album, BR.album, this, albumItemAnimSet, true)
+                BaseAdapter(
+                    items,
+                    activity!!,
+                    R.layout.item_album,
+                    BR.album,
+                    this,
+                    albumItemAnimSet,
+                    true
+                )
             }
             Type.Artists -> BaseAdapter(items, activity!!, R.layout.item_artist, BR.artist, this)
-            Type.Genres -> BaseAdapter(items, activity!!, R.layout.item_genre, BR.genre, this, longClick = true)
+            Type.Genres -> BaseAdapter(
+                items,
+                activity!!,
+                R.layout.item_genre,
+                BR.genre,
+                this,
+                longClick = true
+            )
             Type.Playlists -> BaseAdapter(
                 items, activity!!, R.layout.item_playlist, BR.playlist, this, longClick = true
             )
@@ -135,7 +151,18 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
     }
 
     private fun onPlaylistItemLongClick(position: Int) {
-        val directions = SearchFragmentDirections.actionSearchFragmentToPlaylistMenuBottomSheetDialogFragment(playlist = items[position] as Playlist)
+        val playlist = items[position] as Playlist
+
+        val directions =
+            SearchFragmentDirections.actionSearchFragmentToPlaylistMenuBottomSheetDialogFragment(
+                playlist =  PlaylistDb(
+                    playlist.name,
+                    playlist.songsCount,
+                    playlist.selected,
+                    playlist.songIds,
+                    playlist.id
+                )
+            )
         viewModel.navigateFrmSearchFragment(SearchNavigation(directions))
     }
 
@@ -156,7 +183,8 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
         val song = items[position] as Song
         songsMenuBottomDialogVM.setSong(song)
         // change fragment
-        val directions = SearchFragmentDirections.actionSearchFragmentToSongsMenuBottomSheetDialogFragment()
+        val directions =
+            SearchFragmentDirections.actionSearchFragmentToSongsMenuBottomSheetDialogFragment()
         this.viewModel.navigateFrmSearchFragment(SearchNavigation(directions))
     }
 
@@ -168,9 +196,18 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
             .addSharedElement(sharableView, transitionName)
             .build()
 
+        val playlist = items[position] as Playlist
+
         val directions = SearchFragmentDirections.actionSearchFragmentToPlaylistSongsFragment(
             transitionName,
-            items[position] as Playlist
+            PlaylistDb(
+                playlist.name,
+                playlist.songsCount,
+                playlist.selected,
+                playlist.songIds,
+                playlist.id
+            )
+
         )
         viewModel.navigateFrmSearchFragment(SearchNavigation(directions, extras))
     }
@@ -223,7 +260,8 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
 
 
     companion object {
-        @JvmStatic fun <T : Model> newInstance(result: Result) =
+        @JvmStatic
+        fun <T : Model> newInstance(result: Result) =
             ResultsFragment<T>().apply {
                 arguments = Bundle().apply {
                     putParcelable(RESULT, result)

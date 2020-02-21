@@ -14,6 +14,7 @@ import com.nanicky.devteam.R
 import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.artists.Artist
 import com.nanicky.devteam.main.common.image.CircularTransparentCenter
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
 import com.nanicky.devteam.main.db.recently.RecentlyPlayed
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playback.MediaItemData
@@ -176,9 +177,48 @@ object DataBindingAdapters {
             .into(view)*/
     }
 
+    @BindingAdapter("android:src")
+    @JvmStatic
+    fun setPlaylistCover(view: ImageView, playlist: PlaylistDb) {
+        Glide.with(view)
+            .load(R.drawable.thumb_circular_default)
+            .transform(
+                MultiTransformation(centerCrop, circleCrop)
+            )
+            .into(view)
+
+        /*Glide.with(view)
+            .load(playlist.modForViewWidth(view.measuredWidth))
+            .transform(
+                MultiTransformation(centerCrop, circleCrop)
+            )
+            .placeholder(R.drawable.thumb_circular_default)
+            .into(view)*/
+    }
+
     @BindingAdapter("playlistSrc")
     @JvmStatic
     fun setPlaylistSrc(view: ImageView, playlist: Playlist) {
+        Glide.with(view)
+            .load(R.drawable.thumb_default_short)
+            .transform(
+                MultiTransformation(centerCrop, RoundedCorners(10))
+            )
+            .into(view)
+
+        /*Glide.with(view)
+            .load(playlist.modForViewWidth(view.measuredWidth))
+            .transform(
+                MultiTransformation(centerCrop, RoundedCorners(10))
+            )
+            .placeholder(R.drawable.thumb_default_short)
+            .into(view)*/
+    }
+
+
+    @BindingAdapter("playlistSrc")
+    @JvmStatic
+    fun setPlaylistSrc(view: ImageView, playlist: PlaylistDb) {
         Glide.with(view)
             .load(R.drawable.thumb_default_short)
             .transform(

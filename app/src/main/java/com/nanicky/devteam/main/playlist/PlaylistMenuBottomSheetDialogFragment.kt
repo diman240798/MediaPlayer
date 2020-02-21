@@ -16,11 +16,14 @@ import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseMenuBottomSheet
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import org.koin.android.ext.android.inject
 
 
 class PlaylistMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
-    lateinit var playlist: Playlist
+    lateinit var playlist: PlaylistDb
     @IdRes var popUpTo: Int = 0
+    val viewModel : WritePlaylistViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +51,6 @@ class PlaylistMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private fun showDeleteConfirmation() {
         fun deletePlaylist(dialog: DialogInterface?) {
-            val viewModel = ViewModelProviders.of(this)[WritePlaylistViewModel::class.java]
 
             viewModel.data.observe(viewLifecycleOwner, Observer {
                 val activity = activity
@@ -96,11 +98,11 @@ class PlaylistMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun editSongs() {
-        findNavController().navigate(
+        /*findNavController().navigate(
             PlaylistMenuBottomSheetDialogFragmentDirections
                 .actionPlaylistMenuBottomSheetDialogFragmentToPlaylistSongsEditorDialogFragment(playlist),
             NavOptions.Builder().setPopUpTo(popUpTo, false).build()
-        )
+        )*/
 
     }
 }

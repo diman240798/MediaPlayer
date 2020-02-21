@@ -22,10 +22,7 @@ import com.nanicky.devteam.main.playback.PlaybackViewModel
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import com.nanicky.devteam.main.playback.mediasource.MediaStoreSource
 import com.nanicky.devteam.main.playback.mediasource.MediaUpdateNotifier
-import com.nanicky.devteam.main.playlist.AddSongsToPlaylistsViewModel
-import com.nanicky.devteam.main.playlist.PlaylistSongsEditorViewModel
-import com.nanicky.devteam.main.playlist.PlaylistSongsViewModel
-import com.nanicky.devteam.main.playlist.PlaylistFragmentViewModel
+import com.nanicky.devteam.main.playlist.*
 import com.nanicky.devteam.main.search.SearchViewModel
 import com.nanicky.devteam.main.settings.ColorChangeSharedObject
 import com.nanicky.devteam.main.songs.SongsMenuBottomSheetDialogFragmentViewModel
@@ -49,6 +46,7 @@ val commonModule = module {
         )
     }
 
+    viewModel { WritePlaylistViewModel(get(), get()) }
     viewModel { NavViewModel(get()) }
     viewModel { PlaybackViewModel(get(), get(), get(), get()) }
     viewModel { SearchViewModel(get()) }

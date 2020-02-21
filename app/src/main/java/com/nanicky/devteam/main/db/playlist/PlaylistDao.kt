@@ -20,7 +20,7 @@ interface PlaylistDao {
     suspend fun fetchFirst(): PlaylistDb?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(PlaylistDb: PlaylistDb)
+    suspend fun insert(PlaylistDb: PlaylistDb): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(itemsList: List<PlaylistDb>)

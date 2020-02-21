@@ -1,6 +1,7 @@
 package com.nanicky.devteam.main.db.playlist
 
 import android.database.Cursor
+import android.os.Parcelable
 import android.provider.MediaStore
 import android.support.v4.media.MediaMetadataCompat
 import androidx.room.Entity
@@ -10,8 +11,9 @@ import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.data.Model
 import com.nanicky.devteam.main.playback.id
 import com.nanicky.devteam.main.playback.title
+import kotlinx.android.parcel.Parcelize
 
-
+@Parcelize
 @Entity(tableName = "playlist_table")
 data class PlaylistDb(
     var name: String,
@@ -20,7 +22,7 @@ data class PlaylistDb(
     var songIds: MutableList<String> = mutableListOf(),
     @PrimaryKey(autoGenerate = true)
     override val id: Long = 0
-) : Model() {
+) : Model(), Parcelable {
 
     constructor(cursor: Cursor) : this(
         id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID)),
@@ -34,7 +36,7 @@ data class PlaylistDb(
 
     constructor(p: PlaylistDb) : this(id = p.id, name = p.name, songsCount = p.songsCount)
 
-    constructor(id: Long) : this(id = id, name = "")
+    constructor(_id: Long, name: String = "") : this(id = _id, name = name)
 
     /**
      *  When [width] is more than [Constants.MAX_MODEL_IMAGE_THUMB_WIDTH], we'll change the value of any of this
@@ -51,4 +53,6 @@ data class PlaylistDb(
         }
         return this
     }
+
+    fun getUniqueKey(): String = "${name}__$id"
 }
