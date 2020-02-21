@@ -54,6 +54,23 @@
             app:layout_constraintTop_toTopOf="@+id/rippleView"
             tools:text="@string/songs" />
 
+
+        <TextView
+            android:id="@+id/itemPath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_margin="@dimen/padding_X_small"
+            android:text="@{folder.path}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="@dimen/text_size_x_small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="@id/itemName"
+            app:layout_constraintTop_toBottomOf="@id/itemName"
+            tools:text="/storage/emulated/0/Download/Music/Author/Album" />
+
         <View
             android:id="@+id/rippleView"
             android:layout_width="0dp"

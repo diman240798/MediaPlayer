@@ -1,16 +1,19 @@
 package com.nanicky.devteam.main.search
 
 import android.app.Application
+import android.database.Cursor
+import android.provider.MediaStore
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.artists.Artist
+import com.nanicky.devteam.main.common.data.MediaStoreRepository
 import com.nanicky.devteam.main.common.event.Event
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playlist.Playlist
-import com.nanicky.devteam.main.playlist.PlaylistRepository
 import com.nanicky.devteam.main.songs.Song
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -47,7 +50,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
             val genres = async { repository.queryGenres(query, ascend) }
             val playlists = async {
                 repository.queryPlaylists(query, ascend).apply {
-                    this.forEach { it.songsCount = playlistRepository.fetchSongCount(it.id) }
+                    this.forEach { it.songsCount = fetchSongCount(it.id, playlistRepository) }
                 }
             }
 
@@ -69,4 +72,24 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
     fun navigateFrmSearchFragment(navigation: SearchNavigation) = _searchNavigation.postValue(Event(navigation))
 
+    @WorkerThread
+    fun fetchSongCount(
+        playlistId: Long,
+        playlistRepository: PlaylistRepository
+    ): Int {
+        val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
+        val projection = arrayOf(MediaStore.Audio.Playlists.Members.AUDIO_ID)
+        val selection = "${MediaStore.Audio.Media.IS_MUSIC} != ?"
+        val selectionArgs = arrayOf("0")
+        val cursor: Cursor? = getApplication<Application>().contentResolver.query(uri, projection, selection, selectionArgs, null)
+        val count = cursor?.count ?: 0
+        cursor?.close()
+        return count
+    }
+
+}
+
+class PlaylistRepository(application: Application) : MediaStoreRepository<Playlist>(application) {
+
+    override fun transform(cursor: Cursor): Playlist = Playlist(cursor)
 }

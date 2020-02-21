@@ -22,11 +22,10 @@ import com.nanicky.devteam.main.playback.PlaybackViewModel
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import com.nanicky.devteam.main.playback.mediasource.MediaStoreSource
 import com.nanicky.devteam.main.playback.mediasource.MediaUpdateNotifier
-import com.nanicky.devteam.main.playback.mediasource.PlaylistMediaSource
 import com.nanicky.devteam.main.playlist.AddSongsToPlaylistsViewModel
 import com.nanicky.devteam.main.playlist.PlaylistSongsEditorViewModel
 import com.nanicky.devteam.main.playlist.PlaylistSongsViewModel
-import com.nanicky.devteam.main.playlist.PlaylistViewModel
+import com.nanicky.devteam.main.playlist.PlaylistFragmentViewModel
 import com.nanicky.devteam.main.search.SearchViewModel
 import com.nanicky.devteam.main.settings.ColorChangeSharedObject
 import com.nanicky.devteam.main.songs.SongsMenuBottomSheetDialogFragmentViewModel
@@ -58,7 +57,6 @@ val commonModule = module {
     viewModel { WebFragmentViewModel() }
 
     // metadata
-    single { PlaylistMediaSource() }
     single { FavouriteSongsRepository(AppRoomDatabase.getDatabase(get()).favouriteSongsDao()) }
     single { CurrentQueueSongsRepository(AppRoomDatabase.getDatabase(get()).currentQueueSongsDao()) }
     single { MediaStoreSource() }
@@ -75,7 +73,7 @@ val commonModule = module {
     viewModel { AlbumsViewModel(get(), get()) }
     viewModel { ArtistAlbumsViewModel(get(), get()) }
     viewModel { ExploreViewModel(get(), get()) }
-    viewModel { PlaylistViewModel(get(), get()) }
+    viewModel { PlaylistFragmentViewModel(get(), get()) }
     viewModel { AddSongsToPlaylistsViewModel(get(), get()) }
     viewModel { PlaylistSongsViewModel(get(), get()) }
     viewModel { PlaylistSongsEditorViewModel(get(), get()) }

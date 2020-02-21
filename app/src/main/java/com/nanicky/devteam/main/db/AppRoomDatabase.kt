@@ -10,6 +10,8 @@ import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongs
 import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsDao
 import com.nanicky.devteam.main.db.favourite.FavouriteSongs
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsDao
+import com.nanicky.devteam.main.db.playlist.PlaylistDao
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
 import com.nanicky.devteam.main.db.recently.RecentlyPlayed
 import com.nanicky.devteam.main.db.recently.RecentlyPlayedDao
 import com.nanicky.devteam.main.lyrics.Lyrics
@@ -17,7 +19,10 @@ import com.nanicky.devteam.main.lyrics.LyricsDao
 
 
 @Database(
-    entities = [RecentlyPlayed::class, Lyrics::class, FavouriteSongs::class, CurrentQueueSongs::class],
+    entities = [
+        RecentlyPlayed::class, Lyrics::class, FavouriteSongs::class,
+        CurrentQueueSongs::class, PlaylistDb::class
+    ],
     version = 1
 )
 @TypeConverters(value = [StringArrayConverter::class])
@@ -27,6 +32,7 @@ abstract class AppRoomDatabase : RoomDatabase() {
     abstract fun recentDao(): RecentlyPlayedDao
     abstract fun lyricsDao(): LyricsDao
     abstract fun currentQueueSongsDao(): CurrentQueueSongsDao
+    abstract fun playlistDao(): PlaylistDao
 
     companion object {
         @Volatile

@@ -45,9 +45,7 @@ class FoldersFragment : Fragment(), OnItemClickListener {
     }
 
     private fun setupView() {
-        val variables = SparseArrayCompat<Any>(1)
-        variables.put(BR.selectable, true)
-        val adapter = BaseAdapter(items, activity!!, R.layout.item_folder, BR.folder, this, variables = variables)
+        val adapter = BaseAdapter(items, activity!!, R.layout.item_folder, BR.folder, this)
         foldersRV.adapter = adapter
         foldersRV.layoutManager = LinearLayoutManager(activity)
         ViewUtils.postponeRecyclerViewEnterSharedElementTransitionForFragment(foldersRV, FoldersFragment@this)

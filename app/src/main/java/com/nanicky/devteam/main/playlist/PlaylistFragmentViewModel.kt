@@ -7,7 +7,7 @@ import com.nanicky.devteam.main.common.callbacks.PlaylistSupplier
 import com.nanicky.devteam.main.common.view.BaseMediaStoreViewModel
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 
-open class PlaylistViewModel(
+open class PlaylistFragmentViewModel(
     application: Application, browseTree: BrowseTree
 ) : BaseMediaStoreViewModel<Playlist>(application, browseTree, PlaylistSupplier()) {
 
@@ -22,11 +22,3 @@ open class PlaylistViewModel(
     }
 
 }
-
-val basePlaylistProjection = arrayOf(
-    MediaStore.Audio.Playlists._ID,
-    MediaStore.Audio.Playlists.NAME,
-    MediaStore.Audio.Playlists.DATE_MODIFIED
-)
-
-val basePlaylistUri: Uri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI

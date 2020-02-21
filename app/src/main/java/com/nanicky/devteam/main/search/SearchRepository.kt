@@ -14,8 +14,6 @@ import com.nanicky.devteam.main.playback.mediasource.baseSongUri
 import com.nanicky.devteam.main.playback.mediasource.basicSongsSelection
 import com.nanicky.devteam.main.playback.mediasource.basicSongsSelectionArg
 import com.nanicky.devteam.main.playlist.Playlist
-import com.nanicky.devteam.main.playlist.basePlaylistProjection
-import com.nanicky.devteam.main.playlist.basePlaylistUri
 import com.nanicky.devteam.main.songs.Song
 import com.nanicky.devteam.main.songs.baseSongsProjection
 
@@ -82,3 +80,12 @@ val baseArtistProjection = arrayOf(
 )
 
 val baseArtistUri: Uri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
+
+
+val basePlaylistProjection = arrayOf(
+    MediaStore.Audio.Playlists._ID,
+    MediaStore.Audio.Playlists.NAME,
+    MediaStore.Audio.Playlists.DATE_MODIFIED
+)
+
+val basePlaylistUri: Uri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI

@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
 
     private var items: List<Playlist> = emptyList()
-    private val viewModel: PlaylistViewModel by sharedViewModel()
+    private val viewModel: PlaylistFragmentViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +81,7 @@ class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListen
             .build()
         val action =
             PlaylistFragmentDirections.actionPlaylistFragmentToPlaylistSongsFragment(transitionName, items[position])
-        findNavController().navigate(action, extras)
+        findNavController().navigate(action, extras) 
     }
 
     override fun onItemLongClick(position: Int) {

@@ -5,13 +5,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/revealImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorBackground"
-        android:visibility="gone" />
-
     <TextView
         android:id="@+id/sectionTitle"
         style="@style/AppTheme.SectionTitle"

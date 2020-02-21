@@ -14,6 +14,7 @@ import com.nanicky.devteam.common.urlEncoded
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
+import com.nanicky.devteam.main.db.playlist.PlaylistRepository
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playback.*
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +52,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 class BrowseTree(
     val context: Context,
     val musicSource: MediaStoreSource,
-    val playlistMediaSource: PlaylistMediaSource,
+    val playlistRepository: PlaylistRepository,
     val favouriteSongsRepository: FavouriteSongsRepository,
     val currentSongRepository: CurrentQueueSongsRepository,
     val mediaUpdateNotifier: MediaUpdateNotifier
@@ -160,6 +161,14 @@ class BrowseTree(
                 Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_heart)
         }.build()
 
+        val playlistMetaData = MediaMetadataCompat.Builder().apply {
+            // make able to play folder???
+            id = Constants.PLAYLISTS_ROOT
+            title = context.getString(R.string.playlist)
+            artist =
+                Constants.IMAGE_URI_ROOT + context.resources.getResourceEntryName(R.drawable.ic_playlist)
+        }.build()
+
 
         rootList += songsMetadata
         rootList += albumsMetadata
@@ -167,26 +176,11 @@ class BrowseTree(
         rootList += foldersMetadata
         rootList += genresMetadata
         rootList += favouritesMetadata
-
-        val playlistsIds = mutableListOf<String>()
-        playlistMediaSource.playlists.forEach {
-            val playlistMetadata = MediaMetadataCompat.Builder().apply {
-                id = it.id.toString()
-                title = it.name
-                flag = MediaItem.FLAG_BROWSABLE
-            }.build()
-            val playlistsList =
-                mediaIdToChildren[Constants.PLAYLISTS_ROOT] ?: CopyOnWriteArrayList()
-            playlistsList += playlistMetadata
-            mediaIdToChildren[Constants.PLAYLISTS_ROOT] = playlistsList
-            playlistsIds += it.id.toString()
-        }
-
-
-
+        rootList += playlistMetaData
 
 
         mediaIdToChildren[Constants.FAVOURITES_ROOT] = CopyOnWriteArrayList()
+        mediaIdToChildren[Constants.PLAYLISTS_ROOT] = CopyOnWriteArrayList()
         mediaIdToChildren[Constants.BROWSABLE_ROOT] = rootList
     }
 
@@ -207,7 +201,11 @@ class BrowseTree(
 
         val file = File(mediaItem.mediaUri.toString())
         val parentFile = file.parentFile
-        val foldersChildren = mediaIdToChildren[parentFile.path] ?: buildFoldersRoot(mediaItem, parentFile.path, parentFile.name)
+        val foldersChildren = mediaIdToChildren[parentFile.path] ?: buildFoldersRoot(
+            mediaItem,
+            parentFile.path,
+            parentFile.name
+        )
         foldersChildren += mediaItem
 
 
@@ -219,7 +217,8 @@ class BrowseTree(
         }
 
         mediaItem.id?.also { songId ->
-            playlistMediaSource.playlists.forEach { playlist ->
+            // check playlists
+            playlistRepository.getPlaylists().forEach { playlist ->
                 if (playlist.songIds.contains(songId)) {
                     val url = playlist.id.urlEncoded
                     val playlistSongs = mediaIdToChildren[url] ?: CopyOnWriteArrayList()
@@ -228,6 +227,7 @@ class BrowseTree(
                 }
             }
 
+            // check favourites
             val songIsFavourite = favouriteSongsRepository.containsId(songId)
             if (songIsFavourite) {
                 val favRoot = mediaIdToChildren[Constants.FAVOURITES_ROOT]!!

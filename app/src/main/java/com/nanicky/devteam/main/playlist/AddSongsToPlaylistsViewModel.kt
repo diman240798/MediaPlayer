@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class AddSongsToPlaylistsViewModel(application: Application, browseTree: BrowseTree) : PlaylistViewModel(application, browseTree) {
+class AddSongsToPlaylistsViewModel(application: Application, browseTree: BrowseTree) : PlaylistFragmentViewModel(application, browseTree) {
     private val songsRepository = SongsRepository(application)
     private val insertionData = MutableLiveData<Event<InsertionResult>>()
     val mediatorItems = MediatorLiveData<Any>()

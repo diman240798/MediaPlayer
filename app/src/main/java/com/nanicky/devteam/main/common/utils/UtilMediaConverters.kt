@@ -1,10 +1,10 @@
-package com.nanicky.devteam.main.db.currentqueue
+// Copyright (c) 2020 . Wilberforce Uwadiegwu. All Rights Reserved.
 
-import android.os.Parcelable
+package com.nanicky.devteam.main.common.utils
+
 import android.support.v4.media.MediaMetadataCompat
-import com.nanicky.devteam.main.common.data.Model
+import com.nanicky.devteam.main.db.currentqueue.MediaMetadataCompatDb
 import com.nanicky.devteam.main.playback.*
-import kotlinx.android.parcel.Parcelize
 
 fun toMediaMetadataCompatDb(item: MediaMetadataCompat): MediaMetadataCompatDb {
     return MediaMetadataCompatDb(
@@ -41,29 +41,3 @@ fun toMediaMetadataCompat(item: MediaMetadataCompatDb): MediaMetadataCompat? {
         downloadStatus = item.downloadStatus
     }.build()
 }
-
-
-
-@Parcelize
-data class MediaItemDataDb(
-    override val id: String,
-    val title: String,
-    val subtitle: String, // Artist
-    val description: MediaDescriptionCompatDb, //Album
-    val albumArtUri: String?,
-    val isBrowsable: Boolean,
-    var isPlaying: Boolean,
-    var isBuffering: Boolean,
-    var duration: Long = 0L
-) : Model(), Parcelable
-
-@Parcelize
-class MediaDescriptionCompatDb(
-    val mediaId: String,
-    val mediaUri: String,
-    val title: String,
-    val subtitle: String,
-    val description: String,
-    val icon: ByteArray,
-    val iconUri: String
-) : Parcelable

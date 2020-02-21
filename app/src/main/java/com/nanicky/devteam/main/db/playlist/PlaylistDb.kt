@@ -1,31 +1,30 @@
-package com.nanicky.devteam.main.playlist
+package com.nanicky.devteam.main.db.playlist
 
 import android.database.Cursor
-import android.os.Parcelable
 import android.provider.MediaStore
 import android.support.v4.media.MediaMetadataCompat
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.nanicky.devteam.common.dp
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.data.Model
 import com.nanicky.devteam.main.playback.id
 import com.nanicky.devteam.main.playback.title
-import kotlinx.android.parcel.Parcelize
 
 
-@Parcelize
-data class Playlist(
-    override val id: Long,
+@Entity(tableName = "playlist_table")
+data class PlaylistDb(
     var name: String,
-    val modified: Long = 0,
     var songsCount: Int = 0,
     var selected: Boolean = false,
-    var songIds : MutableList<String> = mutableListOf()
-) : Model(), Parcelable {
+    var songIds: MutableList<String> = mutableListOf(),
+    @PrimaryKey(autoGenerate = true)
+    override val id: Long = 0
+) : Model() {
 
     constructor(cursor: Cursor) : this(
         id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID)),
-        name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.NAME)),
-        modified = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.DATE_MODIFIED))
+        name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.NAME))
     )
 
     constructor(data: MediaMetadataCompat) : this(
@@ -33,9 +32,9 @@ data class Playlist(
         name = data.title ?: ""
     )
 
-    constructor(p: Playlist) : this(id = p.id, name = p.name, modified = p.modified, songsCount = p.songsCount)
+    constructor(p: PlaylistDb) : this(id = p.id, name = p.name, songsCount = p.songsCount)
 
-    constructor(id: Long) : this(id = id, name = "", modified = 0)
+    constructor(id: Long) : this(id = id, name = "")
 
     /**
      *  When [width] is more than [Constants.MAX_MODEL_IMAGE_THUMB_WIDTH], we'll change the value of any of this
@@ -46,11 +45,10 @@ data class Playlist(
      *  @param width the width of the ImageViw in pixels
      *  @return this playlist
      */
-    fun modForViewWidth(width: Int): Playlist {
+    fun modForViewWidth(width: Int): PlaylistDb {
         if (width.dp > Constants.MAX_MODEL_IMAGE_THUMB_WIDTH) {
             name = "$name$id$songsCount"
         }
         return this
     }
-
 }

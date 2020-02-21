@@ -9,14 +9,12 @@ import com.nanicky.devteam.main.common.utils.ViewUtils
 import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
-import com.nanicky.devteam.main.playback.mediasource.PlaylistMediaSource
 import org.koin.android.ext.android.inject
 
 
 class MainActivity : AppCompatActivity() {
 
     private val browseTree: BrowseTree by inject()
-    private val playlistMediaSource: PlaylistMediaSource by inject()
     private val favouriteSongsRepository: FavouriteSongsRepository by inject()
     private val currentQueueSongsRepository: CurrentQueueSongsRepository by inject()
     private val preferences: SharedPreferences by inject()
@@ -25,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) { // activity onCreate called twice
-            playlistMediaSource.load(this)
             favouriteSongsRepository.browseTree = browseTree
             currentQueueSongsRepository.browseTree = browseTree
             browseTree.load()

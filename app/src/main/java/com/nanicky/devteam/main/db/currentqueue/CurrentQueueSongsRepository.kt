@@ -5,6 +5,8 @@ import android.support.v4.media.MediaMetadataCompat
 import android.util.Base64
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.utils.ParcelableUtil
+import com.nanicky.devteam.main.common.utils.toMediaMetadataCompat
+import com.nanicky.devteam.main.common.utils.toMediaMetadataCompatDb
 import com.nanicky.devteam.main.playback.id
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import kotlinx.coroutines.CoroutineScope
@@ -48,7 +50,11 @@ class CurrentQueueSongsRepository(val dao: CurrentQueueSongsDao) {
 
         serviceScope.launch {
             INSTANCE.items = mediaList
-                .map { toMediaMetadataCompatDb(it) }
+                .map {
+                    toMediaMetadataCompatDb(
+                        it
+                    )
+                }
                 .map { ParcelableUtil.marshall(it) }
                 .map { Base64.encodeToString(it, Base64.DEFAULT) }
                 .toMutableList()
