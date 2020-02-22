@@ -106,6 +106,7 @@ class BrowseTree(
         serviceScope.launch {
             currentSongRepository.load()
             favouriteSongsRepository.load()
+            playlistRepository.load()
             musicSource.load(context).collect {
                 workoutItem(it, context)
             }
