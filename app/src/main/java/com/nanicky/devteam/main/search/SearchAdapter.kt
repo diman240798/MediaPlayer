@@ -7,8 +7,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.artists.Artist
+import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.genres.Genre
-import com.nanicky.devteam.main.playlist.Playlist
 import com.nanicky.devteam.main.songs.Song
 
 

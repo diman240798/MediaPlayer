@@ -10,10 +10,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.artists.Artist
-import com.nanicky.devteam.main.common.data.MediaStoreRepository
 import com.nanicky.devteam.main.common.event.Event
+import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.genres.Genre
-import com.nanicky.devteam.main.playlist.Playlist
 import com.nanicky.devteam.main.songs.Song
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -39,8 +38,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     val resultSize: LiveData<Int> get() = _resultSize
 
     val repository = SearchRepository(application)
-    private val playlistRepository = PlaylistRepository(application)
-
 
     fun query(query: String, ascend: Boolean) {
         viewModelScope.launch {
@@ -50,7 +47,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
             val genres = async { repository.queryGenres(query, ascend) }
             val playlists = async {
                 repository.queryPlaylists(query, ascend).apply {
-                    this.forEach { it.songsCount = fetchSongCount(it.id, playlistRepository) }
+                    this.forEach { it.songsCount = fetchSongCount(it.id) }
                 }
             }
 
@@ -74,8 +71,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
     @WorkerThread
     fun fetchSongCount(
-        playlistId: Long,
-        playlistRepository: PlaylistRepository
+        playlistId: Long
     ): Int {
         val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
         val projection = arrayOf(MediaStore.Audio.Playlists.Members.AUDIO_ID)
@@ -87,9 +83,4 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         return count
     }
 
-}
-
-class PlaylistRepository(application: Application) : MediaStoreRepository<Playlist>(application) {
-
-    override fun transform(cursor: Cursor): Playlist = Playlist(cursor)
 }

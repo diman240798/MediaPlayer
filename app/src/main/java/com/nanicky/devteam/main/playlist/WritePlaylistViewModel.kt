@@ -13,7 +13,7 @@ import com.nanicky.devteam.R
 import com.nanicky.devteam.common.App
 import com.nanicky.devteam.main.common.utils.ImageUtils
 import com.nanicky.devteam.main.common.utils.UriFileUtils
-import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.db.playlist.PlaylistRepository
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import kotlinx.coroutines.Dispatchers
@@ -33,9 +33,9 @@ class WritePlaylistViewModel(application: Application, val playlistRepo: Playlis
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
-                    var newPlaylist = PlaylistDb(playlistName)
+                    var newPlaylist = Playlist(playlistName)
                     val id = playlistRepo.insert(newPlaylist)
-                    newPlaylist = PlaylistDb(id, playlistName)
+                    newPlaylist = Playlist(id, playlistName)
 
                     writeImageFile(newPlaylist, tempThumbUri)
                     _data.postValue(WriteResult(true))
@@ -51,7 +51,7 @@ class WritePlaylistViewModel(application: Application, val playlistRepo: Playlis
 
     fun editPlaylist(
         name: String,
-        playlist: PlaylistDb,
+        playlist: Playlist,
         tempThumbUri: Uri?,
         deleteImageFile: Boolean
     ) {
@@ -70,7 +70,7 @@ class WritePlaylistViewModel(application: Application, val playlistRepo: Playlis
         }
     }
 
-    fun deletePlaylist(playlist: PlaylistDb) {
+    fun deletePlaylist(playlist: Playlist) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
@@ -87,7 +87,7 @@ class WritePlaylistViewModel(application: Application, val playlistRepo: Playlis
     @HunterDebug
     @WorkerThread
     private fun writeImageFile(
-        playlist: PlaylistDb,
+        playlist: Playlist,
         tempThumbUri: Uri? = null,
         deleteImageFile: Boolean = false
     ) {

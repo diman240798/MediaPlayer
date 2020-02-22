@@ -14,7 +14,7 @@ import com.nanicky.devteam.common.urlEncoded
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
-import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.db.playlist.PlaylistRepository
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playback.*
@@ -438,7 +438,7 @@ class BrowseTree(
         favRoot!!.add(song)
     }
 
-    fun addPlaylist(playlist: PlaylistDb) {
+    fun addPlaylist(playlist: Playlist) {
         val url = playlist.getUniqueKey()
         val playlistSongs = CopyOnWriteArrayList<MediaMetadataCompat>()
         playlist.songIds.forEach { id ->
@@ -452,7 +452,7 @@ class BrowseTree(
         mediaIdToChildren[url] = playlistSongs
     }
 
-    fun updatePlaylist(playlist: PlaylistDb) {
+    fun updatePlaylist(playlist: Playlist) {
         val url = playlist.getUniqueKey()
         val playlistSongs = mediaIdToChildren[url]!!
         playlistSongs.clear()// remove old songs list and fill new
@@ -467,7 +467,7 @@ class BrowseTree(
         mediaIdToChildren[url] = playlistSongs
     }
 
-    fun addToPlaylist(songId: String, playlist: PlaylistDb): Boolean {
+    fun addToPlaylist(songId: String, playlist: Playlist): Boolean {
         val playlistSongs = mediaIdToChildren[playlist.getUniqueKey()]
         val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
         val song = songsRoot!!.firstOrNull { it.id == songId }
@@ -479,7 +479,7 @@ class BrowseTree(
         }
     }
 
-    fun removeFromPlaylist(songId: String, playlist: PlaylistDb): Boolean {
+    fun removeFromPlaylist(songId: String, playlist: Playlist): Boolean {
         val playlistSongs = mediaIdToChildren[playlist.getUniqueKey()]
         val song = playlistSongs!!.firstOrNull { it.id == songId }
         return if (song == null) {
@@ -490,7 +490,7 @@ class BrowseTree(
         }
     }
 
-    fun removePlaylist(playlist: PlaylistDb) {
+    fun removePlaylist(playlist: Playlist) {
         mediaIdToChildren.remove(playlist.getUniqueKey())
     }
 }

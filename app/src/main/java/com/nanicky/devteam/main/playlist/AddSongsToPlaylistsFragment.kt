@@ -2,7 +2,6 @@ package com.nanicky.devteam.main.playlist
 
 
 import android.animation.AnimatorSet
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.collection.SparseArrayCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nanicky.devteam.BR
@@ -22,14 +20,14 @@ import com.nanicky.devteam.main.common.event.Event
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFullscreenDialogFragment
-import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.Playlist
 import kotlinx.android.synthetic.main.fragment_add_songs_to_playlists.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class AddSongsToPlaylistsFragment : BaseFullscreenDialogFragment(), OnItemClickListener, View.OnClickListener {
     private var songId: String? = null
     private var mediaRoot: String? = null
-    private var playlists = emptyList<PlaylistDb>()
+    private var playlists = emptyList<Playlist>()
     private val viewModel: AddSongsToPlaylistsViewModel by sharedViewModel()
     private var crossFadeAnimatorSet: AnimatorSet? = null
 
@@ -72,8 +70,8 @@ class AddSongsToPlaylistsFragment : BaseFullscreenDialogFragment(), OnItemClickL
                 }
             }
         } else {
-            this.playlists = data as List<PlaylistDb>
-            (playlistRV.adapter as BaseAdapter<PlaylistDb>).updateItems(playlists)
+            this.playlists = data as List<Playlist>
+            (playlistRV.adapter as BaseAdapter<Playlist>).updateItems(playlists)
             updateSelectedCount()
             content.crossFadeWidth(largeProgressBar)
         }

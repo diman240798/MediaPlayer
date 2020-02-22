@@ -11,7 +11,7 @@ import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsDao
 import com.nanicky.devteam.main.db.favourite.FavouriteSongs
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsDao
 import com.nanicky.devteam.main.db.playlist.PlaylistDao
-import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.db.recently.RecentlyPlayed
 import com.nanicky.devteam.main.db.recently.RecentlyPlayedDao
 import com.nanicky.devteam.main.lyrics.Lyrics
@@ -21,7 +21,7 @@ import com.nanicky.devteam.main.lyrics.LyricsDao
 @Database(
     entities = [
         RecentlyPlayed::class, Lyrics::class, FavouriteSongs::class,
-        CurrentQueueSongs::class, PlaylistDb::class
+        CurrentQueueSongs::class, Playlist::class
     ],
     version = 1
 )

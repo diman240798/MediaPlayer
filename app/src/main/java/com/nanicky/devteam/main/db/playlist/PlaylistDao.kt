@@ -11,19 +11,19 @@ import com.nanicky.devteam.main.common.data.Constants
 @Dao
 interface PlaylistDao {
     @Query("SELECT * FROM playlist_table")
-    fun fetchAll(): LiveData<List<PlaylistDb>>
+    fun fetchAll(): LiveData<List<Playlist>>
 
     @Query("SELECT * FROM playlist_table")
-    fun fetchAllNow(): List<PlaylistDb>?
+    fun fetchAllNow(): List<Playlist>?
 
     @Query("SELECT * FROM playlist_table LIMIT 1")
-    suspend fun fetchFirst(): PlaylistDb?
+    suspend fun fetchFirst(): Playlist?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(PlaylistDb: PlaylistDb): Long
+    suspend fun insert(Playlist: Playlist): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(itemsList: List<PlaylistDb>)
+    suspend fun insertAll(itemsList: List<Playlist>)
 
     /**
      * We want to keep a maximum of [Constants.MAX_RECENTLY_PLAYED] items in this database

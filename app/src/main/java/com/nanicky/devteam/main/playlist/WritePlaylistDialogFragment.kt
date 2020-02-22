@@ -13,7 +13,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -30,7 +29,7 @@ import com.nanicky.devteam.main.common.dataBinding.DataBindingAdapters
 import com.nanicky.devteam.main.common.utils.ImageUtils
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseFullscreenDialogFragment
-import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.Playlist
 import kotlinx.android.synthetic.main.fragment_write_playlist_dialog.*
 import org.koin.android.ext.android.inject
 import java.io.File
@@ -40,7 +39,7 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
     private val permissionRequestExternalStorage = 0
     private val imageRequestCode = 1
     private var tempThumbUri: Uri? = null
-    private var playlist: PlaylistDb? = null
+    private var playlist: Playlist? = null
     val viewModel : WritePlaylistViewModel by inject()
     var deleteImageFile = false
 
@@ -80,7 +79,7 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
         if (playlist != null) {
             writePlaylist.setText(R.string.save_changes)
             playlistNameField.setText(playlist!!.name)
-            displayImage(PlaylistDb(playlist!!).modForViewWidth(getPlaylistArtWidth()))
+            displayImage(Playlist(playlist!!).modForViewWidth(getPlaylistArtWidth()))
         }
     }
 

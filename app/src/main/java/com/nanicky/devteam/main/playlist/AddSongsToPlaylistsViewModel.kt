@@ -10,7 +10,6 @@ import com.nanicky.devteam.main.common.event.Event
 import com.nanicky.devteam.main.db.playlist.PlaylistRepository
 import com.nanicky.devteam.main.playback.id
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
-import com.nanicky.devteam.main.songs.SongsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

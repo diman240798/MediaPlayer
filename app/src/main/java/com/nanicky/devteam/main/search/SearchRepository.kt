@@ -9,11 +9,11 @@ import com.nanicky.devteam.main.albums.baseAlbumProjection
 import com.nanicky.devteam.main.albums.baseAlbumUri
 import com.nanicky.devteam.main.artists.Artist
 import com.nanicky.devteam.main.common.data.BaseMediaStoreRepository
+import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playback.mediasource.baseSongUri
 import com.nanicky.devteam.main.playback.mediasource.basicSongsSelection
 import com.nanicky.devteam.main.playback.mediasource.basicSongsSelectionArg
-import com.nanicky.devteam.main.playlist.Playlist
 import com.nanicky.devteam.main.songs.Song
 import com.nanicky.devteam.main.songs.baseSongsProjection
 

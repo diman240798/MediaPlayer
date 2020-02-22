@@ -10,18 +10,17 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseMenuBottomSheet
-import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.Playlist
 import org.koin.android.ext.android.inject
 
 
 class PlaylistMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
-    lateinit var playlist: PlaylistDb
+    lateinit var playlist: Playlist
     @IdRes var popUpTo: Int = 0
     val viewModel : WritePlaylistViewModel by inject()
 

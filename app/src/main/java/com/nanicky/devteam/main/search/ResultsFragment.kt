@@ -23,9 +23,8 @@ import com.nanicky.devteam.main.artists.Artist
 import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.data.Model
 import com.nanicky.devteam.main.common.view.BaseAdapter
-import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.genres.Genre
-import com.nanicky.devteam.main.playlist.Playlist
 import com.nanicky.devteam.main.songs.Song
 import com.nanicky.devteam.main.songs.SongsMenuBottomSheetDialogFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_results.*
@@ -155,7 +154,7 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
 
         val directions =
             SearchFragmentDirections.actionSearchFragmentToPlaylistMenuBottomSheetDialogFragment(
-                playlist =  PlaylistDb(
+                playlist =  Playlist(
                     playlist.name,
                     playlist.songsCount,
                     playlist.selected,
@@ -200,7 +199,7 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
 
         val directions = SearchFragmentDirections.actionSearchFragmentToPlaylistSongsFragment(
             transitionName,
-            PlaylistDb(
+            Playlist(
                 playlist.name,
                 playlist.songsCount,
                 playlist.selected,

@@ -17,7 +17,7 @@ import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFullscreenDialogFragment
-import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.songs.Song
 import kotlinx.android.synthetic.main.fragment_playlist_songs_editor_dialog.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -27,7 +27,7 @@ class PlaylistSongsEditorDialogFragment : BaseFullscreenDialogFragment(), OnItem
 
     var items = emptyList<Song>()
     val viewModel: PlaylistSongsEditorViewModel by sharedViewModel()
-    private lateinit var playlist: PlaylistDb
+    private lateinit var playlist: Playlist
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

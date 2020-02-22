@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hunter.library.debug.HunterDebug
 import com.nanicky.devteam.main.common.event.Event
-import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.db.playlist.PlaylistRepository
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import com.nanicky.devteam.main.songs.Song
@@ -43,7 +43,7 @@ class PlaylistSongsEditorViewModel(
 
     }
 
-    fun updatePlaylist(playlist: PlaylistDb) {
+    fun updatePlaylist(playlist: Playlist) {
         viewModelScope.launch {
             val success = withContext(Dispatchers.IO) {
                 val selectedItems: List<Song> = items.value!!.filter { it.selected }
@@ -78,7 +78,7 @@ class PlaylistSongsEditorViewModel(
 
     @WorkerThread
     @HunterDebug
-    private fun deleteSongs(songs: List<Song>,playlist: PlaylistDb): Boolean {
+    private fun deleteSongs(songs: List<Song>,playlist: Playlist): Boolean {
         try {
             songs.map { it.id }.forEach {
                 browseTree.removeFromPlaylist(it, playlist)
@@ -93,7 +93,7 @@ class PlaylistSongsEditorViewModel(
 
     @WorkerThread
     @HunterDebug
-    private fun addSongs(songs: List<Song>, playlist: PlaylistDb): Boolean {
+    private fun addSongs(songs: List<Song>, playlist: Playlist): Boolean {
         try {
             songs.map { it.id }.forEach {
                 browseTree.addToPlaylist(it, playlist)

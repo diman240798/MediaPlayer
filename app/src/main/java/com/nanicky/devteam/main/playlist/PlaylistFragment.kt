@@ -16,13 +16,13 @@ import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFragment
-import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.Playlist
 import kotlinx.android.synthetic.main.fragment_playlist.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
 
-    private var items: List<PlaylistDb> = emptyList()
+    private var items: List<Playlist> = emptyList()
     private val viewModel: PlaylistFragmentViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +47,7 @@ class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListen
         viewModel.init(Constants.PLAYLISTS_ROOT)
         viewModel.items.observe(viewLifecycleOwner, Observer {
             this.items = it
-            (playlistRV.adapter as BaseAdapter<PlaylistDb>).updateItems(it)
+            (playlistRV.adapter as BaseAdapter<Playlist>).updateItems(it)
             updateViews()
         })
     }
