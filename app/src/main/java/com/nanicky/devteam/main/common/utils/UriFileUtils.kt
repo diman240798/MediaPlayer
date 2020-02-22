@@ -105,7 +105,7 @@ object UriFileUtils {
     ): String? {
         if (uri == null) return null
 
-        val column = "data"
+        val column = "_data"
         val projection = arrayOf(column)
 
         val cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, null)

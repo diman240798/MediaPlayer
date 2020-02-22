@@ -205,6 +205,13 @@ inline var MediaMetadataCompat.Builder.trackNumber: Long
         putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, value)
     }
 
+inline var MediaMetadataCompat.Builder.songsCount: Int
+    @Deprecated(NO_GET, level = DeprecationLevel.ERROR)
+    get() = throw IllegalAccessException("Cannot get from MediaMetadataCompat.Builder")
+    set(value) {
+        putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, value.toLong())
+    }
+
 inline var MediaMetadataCompat.Builder.trackCount: Long
     @Deprecated(NO_GET, level = DeprecationLevel.ERROR)
     get() = throw IllegalAccessException("Cannot get from MediaMetadataCompat.Builder")

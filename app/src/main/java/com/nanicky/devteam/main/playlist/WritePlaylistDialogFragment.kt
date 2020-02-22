@@ -79,7 +79,7 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
         if (playlist != null) {
             writePlaylist.setText(R.string.save_changes)
             playlistNameField.setText(playlist!!.name)
-            displayImage(Playlist(playlist!!).modForViewWidth(getPlaylistArtWidth()))
+            displayImage(playlist!!.modForViewWidth(getPlaylistArtWidth()))
         }
     }
 

@@ -17,13 +17,16 @@ import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFragment
 import com.nanicky.devteam.main.db.playlist.Playlist
+import com.nanicky.devteam.main.playback.mediasource.MediaUpdateNotifier
 import kotlinx.android.synthetic.main.fragment_playlist.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
 
     private var items: List<Playlist> = emptyList()
     private val viewModel: PlaylistFragmentViewModel by sharedViewModel()
+    private val mediaUpdateNotifier: MediaUpdateNotifier by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +53,7 @@ class PlaylistFragment : BaseFragment(), OnItemClickListener, View.OnClickListen
             (playlistRV.adapter as BaseAdapter<Playlist>).updateItems(it)
             updateViews()
         })
+        mediaUpdateNotifier.baseMediaStoreViewModel = viewModel
     }
 
     private fun updateViews() {

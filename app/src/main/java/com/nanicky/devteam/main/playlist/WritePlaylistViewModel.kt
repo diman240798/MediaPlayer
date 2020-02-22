@@ -32,15 +32,18 @@ class WritePlaylistViewModel(application: Application, val playlistRepo: Playlis
     fun createPlaylist(playlistName: String, tempThumbUri: Uri?) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                try {
+                var id = -1L
+                    try {
                     var newPlaylist = Playlist(playlistName)
-                    val id = playlistRepo.insert(newPlaylist)
+                    id = playlistRepo.insert(newPlaylist)
                     newPlaylist = Playlist(id, playlistName)
+                    browseTree.addPlaylist(newPlaylist)
 
                     writeImageFile(newPlaylist, tempThumbUri)
                     _data.postValue(WriteResult(true))
 
                 } catch (ex: Exception) {
+                    if (id != -1L) playlistRepo.remove(id)
                     _data.postValue(WriteResult(false, R.string.something_went_wrong))
                     return@withContext
                 }

@@ -17,7 +17,7 @@ class PlaylistRepository(private val dao: PlaylistDao) {
 
     fun fetchAll() = dao.fetchAllNow()
 
-    suspend fun insert(recentlyPlayed: Playlist) = dao.insert(recentlyPlayed)
+    suspend fun insert(playlist: Playlist) = dao.insert(playlist)
 
     suspend fun remove(id: Long) = dao.removeById(id)
 

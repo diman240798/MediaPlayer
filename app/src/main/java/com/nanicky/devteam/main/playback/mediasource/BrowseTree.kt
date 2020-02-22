@@ -221,12 +221,12 @@ class BrowseTree(
         mediaItem.id?.also { songId ->
             // check playlists
             playlistRepository.getPlaylists().forEach { playlist ->
-                if (playlist.songIds.contains(songId)) {
-                    val url = playlist.getUniqueKey()
-                    val playlistSongs = mediaIdToChildren[url] ?: CopyOnWriteArrayList()
-                    playlistSongs += mediaItem
-                    mediaIdToChildren[url] = playlistSongs
-                }
+                val url = playlist.getUniqueKey()
+                val playlistSongs = mediaIdToChildren[url] ?: buildPlaylistRoot(playlist)
+                // add song if id in list
+                if (playlist.songIds.contains(songId)) playlistSongs += mediaItem
+                // save
+                mediaIdToChildren[url] = playlistSongs
             }
 
             // check favourites
@@ -237,6 +237,19 @@ class BrowseTree(
                 mediaIdToChildren[Constants.FAVOURITES_ROOT] = favRoot
             }
         }
+    }
+
+    private fun buildPlaylistRoot(playlist: Playlist): CopyOnWriteArrayList<MediaMetadataCompat> {
+        val playlists = mediaIdToChildren[Constants.PLAYLISTS_ROOT] ?: CopyOnWriteArrayList()
+
+        val playListMetadata = MediaMetadataCompat.Builder().apply {
+            id = playlist.id.toString()
+            title = playlist.name
+            songsCount = playlist.songsCount
+        }.build()
+
+        playlists += playListMetadata
+        return playlists
     }
 
     private val genresProjection = arrayOf(
@@ -431,17 +444,19 @@ class BrowseTree(
         val favRoot = mediaIdToChildren[Constants.FAVOURITES_ROOT]
         val song = favRoot!!.first { it.id == id }
         favRoot.remove(song)
+        mediaUpdateNotifier.update()
     }
 
     fun addToFavourites(id: String) {
         val favRoot = mediaIdToChildren[Constants.FAVOURITES_ROOT]
         val song = mediaIdToChildren[Constants.SONGS_ROOT]!!.first { it.id == id }
         favRoot!!.add(song)
+        mediaUpdateNotifier.update()
     }
 
     fun addPlaylist(playlist: Playlist) {
         val url = playlist.getUniqueKey()
-        val playlistSongs = CopyOnWriteArrayList<MediaMetadataCompat>()
+        val playlistSongs = mediaIdToChildren[url] ?: buildPlaylistRoot(playlist)
         playlist.songIds.forEach { id ->
             val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
             val song = songsRoot!!.firstOrNull { it.id == id }
@@ -451,6 +466,7 @@ class BrowseTree(
 
         }
         mediaIdToChildren[url] = playlistSongs
+        mediaUpdateNotifier.update()
     }
 
     fun updatePlaylist(playlist: Playlist) {
@@ -466,6 +482,7 @@ class BrowseTree(
 
         }
         mediaIdToChildren[url] = playlistSongs
+        mediaUpdateNotifier.update()
     }
 
     fun addToPlaylist(songId: String, playlist: Playlist): Boolean {
@@ -476,6 +493,7 @@ class BrowseTree(
             false
         } else {
             playlistSongs!!.add(song)
+            mediaUpdateNotifier.update()
             true
         }
     }
@@ -487,11 +505,13 @@ class BrowseTree(
             false
         } else {
             playlistSongs.remove(song)
+            mediaUpdateNotifier.update()
             true
         }
     }
 
     fun removePlaylist(playlist: Playlist) {
         mediaIdToChildren.remove(playlist.getUniqueKey())
+        mediaUpdateNotifier.update()
     }
 }
