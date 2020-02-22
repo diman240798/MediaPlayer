@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.collection.SparseArrayCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nanicky.devteam.BR
@@ -18,22 +17,23 @@ import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFullscreenDialogFragment
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
 import com.nanicky.devteam.main.songs.Song
 import kotlinx.android.synthetic.main.fragment_playlist_songs_editor_dialog.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class PlaylistSongsEditorDialogFragment : BaseFullscreenDialogFragment(), OnItemClickListener {
 
     var items = emptyList<Song>()
-    lateinit var viewModel: PlaylistSongsEditorViewModel
-    private lateinit var playlist: Playlist
+    val viewModel: PlaylistSongsEditorViewModel by sharedViewModel()
+    private lateinit var playlist: PlaylistDb
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this)[PlaylistSongsEditorViewModel::class.java]
         playlist = arguments!!.getParcelable("playlist")!!
-        viewModel.init(playlist.id.toString())
+        viewModel.init(playlist.getUniqueKey())
     }
 
     override fun onCreateView(
@@ -72,7 +72,7 @@ class PlaylistSongsEditorDialogFragment : BaseFullscreenDialogFragment(), OnItem
             }
 
         })
-        viewModel.updatePlaylist()
+        viewModel.updatePlaylist(playlist)
 
     }
 

@@ -46,7 +46,7 @@ val commonModule = module {
         )
     }
 
-    viewModel { WritePlaylistViewModel(get(), get()) }
+    viewModel { WritePlaylistViewModel(get(), get(), get()) }
     viewModel { NavViewModel(get()) }
     viewModel { PlaybackViewModel(get(), get(), get(), get()) }
     viewModel { SearchViewModel(get()) }
@@ -72,9 +72,9 @@ val commonModule = module {
     viewModel { ArtistAlbumsViewModel(get(), get()) }
     viewModel { ExploreViewModel(get(), get()) }
     viewModel { PlaylistFragmentViewModel(get(), get()) }
-    viewModel { AddSongsToPlaylistsViewModel(get(), get()) }
+    viewModel { AddSongsToPlaylistsViewModel(get(), get(), get()) }
     viewModel { PlaylistSongsViewModel(get(), get()) }
-    viewModel { PlaylistSongsEditorViewModel(get(), get()) }
+    viewModel { PlaylistSongsEditorViewModel(get(), get(), get()) }
     // colorTheme change
     single { ColorChangeSharedObject() }
 }

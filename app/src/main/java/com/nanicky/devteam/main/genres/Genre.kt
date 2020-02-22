@@ -21,4 +21,7 @@ data class Genre(override val id: String, val name: String) : Model(), Parcelabl
         id = data.id ?: "",
         name = data.title ?: "UNKNOWN"
     )
+
+
+    fun getUniqueKey(): String = "${name}_genre_$id"
 }

@@ -213,7 +213,7 @@ class BrowseTree(
         val songId = mediaItem.id?.toInt()
         val genre = songId?.let { getGenreForSongBySongId(context, songId) }
         genre?.let { genre ->
-            val genresChildren = mediaIdToChildren[genre.name] ?: buildGenresRoot(mediaItem, genre)
+            val genresChildren = mediaIdToChildren[genre.getUniqueKey()] ?: buildGenresRoot(mediaItem, genre)
             genresChildren += mediaItem
         }
 
@@ -352,7 +352,7 @@ class BrowseTree(
     ): MutableList<MediaMetadataCompat> {
         val genreMetadata = MediaMetadataCompat.Builder().apply {
             id = genre.id
-            title = genre.name
+            title = genre.getUniqueKey()
         }.build()
 
         // Adds this artist to the 'Artists' category.
@@ -362,7 +362,7 @@ class BrowseTree(
 
         // Insert the album's root with an empty list for its children, and return the list.
         return CopyOnWriteArrayList<MediaMetadataCompat>().also {
-            mediaIdToChildren[genre.name] = it
+            mediaIdToChildren[genre.getUniqueKey()] = it
         }
     }
 

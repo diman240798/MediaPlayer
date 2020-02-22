@@ -1,16 +1,14 @@
 package com.nanicky.devteam.main.playlist
 
 import android.app.Application
-import android.content.ContentProviderOperation
-import android.content.ContentValues
-import android.net.Uri
-import android.provider.MediaStore
 import androidx.annotation.StringRes
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.event.Event
+import com.nanicky.devteam.main.db.playlist.PlaylistRepository
+import com.nanicky.devteam.main.playback.id
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import com.nanicky.devteam.main.songs.SongsRepository
 import kotlinx.coroutines.Dispatchers
@@ -18,66 +16,49 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class AddSongsToPlaylistsViewModel(application: Application, browseTree: BrowseTree) : PlaylistFragmentViewModel(application, browseTree) {
-    private val songsRepository = SongsRepository(application)
+class AddSongsToPlaylistsViewModel(application: Application, val playlistRepo: PlaylistRepository, val browseTree: BrowseTree) : PlaylistFragmentViewModel(application, browseTree) {
     private val insertionData = MutableLiveData<Event<InsertionResult>>()
     val mediatorItems = MediatorLiveData<Any>()
-    private var matchingSongsIds = emptyList<Long>()
-    private lateinit var songsUri: Uri
-    private lateinit var songsSelection: String
-    private lateinit var songsSelectionArgs: Array<String>
 
     override fun init(sourceConst: String?) {
         super.init(sourceConst)
 
         mediatorItems.addSource(this.items) { mediatorItems.value = it }
         mediatorItems.addSource(insertionData) { mediatorItems.value = it }
-        loadSongs()
     }
 
-    private fun loadSongs() {
-        viewModelScope.launch {
-            val ids = withContext(Dispatchers.IO) {
-                songsRepository.fetchMatchingIds(
-                    songsUri, arrayOf(MediaStore.Audio.Media._ID), songsSelection, songsSelectionArgs
-                )
-            }
-            matchingSongsIds = ids
-        }
-    }
-
-    fun addToPlaylist() {
+    fun addToPlaylist(songId: String?, mediaRoot: String?) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val selected = data.value?.filter { it.selected }
-                if (selected == null || selected.isEmpty()) {
+                val selectedPlaylists = data.value?.filter { it.selected }
+
+                if (selectedPlaylists == null || selectedPlaylists.isEmpty()) {
                     insertionData.postValue(Event(InsertionResult()))
                     return@withContext
                 }
 
-                val songIds = matchingSongsIds
-                if (songIds.isEmpty()) {
-                    insertionData.postValue(Event(InsertionResult(R.string.sth_went_wrong, false)))
-                    return@withContext
-                }
-                val operations = arrayListOf<ContentProviderOperation>()
+             try {
+                 selectedPlaylists.forEach { playlist ->
+                     if (songId != null) {
+                         playlist.songIds.add(songId)
+                         browseTree.addToPlaylist(songId, playlist)
+                         playlistRepo.insert(playlist)
+                     } else if (mediaRoot != null) {
+                         val songs = browseTree.mediaIdToChildren[mediaRoot]!!
+                         songs.map { it.id }.forEach {
+                             it?.let {
+                                 playlist.songIds.add(it)
+                                 browseTree.addToPlaylist(it, playlist)
+                             }
+                         }
+                         playlistRepo.insert(playlist)
+                     }
 
-                selected.forEach { playlist ->
-                    songIds.forEach { id ->
-                        val values = ContentValues()
-                        values.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, playlist.songsCount + 1)
-                        values.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, id)
-                        val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlist.id)
-                        val cpo = ContentProviderOperation.newInsert(uri).withValues(values).build()
-                        operations.add(cpo)
-                    }
-                }
-                val result = getApplication<Application>().contentResolver.applyBatch(MediaStore.AUTHORITY, operations)
-                if (result.size == operations.size) {
-                    insertionData.postValue(Event(InsertionResult(R.string.success, true)))
-                } else {
-                    insertionData.postValue(Event(InsertionResult(R.string.sth_went_wrong, false)))
-                }
+                 }
+                 insertionData.postValue(Event(InsertionResult(R.string.success, true)))
+             } catch (ex: Exception) {
+                 insertionData.postValue(Event(InsertionResult(R.string.sth_went_wrong, false)))
+             }
             }
         }
     }

@@ -17,6 +17,7 @@ import com.nanicky.devteam.BR
 import com.nanicky.devteam.R
 import com.nanicky.devteam.common.crossFadeWidth
 import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
+import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.event.Event
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseAdapter
@@ -26,17 +27,17 @@ import kotlinx.android.synthetic.main.fragment_add_songs_to_playlists.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class AddSongsToPlaylistsFragment : BaseFullscreenDialogFragment(), OnItemClickListener, View.OnClickListener {
+    private var songId: String? = null
+    private var mediaRoot: String? = null
     private var playlists = emptyList<PlaylistDb>()
     private val viewModel: AddSongsToPlaylistsViewModel by sharedViewModel()
     private var crossFadeAnimatorSet: AnimatorSet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val strUri = arguments!!.getString("songsUri")
-        var uri: Uri? = null; if (strUri != null) uri = Uri.parse(strUri)
-        val selection = arguments!!.getString("songsSelection")
-        val selectionArgs = arguments!!.getStringArray("songsSelectionArgs")
-        viewModel.init(uri?.toString())
+        songId = arguments!!.getString("songId")
+        mediaRoot = arguments!!.getString("mediaRoot")
+        viewModel.init(Constants.PLAYLISTS_ROOT)
     }
 
     override fun onCreateView(
@@ -109,19 +110,19 @@ class AddSongsToPlaylistsFragment : BaseFullscreenDialogFragment(), OnItemClickL
         playlistRV.adapter = adapter
         playlistRV.layoutManager = LinearLayoutManager(activity)
         closeButton.setOnClickListener(this)
-        addPlayListIcon.setOnClickListener(this)
+        //addPlayListIcon.setOnClickListener(this)
     }
 
     private fun addToPlayList() {
         crossFadeAnimatorSet?.cancel()
         progressBar.crossFadeWidth(doneButton, 600, visibility = View.VISIBLE)
-        viewModel.addToPlaylist()
+        viewModel.addToPlaylist(songId, mediaRoot)
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.closeButton -> dismissAllowingStateLoss()
-            R.id.addPlayListIcon -> findNavController().navigate(AddSongsToPlaylistsFragmentDirections.actionAddSongsToPlaylistsFragmentToWritePlaylistDialogFragment())
+            //R.id.addPlayListIcon -> findNavController().navigate(AddSongsToPlaylistsFragmentDirections.actionAddSongsToPlaylistsFragmentToWritePlaylistDialogFragment())
         }
     }
 

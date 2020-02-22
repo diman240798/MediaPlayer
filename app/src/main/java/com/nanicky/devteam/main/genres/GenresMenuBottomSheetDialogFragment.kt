@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.utils.Utils
@@ -47,13 +48,11 @@ class GenresMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun addToPlayList() {
-      // TODO: FIX
-        /*  val uri = MediaStore.Audio.Genres.Members.getContentUri("external", genre.id)
         val action = GenresMenuBottomSheetDialogFragmentDirections
-            .actionGenresMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(songsUri = uri.toString())
+            .actionGenresMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(mediaRoot = genre.getUniqueKey())
         val navOptions = NavOptions.Builder().setPopUpTo(popUpTo, false).build()
 
-        findNavController().navigate(action, navOptions)*/
+        findNavController().navigate(action, navOptions)
     }
 
     private fun share() {

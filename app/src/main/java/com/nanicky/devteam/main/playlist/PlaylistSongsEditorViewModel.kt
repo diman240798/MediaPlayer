@@ -1,29 +1,32 @@
 package com.nanicky.devteam.main.playlist
 
 import android.app.Application
-import android.content.ContentValues
-import android.net.Uri
-import android.provider.MediaStore
+import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hunter.library.debug.HunterDebug
 import com.nanicky.devteam.main.common.event.Event
+import com.nanicky.devteam.main.db.playlist.PlaylistDb
+import com.nanicky.devteam.main.db.playlist.PlaylistRepository
 import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import com.nanicky.devteam.main.songs.Song
 import com.nanicky.devteam.main.songs.SongsViewModel
-import com.nanicky.devteam.main.songs.baseSongsProjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 
-class PlaylistSongsEditorViewModel(application: Application, browseTree: BrowseTree) : SongsViewModel(application, browseTree) {
-    private val playlistSongsRepository = PlaylistSongsRepository(application)
-    private val playlistSongsProjection =
-        listOf(*baseSongsProjection, MediaStore.Audio.Playlists.Members.AUDIO_ID).toTypedArray()
-    private lateinit var playlistSongsUri: Uri
+class PlaylistSongsEditorViewModel(
+    application: Application,
+    val browseTree: BrowseTree,
+    val playlistRepo: PlaylistRepository
+) : SongsViewModel(application, browseTree) {
+    private val TAG: String = "PlaylistSongsEditorVM"
+
+
     private lateinit var initiallySelectedItems: List<Song>
     private val _playlistValue = MutableLiveData<Event<Boolean>>()
     val playlistValue: LiveData<Event<Boolean>> get() = _playlistValue
@@ -40,33 +43,7 @@ class PlaylistSongsEditorViewModel(application: Application, browseTree: BrowseT
 
     }
 
-    /**
-     *  Preset all songs on [items] that exists in the playlist and post the modified items
-     *  @param items all songs on the device
-     */
-    @HunterDebug
-    override fun deliverResult(items: List<Song>) {
-        // Find all the songs that belong to the playlist and select them
-        MediaStore.Audio.Playlists.Members.AUDIO_ID
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val songsInPlaylist = playlistSongsRepository.loadData(playlistSongsUri, playlistSongsProjection)
-                items.forEach { song ->
-                    // The tracks are the same if they have the same titleKey and the same file paths
-                    val playlistSong =
-                        songsInPlaylist.firstOrNull { it.titleKey == song.titleKey && it.path == it.path }
-                    if (playlistSong != null) {
-                        song.selected = true
-                        song.audioId = playlistSong.audioId
-                    }
-                }
-                initiallySelectedItems = items.filter { it.selected }
-                if (data.value != items) data.postValue(items)
-            }
-        }
-    }
-
-    fun updatePlaylist() {
+    fun updatePlaylist(playlist: PlaylistDb) {
         viewModelScope.launch {
             val success = withContext(Dispatchers.IO) {
                 val selectedItems: List<Song> = items.value!!.filter { it.selected }
@@ -80,20 +57,20 @@ class PlaylistSongsEditorViewModel(application: Application, browseTree: BrowseT
 
                 if (addableItems.isNotEmpty()) {
                     // Add songs to playlist
-                    if (!addSongs(addableItems)) {
+                    if (!addSongs(addableItems, playlist)) {
                         return@withContext false
                     }
                 }
 
                 if (!removableItems.isNullOrEmpty()) {
                     // Remove songs from playlist
-                    if (!deleteSongs(removableItems)) {
+                    if (!deleteSongs(removableItems, playlist)) {
                         return@withContext false
                     }
 
                 }
+                playlistRepo.insert(playlist)
                 return@withContext true
-
             }
             _playlistValue.value = Event(success)
         }
@@ -101,24 +78,30 @@ class PlaylistSongsEditorViewModel(application: Application, browseTree: BrowseT
 
     @WorkerThread
     @HunterDebug
-    private fun deleteSongs(songs: List<Song>): Boolean {
-        val string = songs.map { it.audioId }.joinToString(", ")
-        val where = MediaStore.Audio.Playlists.Members.AUDIO_ID + " IN ($string)"
-        val deletedRows = getApplication<Application>().contentResolver?.delete(playlistSongsUri, where, null) ?: 0
-        return deletedRows > 0
+    private fun deleteSongs(songs: List<Song>,playlist: PlaylistDb): Boolean {
+        try {
+            songs.map { it.id }.forEach {
+                browseTree.removeFromPlaylist(it, playlist)
+            }
+            return true
+        } catch (ex: Exception) {
+            Log.d(TAG, ex.message)
+            return false
+        }
 
     }
 
     @WorkerThread
     @HunterDebug
-    private fun addSongs(songs: List<Song>): Boolean {
-        val contentValues = Array(songs.size) { ContentValues() }
-        songs.forEachIndexed { index, song ->
-            val value = contentValues[index]
-            value.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, initiallySelectedItems.size + 1)
-            value.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, song.id)
+    private fun addSongs(songs: List<Song>, playlist: PlaylistDb): Boolean {
+        try {
+            songs.map { it.id }.forEach {
+                browseTree.addToPlaylist(it, playlist)
+            }
+            return true
+        } catch (ex: Exception) {
+            Log.d(TAG, ex.message)
+            return false
         }
-        val addedRows = getApplication<Application>().contentResolver?.bulkInsert(playlistSongsUri, contentValues) ?: 0
-        return addedRows > 0
     }
 }

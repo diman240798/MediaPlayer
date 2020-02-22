@@ -98,11 +98,11 @@ class PlaylistMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun editSongs() {
-        /*findNavController().navigate(
+        findNavController().navigate(
             PlaylistMenuBottomSheetDialogFragmentDirections
                 .actionPlaylistMenuBottomSheetDialogFragmentToPlaylistSongsEditorDialogFragment(playlist),
             NavOptions.Builder().setPopUpTo(popUpTo, false).build()
-        )*/
+        )
 
     }
 }

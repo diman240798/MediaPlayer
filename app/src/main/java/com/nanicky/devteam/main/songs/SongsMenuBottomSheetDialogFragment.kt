@@ -80,13 +80,8 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun addTrackToPlayList() {
-        val selection = "$basicSongsSelection AND ${MediaStore.Audio.Media._ID} = ?"
-        val selectionArgs = arrayOf(basicSongsSelectionArg, viewModel.song.value!!.id.toString())
         val action = SongsMenuBottomSheetDialogFragmentDirections
-            .actionSongsMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(
-                selectionArgs,
-                selection
-            )
+            .actionSongsMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(songId = viewModel.song.value!!.id)
         val navOptions = NavOptions.Builder().setPopUpTo(popUpTo, false).build()
         findNavController().navigate(action, navOptions)
     }

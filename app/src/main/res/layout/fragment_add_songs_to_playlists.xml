@@ -94,11 +94,11 @@
                 android:contentDescription="@string/close"
                 app:srcCompat="@drawable/ic_close" />
 
-            <ImageButton
+            <!--<ImageButton
                 android:id="@+id/addPlayListIcon"
                 style="@style/AppTheme.SectionIcon"
                 android:contentDescription="@string/add_new_playlist"
-                app:srcCompat="@drawable/ic_add" />
+                app:srcCompat="@drawable/ic_add" />-->
 
         </LinearLayout>
 

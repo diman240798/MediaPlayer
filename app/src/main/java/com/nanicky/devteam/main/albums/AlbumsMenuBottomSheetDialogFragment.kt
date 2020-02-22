@@ -10,6 +10,7 @@ import androidx.annotation.IdRes
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.R
+import com.nanicky.devteam.common.urlEncoded
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseMenuBottomSheet
 import com.nanicky.devteam.main.playback.PlaybackViewModel
@@ -56,10 +57,8 @@ class AlbumsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun addToPlayList() {
-        val selection = "$basicSongsSelection AND ${MediaStore.Audio.Media.ALBUM_ID} = ?"
-        val selectionArgs = arrayOf(basicSongsSelectionArg, album.id.toString())
         val action = AlbumsMenuBottomSheetDialogFragmentDirections
-            .actionAlbumsMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(selectionArgs, selection)
+            .actionAlbumsMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(mediaRoot = album.id.urlEncoded)
         val navOptions = NavOptions.Builder().setPopUpTo(popUpTo, false).build()
 
         findNavController().navigate(action, navOptions)

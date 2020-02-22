@@ -37,9 +37,6 @@ abstract class BaseMediaStoreViewModel<T : Model>(
 
     private fun loadData(sourceConst: String) {
         viewModelScope.launch {
-            /*val result = withContext(Dispatchers.IO) {
-                repository.loadData(uri, projection, selection, selectionArgs, sortOrder)
-            }*/
             val result = browseTree[sourceConst]?.map {
                 itemFactory.get(it)
             }
