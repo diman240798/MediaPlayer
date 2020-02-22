@@ -9,6 +9,7 @@ import com.nanicky.devteam.main.artists.ArtistsViewModel
 import com.nanicky.devteam.main.db.AppRoomDatabase
 import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
+import com.nanicky.devteam.main.db.playlist.PlaylistRepository
 import com.nanicky.devteam.main.explore.ExploreViewModel
 import com.nanicky.devteam.main.favourite.FavouriteSongsViewModel
 import com.nanicky.devteam.main.folders.FolderSongsViewModel
@@ -55,11 +56,12 @@ val commonModule = module {
     viewModel { WebFragmentViewModel() }
 
     // metadata
+    single { PlaylistRepository(AppRoomDatabase.getDatabase(get()).playlistDao()) }
     single { FavouriteSongsRepository(AppRoomDatabase.getDatabase(get()).favouriteSongsDao()) }
     single { CurrentQueueSongsRepository(AppRoomDatabase.getDatabase(get()).currentQueueSongsDao()) }
     single { MediaStoreSource() }
     single { MediaUpdateNotifier() }
-    single { BrowseTree(get(),  get(), get(), get(), get(), get()) }
+    single { BrowseTree(get(), get(), get(), get(), get(), get()) }
     // metadata VMs
     viewModel { FolderSongsViewModel(get(), get()) }
     viewModel { FoldersViewModel(get(), get()) }
