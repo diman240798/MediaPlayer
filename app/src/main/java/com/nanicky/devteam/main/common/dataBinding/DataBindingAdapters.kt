@@ -14,11 +14,13 @@ import com.nanicky.devteam.R
 import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.artists.Artist
 import com.nanicky.devteam.main.common.image.CircularTransparentCenter
+import com.nanicky.devteam.main.common.utils.ImageUtils
 import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.db.recently.RecentlyPlayed
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playback.MediaItemData
 import com.nanicky.devteam.main.songs.Song
+import java.io.File
 
 object DataBindingAdapters {
 
@@ -161,8 +163,15 @@ object DataBindingAdapters {
     @BindingAdapter("android:src")
     @JvmStatic
     fun setPlaylistCover(view: ImageView, playlist: Playlist) {
+        val pathForModel = ImageUtils.getImagePathForModel(playlist, view.context)
+        val objToLoad: Any = if (pathForModel == null){
+            R.drawable.thumb_circular_default
+        } else {
+            File(pathForModel)
+        }
+
         Glide.with(view)
-            .load(R.drawable.thumb_circular_default)
+            .load(objToLoad)
             .transform(
                 MultiTransformation(centerCrop, circleCrop)
             )
@@ -180,8 +189,15 @@ object DataBindingAdapters {
     @BindingAdapter("playlistSrc")
     @JvmStatic
     fun setPlaylistSrc(view: ImageView, playlist: Playlist) {
+        val pathForModel = ImageUtils.getImagePathForModel(playlist, view.context)
+        val objToLoad: Any = if (pathForModel == null){
+            R.drawable.thumb_circular_default
+        } else {
+            File(pathForModel)
+        }
+
         Glide.with(view)
-            .load(R.drawable.thumb_default_short)
+            .load(objToLoad)
             .transform(
                 MultiTransformation(centerCrop, RoundedCorners(10))
             )

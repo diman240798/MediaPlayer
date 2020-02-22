@@ -36,7 +36,7 @@ class PlaylistSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickL
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         playlist = arguments!!.getParcelable("playlist")!!
-        songsViewModel.init(playlist.id.urlEncoded)
+        songsViewModel.init(playlist.getUniqueKey())
     }
 
     override fun onCreateView(
@@ -90,7 +90,7 @@ class PlaylistSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickL
 
 
     override fun onItemClick(position: Int, sharableView: View?) {
-        val playListId = playlist.id.urlEncoded
+        val playListId = playlist.getUniqueKey()
         playbackViewModel.playPlaylist(playListId, items[position].id)
     }
 

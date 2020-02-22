@@ -98,7 +98,6 @@ class BrowseTree(
      * TODO: Expand to allow more browsing types.
      */
     fun load() {
-        buildRoots(context)
 
         val serviceJob = SupervisorJob()
         val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
@@ -107,6 +106,9 @@ class BrowseTree(
             currentSongRepository.load()
             favouriteSongsRepository.load()
             playlistRepository.load()
+
+            buildRoots(context)
+
             musicSource.load(context).collect {
                 workoutItem(it, context)
             }
@@ -182,7 +184,7 @@ class BrowseTree(
 
 
         mediaIdToChildren[Constants.FAVOURITES_ROOT] = CopyOnWriteArrayList()
-        mediaIdToChildren[Constants.PLAYLISTS_ROOT] = CopyOnWriteArrayList()
+        mediaIdToChildren[Constants.PLAYLISTS_ROOT] = buildPlaylistRoot()
         mediaIdToChildren[Constants.BROWSABLE_ROOT] = rootList
     }
 
@@ -220,13 +222,14 @@ class BrowseTree(
 
         mediaItem.id?.also { songId ->
             // check playlists
-            playlistRepository.getPlaylists().forEach { playlist ->
-                val url = playlist.getUniqueKey()
-                val playlistSongs = mediaIdToChildren[url] ?: buildPlaylistRoot(playlist)
-                // add song if id in list
-                if (playlist.songIds.contains(songId)) playlistSongs += mediaItem
-                // save
-                mediaIdToChildren[url] = playlistSongs
+            playlistRepository.getPlaylists()
+                .filter { !it.songIds.isEmpty() }
+                .filter { it.songIds.contains(songId)  }
+                .forEach { playlist ->
+                    val url = playlist.getUniqueKey()
+                    val playlistSongs = mediaIdToChildren[url] ?: CopyOnWriteArrayList()
+                    playlistSongs += mediaItem
+                    mediaIdToChildren[url] = playlistSongs
             }
 
             // check favourites
@@ -239,17 +242,23 @@ class BrowseTree(
         }
     }
 
-    private fun buildPlaylistRoot(playlist: Playlist): CopyOnWriteArrayList<MediaMetadataCompat> {
-        val playlists = mediaIdToChildren[Constants.PLAYLISTS_ROOT] ?: CopyOnWriteArrayList()
+    private fun buildPlaylistRoot(): CopyOnWriteArrayList<MediaMetadataCompat> {
+        val playlists = playlistRepository.getPlaylists()
 
-        val playListMetadata = MediaMetadataCompat.Builder().apply {
-            id = playlist.id.toString()
-            title = playlist.name
-            songsCount = playlist.songsCount
-        }.build()
 
-        playlists += playListMetadata
-        return playlists
+        val metaDataPlaylists = playlists.map { playlist ->
+
+            mediaIdToChildren[playlist.getUniqueKey()] = CopyOnWriteArrayList()
+
+            MediaMetadataCompat.Builder().apply {
+                id = playlist.id.toString()
+                title = playlist.name
+                songsCount = playlist.songsCount
+            }.build()
+        }
+
+
+        return CopyOnWriteArrayList(metaDataPlaylists)
     }
 
     private val genresProjection = arrayOf(
@@ -456,7 +465,7 @@ class BrowseTree(
 
     fun addPlaylist(playlist: Playlist) {
         val url = playlist.getUniqueKey()
-        val playlistSongs = mediaIdToChildren[url] ?: buildPlaylistRoot(playlist)
+        val playlistSongs = mediaIdToChildren[url] ?: CopyOnWriteArrayList()
         playlist.songIds.forEach { id ->
             val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
             val song = songsRoot!!.firstOrNull { it.id == id }

@@ -36,6 +36,6 @@ class ExploreViewModel(application: Application, browseTree: BrowseTree) :
     }
 
     override fun deliverResult(items: List<Album>) {
-        super.deliverResult(items.subList(0, 5)) // TODO: RANDOM?
+        super.deliverResult(if (items.size > 5) items.subList(0, 5) else items) // TODO: RANDOM?
     }
 }

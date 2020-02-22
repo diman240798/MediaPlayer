@@ -185,21 +185,35 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
             val uri = data.data
             if (uri != null) {
                 tempThumbUri = uri
-                displayImage(tempThumbUri!!)
+                displayImage(tempThumbUri)
             }
             enableWriteButton()
         }
     }
 
-    private fun displayImage(any: Any?) {
+    private fun displayImage(playlist: Playlist) {
+        val pathForModel = ImageUtils.getImagePathForModel(playlist, context)
+        val objToLoad: Any = if (pathForModel == null){
+            R.drawable.thumb_circular_default
+        } else {
+            File(pathForModel)
+        }
         Glide.with(this)
-            .load(any)
+            .load(objToLoad)
             .transform(
                 MultiTransformation(DataBindingAdapters.centerCrop, RoundedCorners(7.px))
             ).listener(thumbLoadListener)
             .into(playlistArt)
     }
 
+    private fun displayImage(uri: Uri?) {
+        Glide.with(this)
+            .load(uri)
+            .transform(
+                MultiTransformation(DataBindingAdapters.centerCrop, RoundedCorners(7.px))
+            ).listener(thumbLoadListener)
+            .into(playlistArt)
+    }
 
     override fun onDestroyView() {
         playlistNameField.removeTextChangedListener(playlistNameTextWatcher)

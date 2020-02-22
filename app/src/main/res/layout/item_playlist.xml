@@ -36,7 +36,8 @@
             android:transitionName="@{playlist.toString()}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/thumb_circular_default" />
+            tools:src="@drawable/thumb_circular_default"
+            android:src="@{playlist}" />
 
 
         <TextView

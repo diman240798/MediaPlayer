@@ -27,7 +27,6 @@ class PlaylistSongsEditorViewModel(
     private val TAG: String = "PlaylistSongsEditorVM"
 
 
-    private lateinit var initiallySelectedItems: List<Song>
     private val _playlistValue = MutableLiveData<Event<Boolean>>()
     val playlistValue: LiveData<Event<Boolean>> get() = _playlistValue
 
@@ -46,6 +45,8 @@ class PlaylistSongsEditorViewModel(
     fun updatePlaylist(playlist: Playlist) {
         viewModelScope.launch {
             val success = withContext(Dispatchers.IO) {
+                val initiallySelectedItems = browseTree[playlist.getUniqueKey()]!!.map { Song(it) }
+
                 val selectedItems: List<Song> = items.value!!.filter { it.selected }
                 // Items that weren't selected initially.
                 // A better explanation: Items that doesn't exist in this playlist but are now selected
@@ -82,6 +83,7 @@ class PlaylistSongsEditorViewModel(
         try {
             songs.map { it.id }.forEach {
                 browseTree.removeFromPlaylist(it, playlist)
+                playlist.songIds.remove(it)
             }
             return true
         } catch (ex: Exception) {
@@ -97,6 +99,7 @@ class PlaylistSongsEditorViewModel(
         try {
             songs.map { it.id }.forEach {
                 browseTree.addToPlaylist(it, playlist)
+                playlist.songIds.add(it)
             }
             return true
         } catch (ex: Exception) {

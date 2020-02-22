@@ -14,6 +14,7 @@ import com.nanicky.devteam.BR
 import com.nanicky.devteam.R
 import com.nanicky.devteam.common.crossFadeWidth
 import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
+import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFullscreenDialogFragment
@@ -33,7 +34,7 @@ class PlaylistSongsEditorDialogFragment : BaseFullscreenDialogFragment(), OnItem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playlist = arguments!!.getParcelable("playlist")!!
-        viewModel.init(playlist.getUniqueKey())
+        viewModel.init(Constants.SONGS_ROOT)
     }
 
     override fun onCreateView(
@@ -73,7 +74,6 @@ class PlaylistSongsEditorDialogFragment : BaseFullscreenDialogFragment(), OnItem
 
         })
         viewModel.updatePlaylist(playlist)
-
     }
 
     private fun observeViewModel() {
