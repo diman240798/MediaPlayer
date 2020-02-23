@@ -95,6 +95,7 @@ class PlaylistMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     private fun playPlaylistNext() {
         val playListId = playlist.getUniqueKey()
         playbackViewModel.playPlaylist(playListId)
+        findNavController().popBackStack()
     }
 
     private fun sharePlaylist() {

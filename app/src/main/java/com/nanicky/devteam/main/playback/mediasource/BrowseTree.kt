@@ -508,6 +508,7 @@ class BrowseTree(
         val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
         val song = songsRoot!!.first { it.id == songId }
         playlistSongs!!.add(song)
+        replaceOldPlaylistWithNew(playlist)
     }
 
     fun setToPlaylist(playlist: Playlist) {

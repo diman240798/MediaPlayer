@@ -22,6 +22,9 @@ class AddSongsToPlaylistsViewModel(application: Application, val playlistRepo: P
     override fun init(sourceConst: String?) {
         super.init(sourceConst)
 
+        mediatorItems.removeSource(this.items)
+        mediatorItems.removeSource(insertionData)
+
         mediatorItems.addSource(this.items) { mediatorItems.value = it }
         mediatorItems.addSource(insertionData) { mediatorItems.value = it }
     }
