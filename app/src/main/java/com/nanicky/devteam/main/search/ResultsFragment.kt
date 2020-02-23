@@ -158,7 +158,7 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
                     playlist.name,
                     playlist.selected,
                     playlist.songIds,
-                    playlist.id
+                    id = playlist.id
                 )
             )
         viewModel.navigateFrmSearchFragment(SearchNavigation(directions))
@@ -202,7 +202,7 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
                 playlist.name,
                 playlist.selected,
                 playlist.songIds,
-                playlist.id
+                id = playlist.id
             )
 
         )

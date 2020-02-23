@@ -6,8 +6,8 @@ import android.graphics.*
 import android.media.ThumbnailUtils
 import android.net.Uri
 import androidx.core.content.ContextCompat
-import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.data.Model
+import com.nanicky.devteam.main.db.playlist.Playlist
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -89,20 +89,13 @@ object ImageUtils {
     fun resizeImageIfNeeded(
         imagePath: String, maxWidth: Double?, maxHeight: Double?, imageQuality: Int,
         resultPath: String
-    ): String? {
-        val shouldScale = maxWidth != null || maxHeight != null || imageQuality > -1 && imageQuality < 101
+    ) {
 
-        if (!shouldScale) {
-            return imagePath
-        }
+        try {
+            resizedImage(imagePath, maxWidth, maxHeight, imageQuality, resultPath)
 
-        return try {
-            val scaledImage = resizedImage(imagePath, maxWidth, maxHeight, imageQuality, resultPath)
-
-            scaledImage.path
         } catch (e: IOException) {
             Timber.e("Could  not resize image in $imagePath. Error = $e")
-            null
         }
 
     }
@@ -195,8 +188,8 @@ object ImageUtils {
         return imageFile
     }
 
-    fun getImageFileForModelOrElse(model: Model, c: Context?, els: Any): Any {
-        val pathForModel = ImageUtils.getImagePathForModel(model, c)
+    fun getImageFileForModelOrElse(playlist: Playlist, els: Any): Any {
+        val pathForModel = playlist.imagePath
         val objToLoad: Any = if (pathForModel == null || !File(pathForModel).exists()){
             els
         } else {

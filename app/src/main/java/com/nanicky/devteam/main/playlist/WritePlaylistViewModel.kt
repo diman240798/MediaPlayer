@@ -23,7 +23,11 @@ import java.io.File
 import java.lang.Exception
 
 
-class WritePlaylistViewModel(application: Application, val playlistRepo: PlaylistRepository, val browseTree: BrowseTree) :
+class WritePlaylistViewModel(
+    application: Application,
+    val playlistRepo: PlaylistRepository,
+    val browseTree: BrowseTree
+) :
     AndroidViewModel(application) {
 
     private val _data = MutableLiveData<WriteResult>()
@@ -33,13 +37,14 @@ class WritePlaylistViewModel(application: Application, val playlistRepo: Playlis
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 var id = -1L
-                    try {
+                try {
                     var newPlaylist = Playlist(playlistName)
                     id = playlistRepo.insert(newPlaylist)
                     newPlaylist = Playlist(id, playlistName)
-                    browseTree.addPlaylist(newPlaylist)
 
                     writeImageFile(newPlaylist, tempThumbUri)
+                    browseTree.addPlaylist(newPlaylist)
+                    playlistRepo.insert(newPlaylist)
                     _data.postValue(WriteResult(true))
 
                 } catch (ex: Exception) {
@@ -55,15 +60,16 @@ class WritePlaylistViewModel(application: Application, val playlistRepo: Playlis
     fun editPlaylist(
         name: String,
         playlist: Playlist,
-        tempThumbUri: Uri?,
-        deleteImageFile: Boolean
+        tempThumbUri: Uri?
     ) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
+
+                    writeImageFile(playlist, tempThumbUri)
+                    browseTree.updatePlaylist(playlist, name)
                     playlistRepo.insert(playlist)
-                    browseTree.updatePlaylist(playlist)
-                    writeImageFile(playlist, tempThumbUri, deleteImageFile)
+                    browseTree.updateVM()
                     _data.postValue(WriteResult(true))
 
                 } catch (ex: Exception) {
@@ -79,6 +85,7 @@ class WritePlaylistViewModel(application: Application, val playlistRepo: Playlis
                 try {
                     playlistRepo.remove(playlist)
                     browseTree.removePlaylist(playlist)
+                    _data.postValue(WriteResult(true))
 
                 } catch (ex: Exception) {
                     _data.postValue(WriteResult(false, R.string.sth_went_wrong))
@@ -91,27 +98,26 @@ class WritePlaylistViewModel(application: Application, val playlistRepo: Playlis
     @WorkerThread
     private fun writeImageFile(
         playlist: Playlist,
-        tempThumbUri: Uri? = null,
-        deleteImageFile: Boolean = false
+        tempThumbUri: Uri? = null
     ) {
         val app = getApplication<App>()
-        val resultPath = ImageUtils.getImagePathForModel(playlist, app)
 
-        if (deleteImageFile) {
-            val file = File(resultPath)
+        playlist.imagePath?.also {
+            val file = File(it)
             if (file.exists()) file.delete()
         }
+
+        if (playlist.imagePath == null) playlist.imagePath = ImageUtils.getImagePathForModel(playlist, app)
 
         if (tempThumbUri == null) return
 
         val path = UriFileUtils.getPathFromUri(app, tempThumbUri)
         if (path != null) {
-            if (resultPath != null) {
-                ImageUtils.resizeImageIfNeeded(path, 300.0, 300.0, 80, resultPath)
-            }
+            ImageUtils.resizeImageIfNeeded(path, 300.0, 300.0, 80, playlist.imagePath!!)
         }
         return
     }
+
 }
 
 internal data class WriteResult(val success: Boolean, @StringRes val message: Int? = null)

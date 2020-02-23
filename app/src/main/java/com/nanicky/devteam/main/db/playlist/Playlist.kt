@@ -10,6 +10,7 @@ import com.nanicky.devteam.common.dp
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.data.Model
 import com.nanicky.devteam.main.playback.id
+import com.nanicky.devteam.main.playback.imagePath
 import com.nanicky.devteam.main.playback.songsIds
 import com.nanicky.devteam.main.playback.title
 import kotlinx.android.parcel.Parcelize
@@ -20,6 +21,7 @@ data class Playlist(
     var name: String,
     var selected: Boolean = false,
     var songIds: MutableList<String> = mutableListOf(),
+    var imagePath: String? = null,
     @PrimaryKey(autoGenerate = true)
     override val id: Long = 0
 ) : Model(), Parcelable {
@@ -32,12 +34,11 @@ data class Playlist(
     constructor(data: MediaMetadataCompat) : this(
         id = data.id?.toLong() ?: 0,
         name = data.title ?: "",
-        songIds = data.songsIds?.split(",")?.toMutableList() ?: mutableListOf()
+        songIds = data.songsIds?.split(",")?.toMutableList() ?: mutableListOf(),
+        imagePath = data.imagePath
     )
 
-    constructor(p: Playlist) : this(id = p.id, name = p.name)
-
-    constructor(_id: Long, name: String = "") : this(id = _id, name = name)
+    constructor(_id: Long, name: String) : this(id = _id, name = name)
 
     /**
      *  When [width] is more than [Constants.MAX_MODEL_IMAGE_THUMB_WIDTH], we'll change the value of any of this

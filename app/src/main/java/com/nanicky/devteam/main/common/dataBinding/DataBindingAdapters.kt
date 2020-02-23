@@ -7,6 +7,7 @@ import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -164,11 +165,17 @@ object DataBindingAdapters {
     @JvmStatic
     fun setPlaylistCover(view: ImageView, playlist: Playlist) {
 
+        val imageFileForModel = ImageUtils.getImageFileForModelOrElse(
+            playlist,
+            R.drawable.thumb_circular_default
+        )
         Glide.with(view)
-            .load(ImageUtils.getImageFileForModelOrElse(playlist, view.context, R.drawable.thumb_circular_default))
+            .load(imageFileForModel)
             .transform(
                 MultiTransformation(centerCrop, circleCrop)
             )
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
             .into(view)
 
         /*Glide.with(view)
@@ -184,11 +191,17 @@ object DataBindingAdapters {
     @JvmStatic
     fun setPlaylistSrc(view: ImageView, playlist: Playlist) {
 
+        val imageFileForModel = ImageUtils.getImageFileForModelOrElse(
+            playlist,
+            R.drawable.thumb_default_short
+        )
         Glide.with(view)
-            .load(ImageUtils.getImageFileForModelOrElse(playlist, view.context, R.drawable.thumb_default_short))
+            .load(imageFileForModel)
             .transform(
                 MultiTransformation(centerCrop, RoundedCorners(10))
             )
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
             .into(view)
 
         /*Glide.with(view)

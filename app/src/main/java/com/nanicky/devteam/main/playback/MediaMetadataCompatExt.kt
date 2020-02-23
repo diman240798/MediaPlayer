@@ -32,6 +32,9 @@ inline val MediaMetadataCompat.title: String?
 inline val MediaMetadataCompat.songsIds: String?
     get() = getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI)
 
+inline val MediaMetadataCompat.imagePath: String?
+    get() = getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI)
+
 inline val MediaMetadataCompat.artist: String?
     get() = getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
 
@@ -213,6 +216,13 @@ inline var MediaMetadataCompat.Builder.songIds: String
     get() = throw IllegalAccessException("Cannot get from MediaMetadataCompat.Builder")
     set(value) {
         putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, value)
+    }
+
+inline var MediaMetadataCompat.Builder.imagePath: String?
+    @Deprecated(NO_GET, level = DeprecationLevel.ERROR)
+    get() = throw IllegalAccessException("Cannot get from MediaMetadataCompat.Builder")
+    set(value) {
+        putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, value)
     }
 
 inline var MediaMetadataCompat.Builder.trackCount: Long

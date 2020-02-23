@@ -41,7 +41,6 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
     private var tempThumbUri: Uri? = null
     private var playlist: Playlist? = null
     val viewModel : WritePlaylistViewModel by inject()
-    var deleteImageFile = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,14 +66,6 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
         clickableThumbBackground.setOnClickListener(this)
         removePicture.setOnClickListener(this)
         playlistNameField.addTextChangedListener(playlistNameTextWatcher)
-        playlistNameField.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                writePlaylist()
-                return@setOnEditorActionListener true
-            }
-
-            return@setOnEditorActionListener false
-        }
 
         if (playlist != null) {
             writePlaylist.setText(R.string.save_changes)
@@ -116,7 +107,6 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
 
     private fun removeSelectedImage() {
         tempThumbUri = null
-        deleteImageFile = true
         enableWriteButton()
         displayImage(null)
     }
@@ -147,7 +137,7 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
         if (playlistName.trim().isEmpty()) {
             res = R.string.playlist_empty_message
         } else if (playlist != null) {
-            if (tempThumbUri == null && playlistName.trim() == playlist!!.name && !deleteImageFile) {
+            if (tempThumbUri == null && playlistName.trim() == playlist!!.name) {
                 res = R.string.playlist_empty_thumb_message
             }
         }
@@ -167,7 +157,7 @@ class WritePlaylistDialogFragment : BaseFullscreenDialogFragment(), View.OnClick
         if (playlist == null) {
             viewModel.createPlaylist(playlistName, tempThumbUri)
         } else {
-            viewModel.editPlaylist(playlistName, playlist!!, tempThumbUri, deleteImageFile)
+            viewModel.editPlaylist(playlistName, playlist!!, tempThumbUri)
         }
     }
 

@@ -16,13 +16,17 @@ import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseMenuBottomSheet
 import com.nanicky.devteam.main.db.playlist.Playlist
+import com.nanicky.devteam.main.playback.PlaybackViewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class PlaylistMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     lateinit var playlist: Playlist
     @IdRes var popUpTo: Int = 0
     val viewModel : WritePlaylistViewModel by inject()
+
+    private val playbackViewModel: PlaybackViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +93,8 @@ class PlaylistMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun playPlaylistNext() {
-        findNavController().popBackStack()
+        val playListId = playlist.getUniqueKey()
+        playbackViewModel.playPlaylist(playListId)
     }
 
     private fun sharePlaylist() {

@@ -262,6 +262,7 @@ class BrowseTree(
             id = playlist.id.toString()
             title = playlist.name
             songIds = playlist.songIds.joinToString(",")
+            imagePath = playlist.imagePath
         }.build()
 
     private val genresProjection = arrayOf(
@@ -482,10 +483,14 @@ class BrowseTree(
         mediaUpdateNotifier.update()
     }
 
-    fun updatePlaylist(playlist: Playlist) {
-        val url = playlist.getUniqueKey()
-        val playlistSongs = mediaIdToChildren[url]!!
-        playlistSongs.clear()// remove old songs list and fill new
+    fun updatePlaylist(playlist: Playlist, name: String) {
+        // remove old
+        var url = playlist.getUniqueKey()
+        mediaIdToChildren.remove(url)
+        // add new
+        playlist.name = name
+        url = playlist.getUniqueKey()
+        val playlistSongs = CopyOnWriteArrayList<MediaMetadataCompat>()
         playlist.songIds.forEach { id ->
             val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
             val song = songsRoot!!.firstOrNull { it.id == id }
@@ -495,7 +500,7 @@ class BrowseTree(
 
         }
         mediaIdToChildren[url] = playlistSongs
-        mediaUpdateNotifier.update()
+        replaceOldPlaylistWithNew(playlist)
     }
 
     fun addToPlaylist(songId: String, playlist: Playlist) {
@@ -513,6 +518,11 @@ class BrowseTree(
         val songs = songsRoot!!.filter{ playlist.songIds.contains(it.id) }
         playlistSongs.addAll(songs)
 
+        replaceOldPlaylistWithNew(playlist)
+
+    }
+
+    private fun replaceOldPlaylistWithNew(playlist: Playlist) {
         val playlistsInMedia = mediaIdToChildren[Constants.PLAYLISTS_ROOT]!!
         val playlistInMediaList = playlistsInMedia.first { it.id!!.toLong() == playlist.id }
         val index = playlistsInMedia.indexOf(playlistInMediaList)
@@ -520,7 +530,6 @@ class BrowseTree(
 
         val newMediaPlaylist = playlistToMedia(playlist)
         playlistsInMedia.add(index, newMediaPlaylist)
-
     }
 
     fun removePlaylist(playlist: Playlist) {
