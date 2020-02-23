@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{@plurals/numberOfSongs(playlist.songIds.size(), playlist.songIds.size())}"
+            android:text="@{playlist.getSongsCountStr() + @string/songs }"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@+id/playlistName"

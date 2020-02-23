@@ -156,7 +156,6 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
             SearchFragmentDirections.actionSearchFragmentToPlaylistMenuBottomSheetDialogFragment(
                 playlist =  Playlist(
                     playlist.name,
-                    playlist.songsCount,
                     playlist.selected,
                     playlist.songIds,
                     playlist.id
@@ -201,7 +200,6 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
             transitionName,
             Playlist(
                 playlist.name,
-                playlist.songsCount,
                 playlist.selected,
                 playlist.songIds,
                 playlist.id

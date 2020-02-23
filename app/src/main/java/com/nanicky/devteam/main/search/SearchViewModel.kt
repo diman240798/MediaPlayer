@@ -46,9 +46,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
             val artists = async { repository.queryArtists(query, ascend) }
             val genres = async { repository.queryGenres(query, ascend) }
             val playlists = async {
-                repository.queryPlaylists(query, ascend).apply {
-                    this.forEach { it.songsCount = fetchSongCount(it.id) }
-                }
+                repository.queryPlaylists(query, ascend)
             }
 
             _songs.value = songs.await()

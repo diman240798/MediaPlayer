@@ -93,7 +93,7 @@ class PlaylistMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun sharePlaylist() {
-        context?.also { Utils.share(it, playlist.name, "count: ${playlist.songsCount}", "Share Playlist") }
+        context?.also { Utils.share(it, playlist.name, "count: ${playlist.songIds.size}", "Share Playlist") }
     }
 
     private fun editSongs() {

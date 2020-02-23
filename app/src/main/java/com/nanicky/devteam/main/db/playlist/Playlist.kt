@@ -18,7 +18,6 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "playlist_table")
 data class Playlist(
     var name: String,
-    var songsCount: Int = 0,
     var selected: Boolean = false,
     var songIds: MutableList<String> = mutableListOf(),
     @PrimaryKey(autoGenerate = true)
@@ -36,7 +35,7 @@ data class Playlist(
         songIds = data.songsIds?.split(",")?.toMutableList() ?: mutableListOf()
     )
 
-    constructor(p: Playlist) : this(id = p.id, name = p.name, songsCount = p.songsCount)
+    constructor(p: Playlist) : this(id = p.id, name = p.name)
 
     constructor(_id: Long, name: String = "") : this(id = _id, name = name)
 
@@ -51,10 +50,14 @@ data class Playlist(
      */
     fun modForViewWidth(width: Int): Playlist {
         if (width.dp > Constants.MAX_MODEL_IMAGE_THUMB_WIDTH) {
-            name = "$name$id$songsCount"
+            name = "$name$id${songIds.size}"
         }
         return this
     }
 
     fun getUniqueKey(): String = "${name}__$id"
+
+    fun getSongsCountStr(): String {
+        return songIds.filter { it.isNotEmpty() }.size.toString() + "   "
+    }
 }
