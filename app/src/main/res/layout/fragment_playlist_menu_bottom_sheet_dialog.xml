@@ -49,7 +49,7 @@
             android:id="@+id/delete"
             style="@style/AppTheme.MenuButton"
             android:drawableEnd="@drawable/ic_garbage"
-            android:text="@string/delete_frm_queue" />
+            android:text="@string/deleted" />
 
 
 

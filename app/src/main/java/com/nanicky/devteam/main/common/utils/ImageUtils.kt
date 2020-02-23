@@ -6,6 +6,7 @@ import android.graphics.*
 import android.media.ThumbnailUtils
 import android.net.Uri
 import androidx.core.content.ContextCompat
+import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.data.Model
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
@@ -192,6 +193,16 @@ object ImageUtils {
         fileOutput.write(outputStream.toByteArray())
         fileOutput.close()
         return imageFile
+    }
+
+    fun getImageFileForModelOrElse(model: Model, c: Context?, els: Any): Any {
+        val pathForModel = ImageUtils.getImagePathForModel(model, c)
+        val objToLoad: Any = if (pathForModel == null || !File(pathForModel).exists()){
+            els
+        } else {
+            File(pathForModel)
+        }
+        return objToLoad
     }
 
     fun getImagePathForModel(model: Model, c: Context?): String? {

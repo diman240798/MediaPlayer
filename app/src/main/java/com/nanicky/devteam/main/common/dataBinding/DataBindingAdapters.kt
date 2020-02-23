@@ -163,15 +163,9 @@ object DataBindingAdapters {
     @BindingAdapter("android:src")
     @JvmStatic
     fun setPlaylistCover(view: ImageView, playlist: Playlist) {
-        val pathForModel = ImageUtils.getImagePathForModel(playlist, view.context)
-        val objToLoad: Any = if (pathForModel == null){
-            R.drawable.thumb_circular_default
-        } else {
-            File(pathForModel)
-        }
 
         Glide.with(view)
-            .load(objToLoad)
+            .load(ImageUtils.getImageFileForModelOrElse(playlist, view.context, R.drawable.thumb_circular_default))
             .transform(
                 MultiTransformation(centerCrop, circleCrop)
             )
@@ -189,15 +183,9 @@ object DataBindingAdapters {
     @BindingAdapter("playlistSrc")
     @JvmStatic
     fun setPlaylistSrc(view: ImageView, playlist: Playlist) {
-        val pathForModel = ImageUtils.getImagePathForModel(playlist, view.context)
-        val objToLoad: Any = if (pathForModel == null){
-            R.drawable.thumb_circular_default
-        } else {
-            File(pathForModel)
-        }
 
         Glide.with(view)
-            .load(objToLoad)
+            .load(ImageUtils.getImageFileForModelOrElse(playlist, view.context, R.drawable.thumb_default_short))
             .transform(
                 MultiTransformation(centerCrop, RoundedCorners(10))
             )

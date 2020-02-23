@@ -10,6 +10,7 @@ import com.nanicky.devteam.common.dp
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.data.Model
 import com.nanicky.devteam.main.playback.id
+import com.nanicky.devteam.main.playback.songsIds
 import com.nanicky.devteam.main.playback.title
 import kotlinx.android.parcel.Parcelize
 
@@ -31,7 +32,8 @@ data class Playlist(
 
     constructor(data: MediaMetadataCompat) : this(
         id = data.id?.toLong() ?: 0,
-        name = data.title ?: ""
+        name = data.title ?: "",
+        songIds = data.songsIds?.split(",")?.toMutableList() ?: mutableListOf()
     )
 
     constructor(p: Playlist) : this(id = p.id, name = p.name, songsCount = p.songsCount)

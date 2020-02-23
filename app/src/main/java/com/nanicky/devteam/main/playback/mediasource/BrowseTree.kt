@@ -250,16 +250,19 @@ class BrowseTree(
 
             mediaIdToChildren[playlist.getUniqueKey()] = CopyOnWriteArrayList()
 
-            MediaMetadataCompat.Builder().apply {
-                id = playlist.id.toString()
-                title = playlist.name
-                songsCount = playlist.songsCount
-            }.build()
+            playlistToMedia(playlist)
         }
 
 
         return CopyOnWriteArrayList(metaDataPlaylists)
     }
+
+    private fun playlistToMedia(playlist: Playlist): MediaMetadataCompat
+            = MediaMetadataCompat.Builder().apply {
+            id = playlist.id.toString()
+            title = playlist.name
+            songIds = playlist.songIds.joinToString(",")
+        }.build()
 
     private val genresProjection = arrayOf(
         MediaStore.Audio.Genres.NAME,
@@ -475,6 +478,7 @@ class BrowseTree(
 
         }
         mediaIdToChildren[url] = playlistSongs
+        mediaIdToChildren[Constants.PLAYLISTS_ROOT]!!.add(playlistToMedia(playlist))
         mediaUpdateNotifier.update()
     }
 
@@ -521,6 +525,8 @@ class BrowseTree(
 
     fun removePlaylist(playlist: Playlist) {
         mediaIdToChildren.remove(playlist.getUniqueKey())
+        val index = mediaIdToChildren[Constants.PLAYLISTS_ROOT]?.indexOfFirst { it.id?.toLong() == playlist.id }!!
+        mediaIdToChildren[Constants.PLAYLISTS_ROOT]!!.removeAt(index)
         mediaUpdateNotifier.update()
     }
 }

@@ -171,6 +171,7 @@
     <string name="permissions">Permissions</string>
     <string name="ask_permissions">For this app function we require next permissions</string>
     <string name="shazam">Shazam</string>
+    <string name="deleted">Delete</string>
 
     <string-array name="web_urls">
         <item>https://ru.megapesni.com/?do=search&amp;subaction=search&amp;story=</item>
