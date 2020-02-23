@@ -34,19 +34,12 @@ class PlaylistSongsEditorDialogFragment : BaseFullscreenDialogFragment(), OnItem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playlist = arguments!!.getParcelable("playlist")!!
+        viewModel.playlist = playlist
         viewModel.init(Constants.SONGS_ROOT)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(
-            R.layout.fragment_playlist_songs_editor_dialog,
-            container,
-            false
-        )
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+            = inflater.inflate(R.layout.fragment_playlist_songs_editor_dialog, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,7 +66,7 @@ class PlaylistSongsEditorDialogFragment : BaseFullscreenDialogFragment(), OnItem
             }
 
         })
-        viewModel.updatePlaylist(playlist)
+        viewModel.updatePlaylist()
     }
 
     private fun observeViewModel() {

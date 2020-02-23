@@ -498,29 +498,29 @@ class BrowseTree(
         mediaUpdateNotifier.update()
     }
 
-    fun addToPlaylist(songId: String, playlist: Playlist): Boolean {
+    fun addToPlaylist(songId: String, playlist: Playlist) {
         val playlistSongs = mediaIdToChildren[playlist.getUniqueKey()]
         val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
-        val song = songsRoot!!.firstOrNull { it.id == songId }
-        return if (song == null) {
-            false
-        } else {
-            playlistSongs!!.add(song)
-            mediaUpdateNotifier.update()
-            true
-        }
+        val song = songsRoot!!.first { it.id == songId }
+        playlistSongs!!.add(song)
     }
 
-    fun removeFromPlaylist(songId: String, playlist: Playlist): Boolean {
-        val playlistSongs = mediaIdToChildren[playlist.getUniqueKey()]
-        val song = playlistSongs!!.firstOrNull { it.id == songId }
-        return if (song == null) {
-            false
-        } else {
-            playlistSongs.remove(song)
-            mediaUpdateNotifier.update()
-            true
-        }
+    fun setToPlaylist(playlist: Playlist) {
+        val playlistSongs = mediaIdToChildren[playlist.getUniqueKey()]!!
+        playlistSongs.clear()
+
+        val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
+        val songs = songsRoot!!.filter{ playlist.songIds.contains(it.id) }
+        playlistSongs.addAll(songs)
+
+        val playlistsInMedia = mediaIdToChildren[Constants.PLAYLISTS_ROOT]!!
+        val playlistInMediaList = playlistsInMedia.first { it.id!!.toLong() == playlist.id }
+        val index = playlistsInMedia.indexOf(playlistInMediaList)
+        playlistsInMedia.removeAt(index)
+
+        val newMediaPlaylist = playlistToMedia(playlist)
+        playlistsInMedia.add(index, newMediaPlaylist)
+
     }
 
     fun removePlaylist(playlist: Playlist) {
@@ -529,4 +529,6 @@ class BrowseTree(
         mediaIdToChildren[Constants.PLAYLISTS_ROOT]!!.removeAt(index)
         mediaUpdateNotifier.update()
     }
+
+    fun updateVM() = mediaUpdateNotifier.update()
 }
