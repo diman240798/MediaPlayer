@@ -111,8 +111,26 @@ class BrowseTree(
 
             musicSource.load(context).collect {
                 workoutItem(it, context)
+                sortPlayList()
             }
             context.contentResolver.registerContentObserver(baseSongUri, true, observer)
+        }
+    }
+
+    private fun sortPlayList() {
+        playlistRepository.getPlaylists().forEach {
+            val playListSongs: CopyOnWriteArrayList<MediaMetadataCompat> = mediaIdToChildren[it.getUniqueKey()]!!
+            if (playListSongs.isEmpty()) return@forEach
+
+
+            val sortedPlaylistSongs = CopyOnWriteArrayList<MediaMetadataCompat>()
+
+            for (songId in it.songIds) {
+                val song = playListSongs.firstOrNull { it.id == songId }
+                song?.let { sortedPlaylistSongs.add(it) }
+            }
+            mediaIdToChildren[it.getUniqueKey()] = sortedPlaylistSongs
+
         }
     }
 
@@ -228,7 +246,8 @@ class BrowseTree(
                 .forEach { playlist ->
                     val url = playlist.getUniqueKey()
                     val playlistSongs = mediaIdToChildren[url] ?: CopyOnWriteArrayList()
-                    playlistSongs += mediaItem
+                    val songCount = playlist.songIds.filter { it == songId }.size
+                    for (i in 0..songCount) playlistSongs += mediaItem // add song several times if it repeats
                     mediaIdToChildren[url] = playlistSongs
             }
 

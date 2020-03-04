@@ -77,10 +77,14 @@ class FolderSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickLis
 
     override fun onClick(v: View?) {
         /*when (v?.id) {
-            R.id.moreOptions -> findNavController().navigate(
-                *//*AlbumSongsFragmentDirections
-                    .actionAlbumSongsFragmentToAlbumsMenuBottomSheetDialogFragment(album = album)*//*
-            )
+            R.id.moreOptions -> {
+                // update vm
+                viewModel.song = song
+                // change fragment
+                val action =
+                    FolderSongsFragmentDirections.actionSongsFragmentToSongsMenuBottomSheetDialogFragment()
+                findNavController().navigate(action)
+            }
         }*/
     }
 
@@ -88,5 +92,13 @@ class FolderSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickLis
         val song = viewModel.items.value!!.get(position)
         val folder = viewModel.folder
         playbackViewModel.playFolder(folder!!.path, song.id)
+    }
+
+    override fun onOverflowMenuClick(position: Int) {
+        // update vm
+        viewModel.song = viewModel.items.value?.get(position)
+        // change fragment
+        val action = FolderSongsFragmentDirections.actionFolderSongsFragmentToFolderSongsMenuBottomSheetDialogFragment()
+        findNavController().navigate(action)
     }
 }

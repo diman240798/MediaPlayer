@@ -8,4 +8,5 @@ import com.nanicky.devteam.main.songs.Song
 
 class FolderSongsViewModel(application: Application, browseTree: BrowseTree) : BaseMediaStoreViewModel<Song>(application, browseTree, SongSuplier()) {
     var folder: Folder? = null
+    var song: Song? = null
 }

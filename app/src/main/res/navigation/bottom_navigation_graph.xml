@@ -462,7 +462,11 @@
     <fragment
         android:id="@+id/folderSongsFragment"
         android:name="com.nanicky.devteam.main.folders.FolderSongsFragment"
-        android:label="FolderSongsFragment" />
+        android:label="FolderSongsFragment" >
+        <action
+            android:id="@+id/action_folderSongsFragment_to_folderSongsMenuBottomSheetDialogFragment"
+            app:destination="@id/folderSongsMenuBottomSheetDialogFragment" />
+    </fragment>
     <fragment
         android:id="@+id/webFragment"
         android:name="com.nanicky.devteam.main.web.WebFragment"
@@ -498,6 +502,18 @@
                 android:defaultValue="7" />
         </action>
     </fragment>
+
+    <dialog
+        android:id="@+id/folderSongsMenuBottomSheetDialogFragment"
+        android:name="com.nanicky.devteam.main.songs.FolderSongsMenuBottomSheetDialogFragment"
+        android:label="FolderSongsMenuBottomSheetDialogFragment" >
+        <action
+            android:id="@+id/action_folderSongsMenuBottomSheetDialogFragment_to_webFragment"
+            app:destination="@id/webFragment" />
+        <action
+            android:id="@+id/action_folderSongsMenuBottomSheetDialogFragment_to_addSongsToPlaylistsFragment"
+            app:destination="@id/addSongsToPlaylistsFragment" />
+    </dialog>
 
 </navigation>
 
