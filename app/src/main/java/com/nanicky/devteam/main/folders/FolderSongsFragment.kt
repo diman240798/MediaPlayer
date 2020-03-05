@@ -76,16 +76,13 @@ class FolderSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickLis
     }
 
     override fun onClick(v: View?) {
-        /*when (v?.id) {
+        when (v?.id) {
             R.id.moreOptions -> {
-                // update vm
-                viewModel.song = song
                 // change fragment
-                val action =
-                    FolderSongsFragmentDirections.actionSongsFragmentToSongsMenuBottomSheetDialogFragment()
+                val action = FolderSongsFragmentDirections.actionFolderSongsFragmentToFoldersMenuBottomSheetDialogFragment()
                 findNavController().navigate(action)
             }
-        }*/
+        }
     }
 
     override fun onItemClick(position: Int, sharableView: View?) {

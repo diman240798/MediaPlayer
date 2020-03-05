@@ -1,4 +1,6 @@
-package com.nanicky.devteam.main.albums
+// Copyright (c) 2020 . Wilberforce Uwadiegwu. All Rights Reserved.
+
+package com.nanicky.devteam.main.folders.dialog
 
 
 import android.os.Bundle
@@ -9,22 +11,21 @@ import androidx.annotation.IdRes
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.R
-import com.nanicky.devteam.common.urlEncoded
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseMenuBottomSheet
+import com.nanicky.devteam.main.folders.FolderSongsViewModel
 import com.nanicky.devteam.main.playback.PlaybackViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class AlbumsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
+class FoldersMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
-    lateinit var album: Album
+    private val viewModel: FolderSongsViewModel by sharedViewModel()
     @IdRes var popUpTo: Int = 0
-    private val viewModel: PlaybackViewModel by sharedViewModel()
+    private val playBackViewModel: PlaybackViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        album = arguments!!.getParcelable("album")!!
         popUpTo = arguments!!.getInt("popUpTo")
     }
 
@@ -45,7 +46,7 @@ class AlbumsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun play() {
-        viewModel.playAlbum(album)
+        playBackViewModel.playFolder(viewModel.folder!!.path)
         findNavController().popBackStack()
     }
 
@@ -54,14 +55,14 @@ class AlbumsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun addToPlayList() {
-        val action = AlbumsMenuBottomSheetDialogFragmentDirections
-            .actionAlbumsMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(mediaRoot = album.id.urlEncoded)
+        val action = FoldersMenuBottomSheetDialogFragmentDirections
+            .actionFoldersMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(mediaRoot = viewModel.folder!!.path)
         val navOptions = NavOptions.Builder().setPopUpTo(popUpTo, false).build()
-
         findNavController().navigate(action, navOptions)
     }
 
     private fun share() {
-        context?.also { Utils.share(it, "${album.artist} - ${album.name}", album.artist, "Share Album") }
+        val folder = viewModel.folder!!
+        context?.also { Utils.share(it, folder.name, "folder", "Share Folder") }
     }
 }
