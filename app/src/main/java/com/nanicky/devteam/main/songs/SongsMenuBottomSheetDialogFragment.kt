@@ -42,6 +42,11 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
         return inflater.inflate(R.layout.fragment_songs_menu_bottom_sheet_dialog, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        updateViews()
+    }
+
     fun updateViews() {
         updateFavourite()
     }
