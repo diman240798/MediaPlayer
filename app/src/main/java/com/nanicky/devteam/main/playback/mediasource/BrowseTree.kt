@@ -561,4 +561,8 @@ class BrowseTree(
     }
 
     fun updateVM() = mediaUpdateNotifier.update()
+
+    fun setSearchSongsResult(searchResultSongs: List<MediaMetadataCompat>) {
+        mediaIdToChildren[Constants.SONGS_SEARCH] = CopyOnWriteArrayList(searchResultSongs)
+    }
 }

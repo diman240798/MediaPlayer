@@ -31,6 +31,7 @@ object Constants {
     const val GENRES_ROOT = "_GENRES__"
     const val PLAYLISTS_ROOT = "__PLAYLISTS__"
     const val FAVOURITES_ROOT = "__FAVOUTITES__"
+    const val SONGS_SEARCH = "__SONGS_SEARCH__"
     const val CURRENT_QUEUE_ROOT = "__CURRENT_QUEUE__"
     const val NETWORK_FAILURE = "com.nanicky.devteam.playback.NETWORK_FAILURE"
     const val LAST_SHUFFLE_MODE = "com.nanicky.devteam.playback.LAST_SHUFFLE_MODE"

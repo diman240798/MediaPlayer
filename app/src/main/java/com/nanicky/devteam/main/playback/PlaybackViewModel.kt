@@ -11,6 +11,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.*
+import arrow.core.Const
 import com.nanicky.devteam.common.urlEncoded
 import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.common.data.Constants
@@ -78,6 +79,21 @@ class PlaybackViewModel(
             mediaSessionConnection.transportControls.pause()
         } else {
             playMediaId(currentItem.value?.id)
+        }
+    }
+
+
+    fun playFromSearch(id: String) {
+        val parentId = lastParendId
+        val list = mediaItems.value
+
+        if (lastParendId == Constants.SONGS_SEARCH && list != null && !list.isEmpty()) {
+            playMediaId(getItemFrmPlayId(id, list)?.id)
+        } else {
+            lastParendId = Constants.SONGS_SEARCH
+            playMediaAfterLoad = id
+            mediaSessionConnection.unsubscribe(parentId, subscriptionCallback)
+            mediaSessionConnection.subscribe(Constants.SONGS_SEARCH, subscriptionCallback)
         }
     }
 
@@ -185,19 +201,6 @@ class PlaybackViewModel(
                 if (i > 1) _currentItem.postValue(it[(i - 1)])
             }
         }
-    }
-
-
-    /*fun addToQueue(mediaDescription: MediaDescriptionCompat) {
-        mediaSessionConnection.addToQueue(mediaDescription)
-    }
-
-    fun removeFromQueue(mediaDescription: MediaDescriptionCompat) {
-        mediaSessionConnection.removeFromQueue(mediaDescription)
-    }*/
-
-    fun addToQueue() {
-        currentItem.value?.description?.let { mediaSessionConnection.addToQueue(it) }
     }
 
     fun removeFromQueue() {
@@ -351,7 +354,8 @@ class PlaybackViewModel(
      *  which can also change [MediaItemData.isPlaying]s in the list.
      */
     private val mediaSessionConnection = mediaSessionConnection.also {
-        preferences.edit().putString(Constants.LAST_PARENT_ID, Constants.CURRENT_QUEUE_ROOT).commit()
+        preferences.edit().putString(Constants.LAST_PARENT_ID, Constants.CURRENT_QUEUE_ROOT)
+            .commit()
         it.subscribe(Constants.CURRENT_QUEUE_ROOT, subscriptionCallback)
         it.playbackState.observeForever(playbackStateObserver)
         it.nowPlaying.observeForever(mediaMetadataObserver)
@@ -416,11 +420,17 @@ class PlaybackViewModel(
         }
     }
 
-    private val lastParendId: String
+    private var lastParendId: String
         get() = preferences.getString(
             Constants.LAST_PARENT_ID,
             Constants.SONGS_ROOT
         )!!
+        set(value) {
+            preferences
+                .edit()
+                .putString(Constants.LAST_PARENT_ID, value)
+                .commit()
+        }
 
 }
 

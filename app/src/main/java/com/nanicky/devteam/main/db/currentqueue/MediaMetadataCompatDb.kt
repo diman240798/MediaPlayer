@@ -10,7 +10,6 @@ data class MediaMetadataCompatDb(
     val album: String?,
     val albumId: Long,
     val albumArtUri: String?,
-
     val mediaUri: String?,
     val flag: Int,
     val displayTitle: String?,

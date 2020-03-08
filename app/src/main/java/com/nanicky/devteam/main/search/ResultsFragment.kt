@@ -25,6 +25,7 @@ import com.nanicky.devteam.main.common.data.Model
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.genres.Genre
+import com.nanicky.devteam.main.playback.PlaybackViewModel
 import com.nanicky.devteam.main.songs.Song
 import com.nanicky.devteam.main.songs.SongsMenuBottomSheetDialogFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_results.*
@@ -36,6 +37,7 @@ private const val RESULT = "RESULT"
 class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
 
     private val songsMenuBottomDialogVM: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
+    private val playbackViewModel: PlaybackViewModel by sharedViewModel()
 
     lateinit var result: Result
     var items = emptyList<Model>()
@@ -252,7 +254,7 @@ class ResultsFragment<T : Model> : Fragment(), OnItemClickListener {
     }
 
     private fun onSongItemClick(position: Int) {
-        Toast.makeText(context, "Not Implemented", Toast.LENGTH_SHORT).show()
+        playbackViewModel.playFromSearch(items[position].id.toString())
     }
 
 

@@ -50,7 +50,7 @@ val commonModule = module {
     viewModel { WritePlaylistViewModel(get(), get(), get()) }
     viewModel { NavViewModel(get()) }
     viewModel { PlaybackViewModel(get(), get(), get(), get()) }
-    viewModel { SearchViewModel(get()) }
+    viewModel { SearchViewModel(get(), get()) }
     viewModel { FavouriteSongsViewModel(get(), get()) }
     viewModel { SongsMenuBottomSheetDialogFragmentViewModel(get()) }
     viewModel { WebFragmentViewModel() }
