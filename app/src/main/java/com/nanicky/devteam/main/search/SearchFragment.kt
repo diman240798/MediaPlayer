@@ -147,6 +147,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
     private fun toggleFilter() {
         ascendingSortOrder = !ascendingSortOrder
+        if (ascendingSortOrder) filterButton.rotation = 180F else filterButton.rotation = 0F
         query(searchText.text.toString())
     }
 

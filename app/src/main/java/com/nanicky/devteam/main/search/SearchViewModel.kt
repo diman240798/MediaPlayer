@@ -1,20 +1,15 @@
 package com.nanicky.devteam.main.search
 
 import android.app.Application
-import android.database.Cursor
-import android.provider.MediaStore
-import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.nanicky.devteam.common.urlEncoded
 import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.artists.Artist
+import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.event.Event
-import com.nanicky.devteam.main.common.utils.ImageUtils
 import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playback.*
@@ -22,6 +17,7 @@ import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import com.nanicky.devteam.main.songs.Song
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.util.concurrent.CopyOnWriteArrayList
 
 class SearchViewModel(application: Application, val browseTree: BrowseTree) : AndroidViewModel(application) {
 
@@ -43,7 +39,7 @@ class SearchViewModel(application: Application, val browseTree: BrowseTree) : An
     private val _resultSize = MutableLiveData<Int>()
     val resultSize: LiveData<Int> get() = _resultSize
 
-    val repository = SearchRepository(application)
+    val repository = SearchRepository(application, browseTree)
 
     fun query(query: String, ascend: Boolean) {
         viewModelScope.launch {
@@ -55,21 +51,8 @@ class SearchViewModel(application: Application, val browseTree: BrowseTree) : An
                 repository.queryPlaylists(query, ascend)
             }
 
-            _songs.value = songs.await()
-            _songs.value!!.map {song ->
-                MediaMetadataCompat.Builder().apply {
-                    id = song.id
-                    title = song.title
-                    album = song.album.name
-                    artist = song.album.artist
-                    albumId = song.album.id.toLong()
-                    albumArtUri = song.artPath
-                    mediaUri = song.path
-                    duration = song.duration
-                }.build()
-            }.let {
-                browseTree.setSearchSongsResult(it)
-            }
+            browseTree.mediaIdToChildren[Constants.SONGS_SEARCH] = CopyOnWriteArrayList(songs.await())
+            _songs.value = browseTree.mediaIdToChildren[Constants.SONGS_SEARCH]!!.map { Song(it) }
 
             _albums.value = albums.await()
             _artists.value = artists.await()

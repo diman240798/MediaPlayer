@@ -1,8 +1,6 @@
 package com.nanicky.devteam.main.db.playlist
 
-import android.database.Cursor
 import android.os.Parcelable
-import android.provider.MediaStore
 import android.support.v4.media.MediaMetadataCompat
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -25,11 +23,6 @@ data class Playlist(
     @PrimaryKey(autoGenerate = true)
     override val id: Long = 0
 ) : Model(), Parcelable {
-
-    constructor(cursor: Cursor) : this(
-        id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID)),
-        name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.NAME))
-    )
 
     constructor(data: MediaMetadataCompat) : this(
         id = data.id?.toLong() ?: 0,

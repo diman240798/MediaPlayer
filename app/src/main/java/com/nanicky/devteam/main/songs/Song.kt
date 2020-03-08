@@ -24,26 +24,6 @@ data class Song(
     var selected: Boolean = false,
     var audioId: Long? = null
 ) : Model(), Parcelable {
-    constructor(cursor: Cursor) : this(
-        id = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
-        title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)),
-        titleKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE_KEY)),
-        album = Album(cursor, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))),
-        path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)),
-        duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)),
-        artPath = ImageUtils.getAlbumArtUri(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))).toString()
-    )
-
-    constructor(cursor: Cursor, audioId: Long?) : this(
-        id = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID)),
-        title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE)),
-        titleKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE_KEY)),
-        album = Album(cursor, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_ID))),
-        path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA)),
-        duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION)),
-        artPath = ImageUtils.getAlbumArtUri(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_ID))).toString(),
-        audioId = audioId
-    )
 
     constructor(data: MediaMetadataCompat) : this(
         id = data.id ?: "",
