@@ -172,10 +172,18 @@
     <string name="ask_permissions">For this app function we require next permissions</string>
     <string name="shazam">Shazam</string>
     <string name="deleted">Delete</string>
+    <string name="song_artist">Artist - Song</string>
+
+    <string-array name="web_urls_search">
+        <item>https://ru-drivemusic.net/?do=search&amp;subaction=search&amp;story=</item>
+        <item>https://ruru.hotmo.org/search?q=</item>
+        <item>https://zaycev.net/search.html?query_search=</item>
+    </string-array>
 
     <string-array name="web_urls">
-        <item>https://ru.megapesni.com/?do=search&amp;subaction=search&amp;story=</item>
-        <item>https://ru-drivemusic.net/?do=search&amp;subaction=search&amp;story=</item>
+        <item>https://ru-drivemusic.net</item>
+        <item>https://ruru.hotmo.org</item>
+        <item>https://zaycev.net</item>
     </string-array>
 
 

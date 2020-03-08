@@ -1,28 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <WebView
-        android:id="@+id/webView"
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.nanicky.devteam.main.web.WebFragmentViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"/>
+        android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:clickable="true"
-        app:layout_behavior=".main.common.view.FAB_Float_on_Scroll"
-        android:focusable="true"
-        android:layout_margin="8dp"
-        android:layout_gravity="bottom|end"
-        app:srcCompat="@drawable/ic_search" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:visibility="@{viewModel.searchString == null ? View.GONE: View.VISIBLE}">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="10"
+                    android:background="@color/colorBackground">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/searchText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/song_artist"
+                        android:lines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/searchButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_search"
+                    android:tint="?android:textColorPrimary" />
+            </LinearLayout>
+
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
 
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:tint="?android:textColorPrimary"
+            app:srcCompat="@drawable/ic_search" />
+
+        <Button
+            android:id="@+id/zaycevButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="80dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/accent_circle"
+            android:backgroundTint="#03A9F4"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="zaycev"
+            android:textSize="12sp"
+            android:tint="?android:textColorPrimary"
+            android:visibility="@{viewModel.isButtonsVisible ? View.GONE: View.VISIBLE}"
+            app:cornerRadius="30dp" />
+
+        <Button
+            android:id="@+id/drivemusicButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="80dp"
+            android:background="@drawable/accent_circle"
+            android:backgroundTint="#FBC02D"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="drive music"
+            android:textSize="12sp"
+            android:tint="?android:textColorPrimary"
+            android:visibility="@{viewModel.isButtonsVisible ? View.GONE: View.VISIBLE}"
+            app:cornerRadius="30dp" />
+
+        <Button
+            android:id="@+id/hotmoButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="80dp"
+            android:background="@drawable/accent_circle"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="hotmo"
+            android:backgroundTint="#4CAF50"
+            android:textSize="12sp"
+            android:tint="?android:textColorPrimary"
+            android:visibility="@{viewModel.isButtonsVisible ? View.GONE: View.VISIBLE}"
+            app:cornerRadius="30dp" />
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

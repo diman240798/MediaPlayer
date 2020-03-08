@@ -31,5 +31,11 @@ class MainFragment : Fragment() {
         val navController = Navigation.findNavController(requireActivity(), R.id.bottomNavHostFragment)
         navigationBar.setupWithNavController(navController)
         colorChangeSharedObject.backgrColorBottomNavView.observe(viewLifecycleOwner, Observer { navigationBar.setBackgroundColor(resources.getColor(it)) })
+        colorChangeSharedObject.isBottomNavVisible.observe(viewLifecycleOwner, Observer {
+            navigationBar.visibility = when(it) {
+                true -> View.VISIBLE
+                false -> View.GONE
+            }
+        })
     }
 }

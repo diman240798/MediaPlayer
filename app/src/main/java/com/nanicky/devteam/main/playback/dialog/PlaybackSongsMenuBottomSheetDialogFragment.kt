@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.utils.Utils
@@ -92,12 +93,10 @@ class PlaybackSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun addTrackToPlayList() {
-        /*val selection = "$basicSongsSelection AND ${MediaStore.Audio.Media._ID} = ?"
-        val selectionArgs = arrayOf(basicSongsSelectionArg, viewModel.song.value!!.id.toString())
-        val action = SongsMenuBottomSheetDialogFragmentDirections
-            .actionSongsMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(selectionArgs, selection)
+        val action = PlaybackSongsMenuBottomSheetDialogFragmentDirections
+            .actionPlaybackSongsMenuBottomSheetDialogFragmentToAddSongsToPlaylistsFragment(songId = viewModel.song.value!!.id)
         val navOptions = NavOptions.Builder().setPopUpTo(popUpTo, false).build()
-        findNavController().navigate(action, navOptions)*/
+        findNavController().navigate(action, navOptions)
     }
 
     private fun favouriteTrack() {

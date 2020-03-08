@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.R
 import com.nanicky.devteam.databinding.FragmentShazamResultDialogBinding
 import com.nanicky.devteam.main.common.utils.Utils
@@ -12,12 +13,18 @@ import com.nanicky.devteam.main.shazam.model.ResultTrack
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import com.nanicky.devteam.main.shazam.download.DownloadSongNotificationManager
+import com.nanicky.devteam.main.songs.Song
+import com.nanicky.devteam.main.songs.SongsMenuBottomSheetDialogFragmentDirections
+import com.nanicky.devteam.main.web.WebFragmentViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 private const val RESULT_TRACK_PARAM = "resultTrackJson"
 
 class FragmentShazamBottomDialog : BaseMenuBottomSheet() {
     private lateinit var resultTrack: ResultTrack
+
+    private val webVM: WebFragmentViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,11 +66,20 @@ class FragmentShazamBottomDialog : BaseMenuBottomSheet() {
     }
 
     private fun searchAuthor() {
-
+// update vm
+        webVM.setSearchString(resultTrack.artist)
+        // change fragment
+        val action =
+            FragmentShazamBottomDialogDirections.actionFragmentShazamBottomDialogToWebFragment()
+        findNavController().navigate(action)
     }
 
     private fun searchTrack() {
-
+        webVM.setSearchString(resultTrack.title)
+        // change fragment
+        val action =
+            FragmentShazamBottomDialogDirections.actionFragmentShazamBottomDialogToWebFragment()
+        findNavController().navigate(action)
     }
 
     private fun shareTrack() {

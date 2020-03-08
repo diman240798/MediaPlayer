@@ -32,7 +32,7 @@ class BottomPlaybackFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? = FragmentBottomPlaybackBinding.inflate(inflater, container, false).let {
         it.viewModel = viewModel
-        it.lifecycleOwner = this
+        it.lifecycleOwner = viewLifecycleOwner
         return it.root
     }
 
@@ -54,6 +54,12 @@ class BottomPlaybackFragment : BaseFragment() {
         })
         val container = view.findViewById<ConstraintLayout>(R.id.container)
         colorChangeSharedObject.backgrColorBottomPlayBack.observe(viewLifecycleOwner, Observer { container.setBackgroundColor(resources.getColor(it)) })
+        colorChangeSharedObject.isBottomNavVisible.observe(viewLifecycleOwner, Observer {
+            container.visibility = when(it) {
+                true -> View.VISIBLE
+                false -> View.GONE
+            }
+        })
     }
 
     private fun setupViews() {

@@ -57,7 +57,7 @@ class PlaybackFragment : BaseFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? = FragmentPlaybackBinding.inflate(inflater, container, false).let {
         it.viewModel = viewModel
-        it.lifecycleOwner = this
+        it.lifecycleOwner = viewLifecycleOwner
         return it.root
     }
 

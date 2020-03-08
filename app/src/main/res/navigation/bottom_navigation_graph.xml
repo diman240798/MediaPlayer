@@ -442,6 +442,9 @@
         <argument
             android:name="resultTrackJson"
             app:argType="string" />
+        <action
+            android:id="@+id/action_fragmentShazamBottomDialog_to_webFragment"
+            app:destination="@id/webFragment" />
     </dialog>
     <fragment
         android:id="@+id/foldersFragment"
