@@ -17,8 +17,10 @@ import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFragment
 import com.nanicky.devteam.main.playback.PlaybackViewModel
+import com.nanicky.devteam.main.playback.mediasource.MediaUpdateNotifier
 import com.nanicky.devteam.main.songs.Song
 import kotlinx.android.synthetic.main.fragment_album_songs.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class AlbumSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickListener {
@@ -27,6 +29,7 @@ class AlbumSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickList
     private val playbackViewModel: PlaybackViewModel by sharedViewModel()
     private lateinit var album: Album
     private var items = emptyList<Song>()
+    private val mediaUpdateNotifier: MediaUpdateNotifier by inject()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +59,7 @@ class AlbumSongsFragment : BaseFragment(), OnItemClickListener, View.OnClickList
 
     private fun observeViewModel() {
         viewModel.items.observe(viewLifecycleOwner, Observer(this::updateViews))
+        mediaUpdateNotifier.baseMediaStoreViewModel = viewModel
     }
 
     @Suppress("UNCHECKED_CAST")

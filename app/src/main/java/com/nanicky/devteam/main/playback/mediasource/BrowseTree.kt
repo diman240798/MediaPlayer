@@ -114,6 +114,7 @@ class BrowseTree(
                 sortPlayList()
             }
             context.contentResolver.registerContentObserver(baseSongUri, true, observer)
+            mediaUpdateNotifier.update()
         }
     }
 

@@ -16,14 +16,17 @@ import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFragment
+import com.nanicky.devteam.main.playback.mediasource.MediaUpdateNotifier
 import kotlinx.android.synthetic.main.fragment_artists.*
 import kotlinx.android.synthetic.main.fragment_explore.navigationIcon
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ArtistsFragment : BaseFragment(), OnItemClickListener {
 
     private var items: List<Artist> = emptyList()
     private val viewModel: ArtistsViewModel by sharedViewModel()
+    private val mediaUpdateNotifier: MediaUpdateNotifier by inject()
 
 
     override fun onCreateView(
@@ -55,8 +58,8 @@ class ArtistsFragment : BaseFragment(), OnItemClickListener {
             })
         } else {
             viewModel.overrideCurrentItems(items)
-
         }
+        mediaUpdateNotifier.baseMediaStoreViewModel = viewModel
     }
 
     private fun setupRecyclerView() {

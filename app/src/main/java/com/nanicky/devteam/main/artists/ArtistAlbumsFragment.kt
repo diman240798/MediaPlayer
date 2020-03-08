@@ -24,13 +24,16 @@ import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.view.BaseAdapter
 import com.nanicky.devteam.main.common.view.BaseFragment
+import com.nanicky.devteam.main.playback.mediasource.MediaUpdateNotifier
 import kotlinx.android.synthetic.main.fragment_artist_albums.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ArtistAlbumsFragment : BaseFragment(), OnItemClickListener {
     lateinit var artist: Artist
     private val viewModel: ArtistAlbumsViewModel by sharedViewModel()
     private var albums = emptyList<Album>()
+    private val mediaUpdateNotifier: MediaUpdateNotifier by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +66,7 @@ class ArtistAlbumsFragment : BaseFragment(), OnItemClickListener {
 
     private fun observeViewModel() {
         viewModel.items.observe(viewLifecycleOwner, Observer(this::updateViews))
+        mediaUpdateNotifier.baseMediaStoreViewModel = viewModel
     }
 
     @Suppress("UNCHECKED_CAST")

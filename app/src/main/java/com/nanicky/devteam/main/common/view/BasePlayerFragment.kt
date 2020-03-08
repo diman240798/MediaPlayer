@@ -17,8 +17,10 @@ import com.nanicky.devteam.main.common.callbacks.OnItemClickListener
 import com.nanicky.devteam.main.common.data.Model
 import com.nanicky.devteam.main.common.utils.ViewUtils
 import com.nanicky.devteam.main.playback.PlaybackViewModel
+import com.nanicky.devteam.main.playback.mediasource.MediaUpdateNotifier
 import kotlinx.android.synthetic.main.fragment_base_player.*
 import kotlinx.android.synthetic.main.fragment_explore.navigationIcon
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 abstract class BasePlayerFragment<T : Model> : BaseFragment(), View.OnClickListener, OnItemClickListener {
@@ -32,6 +34,7 @@ abstract class BasePlayerFragment<T : Model> : BaseFragment(), View.OnClickListe
     abstract var viewModelVariableId: Int
     open var adapterItemAnimSet = setOf(R.anim.up_from_bottom, R.anim.down_from_top)
     open var longClickItems = false
+    private val mediaUpdateNotifier: MediaUpdateNotifier by inject()
 
 
     override fun onCreateView(
@@ -59,6 +62,7 @@ abstract class BasePlayerFragment<T : Model> : BaseFragment(), View.OnClickListe
         } else {
             viewModel.overrideCurrentItems(items)
         }
+        mediaUpdateNotifier.baseMediaStoreViewModel = viewModel
     }
 
 
