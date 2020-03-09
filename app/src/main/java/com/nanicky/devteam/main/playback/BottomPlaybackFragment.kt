@@ -56,7 +56,9 @@ class BottomPlaybackFragment : BaseFragment() {
         colorChangeSharedObject.backgrColorBottomPlayBack.observe(viewLifecycleOwner, Observer { container.setBackgroundColor(resources.getColor(it)) })
         colorChangeSharedObject.isBottomNavVisible.observe(viewLifecycleOwner, Observer {
             container.visibility = when(it) {
-                true -> View.VISIBLE
+                true -> {
+                    if (viewModel.currentItem.value != null) View.VISIBLE else View.GONE
+                }
                 false -> View.GONE
             }
         })

@@ -27,8 +27,8 @@ data class MediaItemData(
 
     constructor(item: MediaItem, isPlaying: Boolean, isBuffering: Boolean) : this(
         id = item.mediaId!!,
-        title = item.description.title!!.toString(),
-        subtitle = item.description.subtitle!!.toString(),
+        title = item.description.title?.toString() ?: "",
+        subtitle = item.description.subtitle?.toString() ?: "",
         albumArtUri = item.description.iconUri,
         description = item.description,
         isBrowsable = item.isBrowsable,

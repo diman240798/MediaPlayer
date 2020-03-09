@@ -1,17 +1,18 @@
 package com.nanicky.devteam.main.web
 
+import android.app.DownloadManager
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Context.DOWNLOAD_SERVICE
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -81,6 +82,30 @@ class WebFragment : Fragment() {
     }
 
     private fun setUpWebView() {
+        webView.setDownloadListener(object : DownloadListener {
+            override fun onDownloadStart(
+                url: String?,
+                userAgent: String?,
+                contentDisposition: String?,
+                mimetype: String?,
+                contentLength: Long
+            ) {
+                if (url?.endsWith(".mp3") == true) {
+                    val request = DownloadManager.Request(
+                        Uri.parse(url)
+                    );
+                    request.allowScanningByMediaScanner()
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    request.setDestinationInExternalPublicDir(
+                        Environment.DIRECTORY_DOWNLOADS,
+                        "mediaViewerDownloads/web/${url.substring(url.lastIndexOf("/"), url.length)}"
+                    )
+                    val dm = context?.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+                    dm.enqueue(request)
+
+                }
+            }
+        })
         webView.webViewClient = MyWebViewClient(context!!)
     }
 
