@@ -77,7 +77,6 @@ class FolderSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
             R.id.share -> shareTrack()
             R.id.favourite -> favouriteTrack()
             R.id.addToPlayList -> addTrackToPlayList()
-            R.id.delete -> deleteTrackFromQueue()
         }
     }
 
@@ -88,11 +87,6 @@ class FolderSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
         val action =
             FolderSongsMenuBottomSheetDialogFragmentDirections.actionFolderSongsMenuBottomSheetDialogFragmentToWebFragment()
         findNavController().navigate(action)
-    }
-
-    private fun deleteTrackFromQueue() {
-        playbackViewModel.removeFromQueue()
-        findNavController().popBackStack()
     }
 
     private fun addTrackToPlayList() {
