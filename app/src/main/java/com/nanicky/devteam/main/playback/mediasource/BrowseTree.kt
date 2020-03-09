@@ -111,8 +111,8 @@ class BrowseTree(
 
             musicSource.load(context).collect {
                 workoutItem(it, context)
-                sortPlayList()
             }
+            sortPlayList()
             context.contentResolver.registerContentObserver(baseSongUri, true, observer)
             mediaUpdateNotifier.update()
         }

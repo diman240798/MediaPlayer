@@ -98,7 +98,7 @@ class WebFragment : Fragment() {
                     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                     request.setDestinationInExternalPublicDir(
                         Environment.DIRECTORY_DOWNLOADS,
-                        "mediaViewerDownloads/web/${url.substring(url.lastIndexOf("/"), url.length)}"
+                        "mediaviewer/web/${url.substring(url.lastIndexOf("/"), url.length)}"
                     )
                     val dm = context?.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
                     dm.enqueue(request)

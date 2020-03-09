@@ -26,7 +26,7 @@ class DownloadSongNotificationManager(
             request
                 .setDescription(author)
                 .setTitle(track)
-                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "mediaViewerDownloads/shazam/$author - $track.mp3");
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "mediaviewer/shazam/$author - $track.mp3");
 
             dm.enqueue(request)
         }
