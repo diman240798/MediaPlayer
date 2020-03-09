@@ -17,7 +17,7 @@ import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
 import com.nanicky.devteam.main.folders.FolderSongsViewModel
 import com.nanicky.devteam.main.playback.PlaybackViewModel
 import com.nanicky.devteam.main.web.WebFragmentViewModel
-import kotlinx.android.synthetic.main.fragment_playback_songs_menu_bottom_sheet_dialog.*
+import kotlinx.android.synthetic.main.fragment_folder_songs_menu_bottom_sheet_dialog.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -42,7 +42,7 @@ class FolderSongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.fragment_playback_songs_menu_bottom_sheet_dialog,
+            R.layout.fragment_folder_songs_menu_bottom_sheet_dialog,
             container,
             false
         )

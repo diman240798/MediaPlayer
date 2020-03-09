@@ -1,34 +1,30 @@
-<!--
-  Copyright (c) 2020 . Wilberforce Uwadiegwu. All Rights Reserved.
-  -->
-
 <resources>
-    <string name="app_name">Media Viewer</string>
+    <string name="app_name">Медиа Вьювер</string>
 
     <!--OnBoarding Slides-->
     <string name="got_it">Ок</string>
     <string name="board_title_1">Музыкальнок приложение</string>
-    <string name="board_description_1">Easily add your create your trip, and let people know where you’re heading.</string>
-    <string name="board_title_2">Listen</string>
-    <string name="board_description_2">Discover where people are going, and join them on their trips.</string>
-    <string name="board_title_3">Nonstop</string>
-    <string name="board_description_3">Ask people to join you on your trips.</string>
+    <string name="board_description_1">Наслаждайтесь музыкой в дороге.</string>
+    <string name="board_title_2">Слушать</string>
+    <string name="board_description_2">Делитесь впечетления с близкими.</string>
+    <string name="board_title_3">Без остановок</string>
+    <string name="board_description_3">Пригласите их присоединиться.</string>
     <string name="skip">Пропустить</string>
     <string name="next">Следующая</string>
 
 
     <!--Accessibility-->
     <string name="on_boarding_image">Картика при старте</string>
-    <string name="app_icon">App Icon</string>
+    <string name="app_icon">Иконка приложения</string>
     <string name="get_started">Начать</string>
-    <string name="image_of_navigation_item">Image of Navigation item</string>
-    <string name="image_of_folder_item">Image of Folder item</string>
-    <string name="navigation_icon">Navigation icon</string>
-    <string name="track_album_art">Track album art</string>
-    <string name="playlist_image">Playlist image</string>
-    <string name="artist_avatar">Artist avatar</string>
-    <string name="album_art">Album art</string>
-    <string name="genre_art">Genre art</string>
+    <string name="image_of_navigation_item">Картинка навигации</string>
+    <string name="image_of_folder_item">Картинка папки</string>
+    <string name="navigation_icon">Картинка навигации</string>
+    <string name="track_album_art">Картинка трека альбома</string>
+    <string name="playlist_image">Картинка плейлиста</string>
+    <string name="artist_avatar">Аватар автора</string>
+    <string name="album_art">Картинка альбома</string>
+    <string name="genre_art">Картинка жанра</string>
     <string name="folder_art">Картика папки</string>
     <string name="more_options">Больше опций</string>
     <string name="go_back">Назад</string>
@@ -100,11 +96,6 @@
         <item quantity="one">%d папка</item>
         <item quantity="other">%d папок</item>
     </plurals>
-
-
-    <!--Dummy Strings. TODO: Remove-->
-    <string name="dummyLyrics">I\'m just a singer who already blew his shot I get along with old timers Cause my name\'s a reminder of a pop song people forgot And I can\'t keep a girl, no \'Cause as soon as the sun comes up I cut \'em all loose and work\'s my excuse But the truth is I can\'t open up[Chorus] Now you don\'t wanna be high like me Never really knowing why like me You don\'t ever wanna step off that roller coaster And be all alone You don\'t wanna ride the bus like this Never knowing who to trust like this You don\'t wanna be stuck up on that stage singing Stuck up on that stage singing All I know are sad songs, sad songs Darling, all I know are sad songs, sad songs</string>
-    <string name="dummyLyricsSource">genus.com</string>
 
 
     <!--Others-->
