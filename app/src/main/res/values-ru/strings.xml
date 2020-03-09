@@ -1,0 +1,182 @@
+<!--
+  Copyright (c) 2020 . Wilberforce Uwadiegwu. All Rights Reserved.
+  -->
+
+<resources>
+    <string name="app_name">Media Viewer</string>
+
+    <!--OnBoarding Slides-->
+    <string name="got_it">Ок</string>
+    <string name="board_title_1">Музыкальнок приложение</string>
+    <string name="board_description_1">Easily add your create your trip, and let people know where you’re heading.</string>
+    <string name="board_title_2">Listen</string>
+    <string name="board_description_2">Discover where people are going, and join them on their trips.</string>
+    <string name="board_title_3">Nonstop</string>
+    <string name="board_description_3">Ask people to join you on your trips.</string>
+    <string name="skip">Пропустить</string>
+    <string name="next">Следующая</string>
+
+
+    <!--Accessibility-->
+    <string name="on_boarding_image">Картика при старте</string>
+    <string name="app_icon">App Icon</string>
+    <string name="get_started">Начать</string>
+    <string name="image_of_navigation_item">Image of Navigation item</string>
+    <string name="image_of_folder_item">Image of Folder item</string>
+    <string name="navigation_icon">Navigation icon</string>
+    <string name="track_album_art">Track album art</string>
+    <string name="playlist_image">Playlist image</string>
+    <string name="artist_avatar">Artist avatar</string>
+    <string name="album_art">Album art</string>
+    <string name="genre_art">Genre art</string>
+    <string name="folder_art">Картика папки</string>
+    <string name="more_options">Больше опций</string>
+    <string name="go_back">Назад</string>
+    <string name="shuffle_playlist">Слуйчайный порядок</string>
+    <string name="repeat_playlist">Повтор</string>
+    <string name="play_and_pause_button">Играть или пауза</string>
+    <string name="pause_button">Пауза</string>
+    <string name="play_button">Играть</string>
+    <string name="next_button">Следующая песня</string>
+    <string name="previous_button">Предыдущая песня</string>
+    <string name="current_playing_tracks">Текущие песни</string>
+    <string name="man_holding_an_empty_box">Man holding an empty box</string>
+    <string name="add_new">Добавить новый</string>
+    <string name="add_new_playlist">Добавить в плейлист</string>
+    <string name="skip_to_next">Следующая песня</string>
+    <string name="skip_to_previous">Предыдущая песня</string>
+    <string name="play_song">Играть</string>
+    <string name="pause_song">Пауза</string>
+
+
+    <!--Navigation-->
+    <string name="explore">Начало</string>
+    <string name="songs">Песни</string>
+    <string name="albums">Альбомы</string>
+    <string name="playlist">Плейлисты</string>
+    <string name="search">Поиск</string>
+    <string name="close">Закрыть</string>
+    <string name="nav_dialog_info">Для сортировки поддержите и перетаскивайте</string>
+    <string name="identify_music">Разпознать песню</string>
+    <string name="artists">Авторы</string>
+    <string name="favourites">Избранные</string>
+    <string name="genres">Жанры</string>
+    <string name="radio">Радио</string>
+    <string name="settings">Настройки</string>
+    <string name="videos">Видео</string>
+    <string name="filter_results">Фильтр результатов</string>
+    <string name="folders">Папки</string>
+    <string name="web">Веб</string>
+
+
+    <!--Plurals-->
+    <plurals name="numberOfSongs">
+        <item quantity="one">%d песня</item>
+        <item quantity="other">%d песен</item>
+    </plurals>
+    <plurals name="numberOfSongsInAlbum">
+        <item quantity="one">%d песня</item>
+        <item quantity="other">%d песен</item>
+    </plurals>
+    <plurals name="numberOfSongsSelected">
+        <item quantity="one">%d песня выбрана</item>
+        <item quantity="other">%d песен выбрано</item>
+        <item quantity="zero">Песни не выбраны</item>
+    </plurals>
+    <plurals name="numberOfPlaylistsSelected">
+        <item quantity="one">%d плейлист выбран</item>
+        <item quantity="other">%d плейлистов выбрано</item>
+        <item quantity="zero">Плейлисты не выбраны</item>
+    </plurals>
+    <plurals name="numberOfAlbums">
+        <item quantity="one">%d альбом</item>
+        <item quantity="other">%d альбомов</item>
+    </plurals>
+    <plurals name="numberOfPlaylists">
+        <item quantity="one">%d плейлист</item>
+        <item quantity="other">%d плейлистов</item>
+    </plurals>
+    <plurals name="numberOfFolders">
+        <item quantity="one">%d папка</item>
+        <item quantity="other">%d папок</item>
+    </plurals>
+
+
+    <!--Dummy Strings. TODO: Remove-->
+    <string name="dummyLyrics">I\'m just a singer who already blew his shot I get along with old timers Cause my name\'s a reminder of a pop song people forgot And I can\'t keep a girl, no \'Cause as soon as the sun comes up I cut \'em all loose and work\'s my excuse But the truth is I can\'t open up[Chorus] Now you don\'t wanna be high like me Never really knowing why like me You don\'t ever wanna step off that roller coaster And be all alone You don\'t wanna ride the bus like this Never knowing who to trust like this You don\'t wanna be stuck up on that stage singing Stuck up on that stage singing All I know are sad songs, sad songs Darling, all I know are sad songs, sad songs</string>
+    <string name="dummyLyricsSource">genus.com</string>
+
+
+    <!--Others-->
+    <string name="read_storage_permission_info">Нам нужно разрешения на память, чтобы искать песни.</string>
+    <string name="read_storage_permission_settings">Настройки памяти должны быть включены в Настройки > Приложения > %s > Разрешения.</string>
+    <string name="goToAppInfo">Получить инфо о приложении</string>
+    <string name="recentlyPlayed">Недавно проигранные</string>
+    <string name="empty_playlist">Еще ни одной песни не проиграно</string>
+    <string name="play">Играть</string>
+    <string name="back">Назад</string>
+    <string name="two_comma_separated_values">%s, %s</string>
+    <string name="min">\u0020 минута</string>
+    <string name="mins">\u0020 минут</string>
+    <string name="sec">\u0020 секунда</string>
+    <string name="secs">\u0020 секунд</string>
+    <string name="hour">\u0020 час</string>
+    <string name="hours">\u0020 часов</string>
+    <string name="comma">,\u0020</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Пустой фрагмент</string>
+
+
+    <string name="now_playing">Сейчас играет</string>
+    <string name="lyrics">Слова</string>
+    <string name="finding_lyrics">Поиск слов</string>
+    <string name="share">Поделиться названием</string>
+    <string name="play_next">Играть следующей</string>
+    <string name="favourite">Избранныу</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
+    <string name="delete_frm_queue">Удалить из очереди</string>
+    <string name="no_playlist">Ни одного плейлиста не найдено</string>
+    <string name="add_playlist_suggestion">Добавим несколько песен в плейлист?</string>
+    <string name="create_a_playlist">Создать плейлист</string>
+    <string name="create_playlist">Создать плейлист</string>
+    <string name="create_playlist_thumb_text">Кликните чтобы изменить картинку</string>
+    <string name="upload_playlist_image">Загрузить картинку плейлиста</string>
+    <string name="playlist_name">Имя плейлиста</string>
+    <string name="playlist_empty_message">Плейлист не может быть пустым</string>
+    <string name="playlist_empty_thumb_message">Изменить имя плейлиста или картинку</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="edit_songs">Править список песен</string>
+    <string name="edit_playlist">Изменить плейлист</string>
+    <string name="save_changes">Сохранить изменения</string>
+    <string name="playlist_delete_message">Хотите навсегда удалить \"%1$s\"?</string>
+    <string name="no_thanks">Нет, спасибо</string>
+    <string name="ok">OK</string>
+    <string name="cancel">ЗАКРЫТЬ</string>
+    <string name="continue_">Продолжить</string>
+    <string name="sth_deleted">\"%1$s\" удалены</string>
+    <string name="sth_went_wrong">Стоп! Что-то пошло не так</string>
+    <string name="done">Готово</string>
+    <string name="select_songs">Выбранные песни</string>
+    <string name="song_in_album">%1$s in %2$s</string>
+    <string name="remove_picture">Удалить картинку</string>
+    <string name="success">Успех</string>
+    <string name="notification_channel">Сейчас играет</string>
+    <string name="notification_channel_description">Показывает какая песня сейчас играет</string>
+    <string name="playing_now">Играет сейчас</string>
+    <string name="search_hint">Искать песни, альбомы, жанры, плейлисты</string>
+    <string name="no_results">Ничего не найдено</string>
+    <string name="start_record">Запись начата</string>
+    <string name="upload_record">Загрузка песни</string>
+    <string name="humming">Напевание</string>
+    <string name="listening">Запись</string>
+    <string name="search_author">Искать автора</string>
+    <string name="download">Скачать</string>
+    <string name="permissions">Разрешения</string>
+    <string name="ask_permissions">Для этих функций требуются разрешения</string>
+    <string name="shazam">Shazam</string>
+    <string name="deleted">Удалить</string>
+    <string name="song_artist">Автор - Песня</string>
+
+
+</resources>
