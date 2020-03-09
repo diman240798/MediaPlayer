@@ -72,7 +72,6 @@ class BrowseTree(
     val searchableByUnknownCaller = true
 
 
-
     private val observer: ContentObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean) {
             loadNew(context)
@@ -80,13 +79,16 @@ class BrowseTree(
         }
     }
 
+    private val recenltlyDownLoadedCrutchList = mutableListOf<MediaMetadataCompat>()
+
     private fun loadNew(context: Context) {
         val serviceJob = SupervisorJob()
         val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
         serviceScope.launch {
-            musicSource.loadNew(context).collect {
-                workoutItem(it, context)
+            musicSource.loadNew(context).collect { newSongData ->
+                if (!recenltlyDownLoadedCrutchList.any { it.description.mediaUri == newSongData.description.mediaUri })
+                    workoutItem(newSongData, context)
             }
         }
     }
@@ -120,7 +122,8 @@ class BrowseTree(
 
     private fun sortPlayList() {
         playlistRepository.getPlaylists().forEach {
-            val playListSongs: CopyOnWriteArrayList<MediaMetadataCompat> = mediaIdToChildren[it.getUniqueKey()]!!
+            val playListSongs: CopyOnWriteArrayList<MediaMetadataCompat> =
+                mediaIdToChildren[it.getUniqueKey()]!!
             if (playListSongs.isEmpty()) return@forEach
 
 
@@ -208,6 +211,17 @@ class BrowseTree(
     }
 
     private fun workoutItem(mediaItem: MediaMetadataCompat, context: Context) {
+        val file = File(mediaItem.mediaUri.toString())
+        if (!file.exists()) return
+        val parentFile = file.parentFile
+        val foldersChildren = mediaIdToChildren[parentFile.path] ?: buildFoldersRoot(
+            mediaItem,
+            parentFile.path,
+            parentFile.name
+        )
+        foldersChildren += mediaItem
+
+
         val albumMediaId = mediaItem.albumId.urlEncoded
         val albumChildren = mediaIdToChildren[albumMediaId] ?: buildAlbumRoot(mediaItem)
         albumChildren += mediaItem
@@ -222,20 +236,12 @@ class BrowseTree(
         songsChildren += mediaItem
         mediaIdToChildren[Constants.SONGS_ROOT] = songsChildren
 
-        val file = File(mediaItem.mediaUri.toString())
-        val parentFile = file.parentFile
-        val foldersChildren = mediaIdToChildren[parentFile.path] ?: buildFoldersRoot(
-            mediaItem,
-            parentFile.path,
-            parentFile.name
-        )
-        foldersChildren += mediaItem
-
 
         val songId = mediaItem.id?.toInt()
         val genre = songId?.let { getGenreForSongBySongId(context, songId) }
         genre?.let { genre ->
-            val genresChildren = mediaIdToChildren[genre.getUniqueKey()] ?: buildGenresRoot(mediaItem, genre)
+            val genresChildren =
+                mediaIdToChildren[genre.getUniqueKey()] ?: buildGenresRoot(mediaItem, genre)
             genresChildren += mediaItem
         }
 
@@ -243,14 +249,14 @@ class BrowseTree(
             // check playlists
             playlistRepository.getPlaylists()
                 .filter { !it.songIds.isEmpty() }
-                .filter { it.songIds.contains(songId)  }
+                .filter { it.songIds.contains(songId) }
                 .forEach { playlist ->
                     val url = playlist.getUniqueKey()
                     val playlistSongs = mediaIdToChildren[url] ?: CopyOnWriteArrayList()
                     val songCount = playlist.songIds.filter { it == songId }.size
                     for (i in 0..songCount) playlistSongs += mediaItem // add song several times if it repeats
                     mediaIdToChildren[url] = playlistSongs
-            }
+                }
 
             // check favourites
             val songIsFavourite = favouriteSongsRepository.containsId(songId)
@@ -277,8 +283,8 @@ class BrowseTree(
         return CopyOnWriteArrayList(metaDataPlaylists)
     }
 
-    private fun playlistToMedia(playlist: Playlist): MediaMetadataCompat
-            = MediaMetadataCompat.Builder().apply {
+    private fun playlistToMedia(playlist: Playlist): MediaMetadataCompat =
+        MediaMetadataCompat.Builder().apply {
             id = playlist.id.toString()
             title = playlist.name
             songIds = playlist.songIds.joinToString(",")
@@ -536,7 +542,7 @@ class BrowseTree(
         playlistSongs.clear()
 
         val songsRoot = mediaIdToChildren[Constants.SONGS_ROOT]
-        val songs = songsRoot!!.filter{ playlist.songIds.contains(it.id) }
+        val songs = songsRoot!!.filter { playlist.songIds.contains(it.id) }
         playlistSongs.addAll(songs)
 
         replaceOldPlaylistWithNew(playlist)
@@ -555,7 +561,8 @@ class BrowseTree(
 
     fun removePlaylist(playlist: Playlist) {
         mediaIdToChildren.remove(playlist.getUniqueKey())
-        val index = mediaIdToChildren[Constants.PLAYLISTS_ROOT]?.indexOfFirst { it.id?.toLong() == playlist.id }!!
+        val index =
+            mediaIdToChildren[Constants.PLAYLISTS_ROOT]?.indexOfFirst { it.id?.toLong() == playlist.id }!!
         mediaIdToChildren[Constants.PLAYLISTS_ROOT]!!.removeAt(index)
         mediaUpdateNotifier.update()
     }

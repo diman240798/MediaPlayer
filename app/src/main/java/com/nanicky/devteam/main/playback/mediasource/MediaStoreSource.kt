@@ -30,14 +30,14 @@ class MediaStoreSource {
     }
 
     fun load(context: Context): Flow<MediaMetadataCompat> =
-        load(context, baseSongUri, songsProjection, basicSongsSelection, basicSongsSelectionArgs, basicSongsOrder)
+        load(context, baseSongUri, songsProjection, null, null, basicSongsOrder)
 
     fun load(
         context: Context,
         uri: Uri,
         songsProjection: Array<String>,
-        selection: String,
-        selectionArgs: Array<String>,
+        selection: String?,
+        selectionArgs: Array<String>?,
         sortOrder: String
     )
             : Flow<MediaMetadataCompat> = flow {

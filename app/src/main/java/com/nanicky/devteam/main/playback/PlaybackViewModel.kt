@@ -53,7 +53,7 @@ class PlaybackViewModel(
     private val _repeatMode = MutableLiveData<Int>().apply {
         value = preferences.getInt(
             Constants.LAST_REPEAT_MODE,
-            PlaybackStateCompat.REPEAT_MODE_NONE
+            PlaybackStateCompat.REPEAT_MODE_ALL
         )
     }
     private val _mediaPosition =
