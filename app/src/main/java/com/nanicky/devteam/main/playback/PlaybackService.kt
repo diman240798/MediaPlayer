@@ -4,7 +4,6 @@ package com.nanicky.devteam.main.playback
 
 import android.app.PendingIntent
 import android.content.SharedPreferences
-import android.media.MediaDescription
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.session.MediaControllerCompat
@@ -114,7 +113,7 @@ class PlaybackService : MediaBrowserServiceCompat() {
                 it.setPlayer(exoPlayer)
                 it.setPlaybackPreparer(playbackPreparer)
                 it.setQueueNavigator(QueueNavigator(mediaSession))
-                it.setQueueEditor(QueueEditor(browseTree))
+                it.setQueueEditor(QueueEditor(browseTree, dataSourceFactory))
                 it.mediaSession.setFlags(
                     MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
                             or MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS

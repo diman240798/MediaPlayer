@@ -20,7 +20,7 @@ class AlbumsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     lateinit var album: Album
     @IdRes var popUpTo: Int = 0
-    private val viewModel: PlaybackViewModel by sharedViewModel()
+    private val playBackViewModel: PlaybackViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,18 +38,13 @@ class AlbumsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.play -> play()
-            R.id.playNext -> playNext()
             R.id.addToPlayList -> addToPlayList()
             R.id.share -> share()
         }
     }
 
     private fun play() {
-        viewModel.playAlbum(album)
-        findNavController().popBackStack()
-    }
-
-    private fun playNext() {
+        playBackViewModel.playAlbum(album)
         findNavController().popBackStack()
     }
 

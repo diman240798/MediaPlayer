@@ -11,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseMenuBottomSheet
+import com.nanicky.devteam.main.playback.PlaybackViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class GenresMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
@@ -33,17 +35,12 @@ class GenresMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.play -> play()
-            R.id.playNext -> playNext()
             R.id.addToPlayList -> addToPlayList()
             R.id.share -> share()
         }
     }
 
     private fun play() {
-        findNavController().popBackStack()
-    }
-
-    private fun playNext() {
         findNavController().popBackStack()
     }
 

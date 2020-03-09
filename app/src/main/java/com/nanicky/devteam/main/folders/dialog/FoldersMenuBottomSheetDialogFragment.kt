@@ -11,6 +11,7 @@ import androidx.annotation.IdRes
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.R
+import com.nanicky.devteam.common.urlEncoded
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseMenuBottomSheet
 import com.nanicky.devteam.main.folders.FolderSongsViewModel
@@ -39,7 +40,6 @@ class FoldersMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.play -> play()
-            R.id.playNext -> playNext()
             R.id.addToPlayList -> addToPlayList()
             R.id.share -> share()
         }
@@ -47,10 +47,6 @@ class FoldersMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private fun play() {
         playBackViewModel.playFolder(viewModel.folder!!.path)
-        findNavController().popBackStack()
-    }
-
-    private fun playNext() {
         findNavController().popBackStack()
     }
 

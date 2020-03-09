@@ -39,12 +39,12 @@ class CurrentQueueSongsRepository(val dao: CurrentQueueSongsDao) {
     fun insert(sourceString: String) {
         if (sourceString == Constants.CURRENT_QUEUE_ROOT) return
 
-        val mediaList = browseTree[sourceString]!!
+        val mediaList = browseTree[sourceString]!!.toMutableList()
         items = mediaList
         save(mediaList)
     }
 
-    private fun save(mediaList: CopyOnWriteArrayList<MediaMetadataCompat>) {
+    private fun save(mediaList: MutableList<MediaMetadataCompat>) {
         val serviceJob = SupervisorJob()
         val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
@@ -73,7 +73,7 @@ class CurrentQueueSongsRepository(val dao: CurrentQueueSongsDao) {
         return if (::items.isInitialized) items else null
     }
 
-    fun remove(item: MediaDescriptionCompat) {
+    fun remove( item: MediaDescriptionCompat) {
         val index = items.indexOfFirst { it.id == item.mediaId }
         items.removeAt(index)
         INSTANCE.items.removeAt(index)
@@ -81,6 +81,26 @@ class CurrentQueueSongsRepository(val dao: CurrentQueueSongsDao) {
     }
 
 
+
+    fun add(index: Int, metadataCompat: MediaMetadataCompat) {
+        items.add(index, metadataCompat)
+        val metaDataString = Base64.encodeToString(
+            ParcelableUtil.marshall(toMediaMetadataCompatDb(metadataCompat)),
+            Base64.DEFAULT
+        )
+        INSTANCE.items.add(index, metaDataString)
+        save()
+    }
+
+    fun add(metadataCompat: MediaMetadataCompat) {
+        items.add(metadataCompat)
+        val metaDataString = Base64.encodeToString(
+            ParcelableUtil.marshall(toMediaMetadataCompatDb(metadataCompat)),
+            Base64.DEFAULT
+        )
+        INSTANCE.items.add(metaDataString)
+        save()
+    }
 
     private fun save() {
         val serviceJob = SupervisorJob()

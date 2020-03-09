@@ -28,4 +28,12 @@ class QueueNavigator(mediaSession: MediaSessionCompat) :
         return super.onCommand(player, controlDispatcher, command, extras, cb)
     }
 
+    override fun onSkipToNext(player: Player?, controlDispatcher: ControlDispatcher?) {
+        super.onSkipToNext(player, controlDispatcher)
+    }
+
+    override fun onSkipToPrevious(player: Player?, controlDispatcher: ControlDispatcher?) {
+        super.onSkipToPrevious(player, controlDispatcher)
+    }
+
 }

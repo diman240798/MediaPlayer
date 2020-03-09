@@ -13,6 +13,7 @@ import com.nanicky.devteam.R
 import com.nanicky.devteam.main.common.utils.Utils
 import com.nanicky.devteam.main.common.view.BaseMenuBottomSheet
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
+import com.nanicky.devteam.main.playback.PlaybackViewModel
 import com.nanicky.devteam.main.playback.mediasource.basicSongsSelection
 import com.nanicky.devteam.main.playback.mediasource.basicSongsSelectionArg
 import com.nanicky.devteam.main.web.WebFragmentViewModel
@@ -24,6 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
 
     private val viewModel: SongsMenuBottomSheetDialogFragmentViewModel by sharedViewModel()
+    private val playbackViewModel : PlaybackViewModel by sharedViewModel()
     private val webVM: WebFragmentViewModel by sharedViewModel()
     private val favouriteSongsRepository: FavouriteSongsRepository by inject()
 
@@ -106,7 +108,8 @@ class SongsMenuBottomSheetDialogFragment : BaseMenuBottomSheet() {
     }
 
     private fun playNextTrack() {
-
+        playbackViewModel.addToQueue(viewModel.song.value!!)
+        findNavController().popBackStack()
     }
 
 

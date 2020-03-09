@@ -11,7 +11,6 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.*
-import arrow.core.Const
 import com.nanicky.devteam.common.urlEncoded
 import com.nanicky.devteam.main.albums.Album
 import com.nanicky.devteam.main.common.data.Constants
@@ -21,6 +20,8 @@ import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.lyrics.Lyrics
 import com.nanicky.devteam.main.lyrics.LyricsFetcher
 import com.nanicky.devteam.main.lyrics.LyricsRepository
+import com.nanicky.devteam.main.playback.mediasource.BrowseTree
+import com.nanicky.devteam.main.songs.Song
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -30,7 +31,8 @@ class PlaybackViewModel(
     application: Application,
     mediaSessionConnection: MediaSessionConnection,
     private val preferences: SharedPreferences,
-    private val currentQueueSongsRepository: CurrentQueueSongsRepository
+    private val currentQueueSongsRepository: CurrentQueueSongsRepository,
+    private val browseTree: BrowseTree
 ) :
     AndroidViewModel(application) {
 
@@ -203,12 +205,49 @@ class PlaybackViewModel(
         }
     }
 
+    fun addToQueue(song: Song) {
+        val metaSong = MediaMetadataCompat.Builder().apply {
+            id = song.id
+            title = song.title
+            album = song.album.name
+            artist = song.album.artist
+            albumId = song.album.id.toLong()
+            albumArtUri = song.artPath
+            mediaUri = song.path
+            duration = song.duration
+        }.build()
+        addToQueue(metaSong)
+    }
+
+
+    fun addToQueue(metadataCompat: MediaMetadataCompat) {
+        val items = mediaItems.value ?: return
+        val index = items.indexOf(currentItem.value)
+        if (index != -1) {
+            currentQueueSongsRepository.add(index + 1, metadataCompat)
+            items.add(index + 1, MediaItemData(metadataCompat, false, false))
+            mediaSessionConnection.addToQueue(metadataCompat.description, index + 1)
+        } else {
+            currentQueueSongsRepository.add(metadataCompat)
+            items.add(MediaItemData(metadataCompat, false, false))
+            mediaSessionConnection.addToQueue(metadataCompat.description)
+        }
+        _mediaItems.value = items
+    }
+
+    fun removeFromQueue(mediaDescription: MediaDescriptionCompat) {
+        mediaSessionConnection.removeFromQueue(mediaDescription)
+    }
+
+    fun addToQueue() {
+        currentItem.value?.description?.let { mediaSessionConnection.addToQueue(it) }
+    }
+
     fun removeFromQueue() {
+        val items = mediaItems.value ?: return
         currentItem.value?.description?.let {
             mediaSessionConnection.removeFromQueue(it)
-            val items = _mediaItems.value!!
             items.remove(currentItem.value!!)
-            _mediaItems.value = items
             currentQueueSongsRepository.remove(it)
         }
     }
@@ -417,6 +456,12 @@ class PlaybackViewModel(
                     return@withContext lyrics
                 }
             }
+        }
+    }
+
+    fun addMediaRootToQueue(urlEncoded: String) {
+        browseTree[urlEncoded]!!.forEach {
+            addToQueue(it)
         }
     }
 

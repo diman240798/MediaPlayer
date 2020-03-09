@@ -27,12 +27,6 @@
             android:text="@string/play" />
 
         <Button
-            android:id="@+id/playNext"
-            style="@style/AppTheme.MenuButton"
-            android:drawableEnd="@drawable/ic_play_next"
-            android:text="@string/play_next" />
-
-        <Button
             android:id="@+id/addToPlayList"
             style="@style/AppTheme.MenuButton"
             android:drawableEnd="@drawable/ic_add_playlist"

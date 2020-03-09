@@ -38,6 +38,7 @@ class CurrentSongsFragment : BaseFragment(), OnItemClickListener {
     }
 
     private fun setupViewViews() {
+        currentRV.itemAnimator = null
         currentRV.layoutManager = LinearLayoutManager(activity)
         val adapter = BaseAdapter(items, activity!!,R.layout.item_current, BR.mediaItem, this, null)
         currentRV.adapter = adapter

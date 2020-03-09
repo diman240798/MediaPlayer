@@ -71,6 +71,10 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName, 
         false
     }
 
+    fun addToQueue(mediaDescription: MediaDescriptionCompat, index: Int) {
+        mediaController.addQueueItem(mediaDescription, index)
+    }
+
     fun addToQueue(mediaDescription: MediaDescriptionCompat) {
         mediaController.addQueueItem(mediaDescription)
     }
