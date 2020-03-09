@@ -3,7 +3,7 @@
 <resources>
     <color name="colorPrimary">#070E21</color>
     <color name="colorPrimaryDark">#03060F</color>
-    <color name="colorAccent">#FF4060</color>
+    <color name="colorAccent">#4CAF50</color>
     <color name="colorBackground">@color/colorPrimary</color>
     <color name="darkPrimary">#070E21</color>
     <color name="lightBlue">#78849E</color>
