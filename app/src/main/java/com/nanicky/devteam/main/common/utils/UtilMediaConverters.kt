@@ -1,5 +1,3 @@
-// Copyright (c) 2020 . Wilberforce Uwadiegwu. All Rights Reserved.
-
 package com.nanicky.devteam.main.common.utils
 
 import android.support.v4.media.MediaMetadataCompat

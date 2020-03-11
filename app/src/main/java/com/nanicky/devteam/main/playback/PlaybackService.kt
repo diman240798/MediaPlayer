@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.C
@@ -36,6 +37,8 @@ import org.koin.android.ext.android.inject
  * Browsing begins with the method [PlaybackService.onGetRoot], and continues in
  * the callback [onLoadChildren].
  */
+private const val TAG = "PlaybackService"
+
 class PlaybackService : MediaBrowserServiceCompat() {
     internal lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
     private lateinit var packageValidator: PackageValidator
@@ -58,6 +61,8 @@ class PlaybackService : MediaBrowserServiceCompat() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Log.d(TAG, "Creating service")
 
         // Build a PendingIntent that can be used to launch the UI.
         val sessionActivityPendingActivity =

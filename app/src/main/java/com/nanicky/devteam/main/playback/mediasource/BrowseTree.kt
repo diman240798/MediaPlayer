@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaMetadataCompat
+import android.util.Log
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.nanicky.devteam.R
 import com.nanicky.devteam.common.urlEncoded
@@ -18,11 +19,8 @@ import com.nanicky.devteam.main.db.playlist.Playlist
 import com.nanicky.devteam.main.db.playlist.PlaylistRepository
 import com.nanicky.devteam.main.genres.Genre
 import com.nanicky.devteam.main.playback.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
@@ -50,6 +48,8 @@ import java.util.concurrent.CopyOnWriteArrayList
  * item list "Album_A", and, finally, `browseTree["Album_A"]` would return "Song_1" and "Song_2". Since those are leaf
  * nodes, requesting `browseTree["Song_1"]` would return null (there aren't any children of it).
  */
+private const val TAG = "BrowseTree"
+
 class BrowseTree(
     val context: Context,
     val musicSource: MediaStoreSource,
@@ -58,6 +58,9 @@ class BrowseTree(
     val currentSongRepository: CurrentQueueSongsRepository,
     val mediaUpdateNotifier: MediaUpdateNotifier
 ) {
+
+    private val serviceJob = SupervisorJob()
+    private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
     var currentMediaSource: ConcatenatingMediaSource? = null
 
@@ -79,16 +82,11 @@ class BrowseTree(
         }
     }
 
-    private val recenltlyDownLoadedCrutchList = mutableListOf<MediaMetadataCompat>()
-
     private fun loadNew(context: Context) {
-        val serviceJob = SupervisorJob()
-        val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
-
         serviceScope.launch {
             musicSource.loadNew(context).collect { newSongData ->
-                if (!recenltlyDownLoadedCrutchList.any { it.description.mediaUri == newSongData.description.mediaUri })
-                    workoutItem(newSongData, context)
+                delay(1000)
+                workoutItem(newSongData, context)
             }
         }
     }
@@ -100,10 +98,6 @@ class BrowseTree(
      * TODO: Expand to allow more browsing types.
      */
     fun load() {
-
-        val serviceJob = SupervisorJob()
-        val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
-
         serviceScope.launch {
             currentSongRepository.load()
             favouriteSongsRepository.load()

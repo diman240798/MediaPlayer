@@ -22,11 +22,13 @@ import kotlinx.coroutines.flow.flow
 class MediaStoreSource {
 
 
-    private var lastId: String = "-1"
+    @Volatile var lastId: Int = -1
 
     fun loadNew(context: Context): Flow<MediaMetadataCompat> {
         Log.d("Loading new songs: ", "id > then $lastId")
-        return load(context, baseSongUri, songsProjection, "${MediaStore.Audio.Media._ID} > ?", arrayOf(lastId), basicSongsOrder)
+        return load(context, baseSongUri, songsProjection,
+            "${MediaStore.Audio.Media._ID} > ?", arrayOf(lastId.toString()),
+            basicSongsOrder, true)
     }
 
     fun load(context: Context): Flow<MediaMetadataCompat> =
@@ -38,14 +40,14 @@ class MediaStoreSource {
         songsProjection: Array<String>,
         selection: String?,
         selectionArgs: Array<String>?,
-        sortOrder: String
+        sortOrder: String,
+        onlyNew: Boolean = false
     )
             : Flow<MediaMetadataCompat> = flow {
 
         val art = ImageUtils.getBitmapFromVectorDrawable(context, R.drawable.thumb_circular_default)
 
-        val cursor =
-            context.contentResolver.query(uri, songsProjection, selection, selectionArgs, sortOrder)
+        val cursor = context.contentResolver.query(uri, songsProjection, selection, selectionArgs, sortOrder)
         cursor?.use {
             val count = it.count.toLong()
             while (it.moveToNext()) {
@@ -54,8 +56,14 @@ class MediaStoreSource {
                 val build = metadata.build()
                 build.description.extras?.putAll(build.bundle)
                 val id = build.id
+                // Workout Ids
+                val idInt = id?.toInt() ?: continue
+                Log.d("Loading song:", "id: $id, lastId: $lastId")
+                if (idInt >= lastId) {
+                    if (onlyNew && idInt == lastId) continue
+                    lastId = idInt
+                }
                 Log.d("Loading song: ", "id: ${id}, title: ${build.title}, mediaUri: ${build.mediaUri}")
-                if (id?.toInt()!! > lastId.toInt()) lastId = id
                 emit(build)
             }
         }
