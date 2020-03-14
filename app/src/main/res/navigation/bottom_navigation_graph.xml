@@ -186,6 +186,9 @@
         <action
             android:id="@+id/action_navigationDialogFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_navigationDialogFragment_to_equalizerFragment"
+            app:destination="@id/equalizerFragment" />
     </dialog>
     <fragment
         android:id="@+id/albumSongsFragment"
@@ -476,7 +479,11 @@
     <fragment
         android:id="@+id/webFragment"
         android:name="com.nanicky.devteam.main.web.WebFragment"
-        android:label="WebFragment" />
+        android:label="WebFragment">
+        <argument
+            android:name="origin"
+            android:defaultValue="10" />
+    </fragment>
     <fragment
         android:id="@+id/favouriteSongsFragment"
         android:name="com.nanicky.devteam.main.favourite.FavouriteSongsFragment"
@@ -528,6 +535,18 @@
             android:id="@+id/action_foldersMenuBottomSheetDialogFragment_to_addSongsToPlaylistsFragment"
             app:destination="@id/addSongsToPlaylistsFragment" />
     </dialog>
+    <fragment
+        android:id="@+id/equalizerFragment"
+        android:name="com.nanicky.devteam.main.equalizer.EqualizerFragment"
+        android:label="EqualizerFragment">
+        <action
+            android:id="@+id/action_equalizerFragment_to_navigationDialogFragment"
+            app:destination="@id/navigationDialogFragment" >
+            <argument
+                android:name="origin"
+                android:defaultValue="11" />
+        </action>
+    </fragment>
 
 </navigation>
 

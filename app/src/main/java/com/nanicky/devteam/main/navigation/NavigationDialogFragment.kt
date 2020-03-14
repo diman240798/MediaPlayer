@@ -133,6 +133,7 @@ class NavigationDialogFragment : BaseFullscreenDialogFragment(), OnStartDragList
             Constants.NAV_VIDEOS -> TODO()
             Constants.NAV_FOLDERS -> R.id.action_navigationDialogFragment_to_foldersFragment
             Constants.NAV_WEB -> R.id.action_navigationDialogFragment_to_webFragment
+            Constants.NAV_EQUALIZER -> R.id.action_navigationDialogFragment_to_equalizerFragment
             else -> null
         }
         if (navId != null) findNavController().navigate(navId)

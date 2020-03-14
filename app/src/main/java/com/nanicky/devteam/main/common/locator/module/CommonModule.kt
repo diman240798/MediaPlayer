@@ -10,6 +10,7 @@ import com.nanicky.devteam.main.db.AppRoomDatabase
 import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.favourite.FavouriteSongsRepository
 import com.nanicky.devteam.main.db.playlist.PlaylistRepository
+import com.nanicky.devteam.main.equalizer.EqualizerInitializer
 import com.nanicky.devteam.main.explore.ExploreViewModel
 import com.nanicky.devteam.main.favourite.FavouriteSongsViewModel
 import com.nanicky.devteam.main.folders.FolderSongsViewModel
@@ -54,6 +55,8 @@ val commonModule = module {
     viewModel { FavouriteSongsViewModel(get(), get()) }
     viewModel { SongsMenuBottomSheetDialogFragmentViewModel(get()) }
     viewModel { WebFragmentViewModel() }
+
+    single { EqualizerInitializer(get()) }
 
     // metadata
     single { PlaylistRepository(AppRoomDatabase.getDatabase(get()).playlistDao()) }

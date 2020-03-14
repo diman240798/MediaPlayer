@@ -13,6 +13,7 @@ object Constants {
     const val NAV_VIDEOS = "com.nanicky.devteam.nav.videos"
     const val NAV_FOLDERS = "com.nanicky.devteam.nav.folders"
     const val NAV_WEB = "com.nanicky.devteam.nav.web"
+    const val NAV_EQUALIZER = "com.nanicky.devteam.nav.equalizer"
     // Media playback
     const val MEDIA_SEARCH_SUPPORTED = "android.media.browse.SEARCH_SUPPORTED"
     const val CONTENT_STYLE_BROWSABLE_HINT = "android.media.browse.CONTENT_STYLE_BROWSABLE_HINT"

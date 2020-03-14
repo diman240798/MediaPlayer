@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (c) 2020 . Wilberforce Uwadiegwu. All Rights Reserved.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sectionTitle" />
+
+    <TextView
+        android:id="@+id/sectionTitle"
+        style="@style/AppTheme.SectionTitle"
+        android:text="@string/equalizer"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/navigationIcon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/navigationIcon"
+        style="@style/AppTheme.SectionIcon"
+        android:contentDescription="@string/navigation_icon"
+        app:layout_constraintBottom_toBottomOf="@id/sectionTitle"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintLeft_toRightOf="@+id/sectionTitle"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sectionTitle"
+        app:srcCompat="@drawable/ic_nav" />
+
+    <LinearLayout
+        android:id="@+id/equalizerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="vertical"
+        android:padding="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/eqSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textOn="@string/enable"
+        android:textOff="@string/disable"
+        app:layout_constraintBottom_toBottomOf="@+id/sectionTitle"
+        app:layout_constraintStart_toEndOf="@+id/sectionTitle"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

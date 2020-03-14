@@ -168,6 +168,10 @@
     <string name="shazam">Shazam</string>
     <string name="deleted">Удалить</string>
     <string name="song_artist">Автор - Песня</string>
-
-
+    <string name="sessionNotSet">Включите музыку и переоткройте!</string>
+    <string name="equalizer">Эквалайзер</string>
+    <string name="custom">Пользовательский</string>
+    <string name="enable">Включен</string>
+    <string name="disable">Отключен</string>
+    
 </resources>

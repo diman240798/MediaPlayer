@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.FileDataSourceFactory
@@ -21,6 +22,7 @@ import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.db.AppRoomDatabase
 import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.db.recently.RecentlyPlayedRepository
+import com.nanicky.devteam.main.equalizer.EqualizerInitializer
 import com.nanicky.devteam.main.playback.mediasession.MediaControllerCallback
 import com.nanicky.devteam.main.playback.mediasession.QueueEditor
 import com.nanicky.devteam.main.playback.mediasession.QueueNavigator
@@ -210,11 +212,23 @@ class PlaybackService : MediaBrowserServiceCompat() {
         .setUsage(C.USAGE_MEDIA)
         .build()
 
+
+    internal val equalizerInitializer: EqualizerInitializer by inject()
     // Configure ExoPlayer to handle audio focus for us.
     // See https://link.medium.com/Zw5gorq9mZ
     internal val exoPlayer by lazy {
         ExoPlayerFactory.newSimpleInstance(this).apply {
             setAudioAttributes(this@PlaybackService.audioAttributes, true)
+            addAnalyticsListener(object: AnalyticsListener {
+                override fun onAudioSessionId(
+                    eventTime: AnalyticsListener.EventTime?,
+                    audioSessionId: Int
+                ) {
+                    super.onAudioSessionId(eventTime, audioSessionId)
+                    equalizerInitializer.audioSessionId = audioSessionId
+                    equalizerInitializer.initEqualizer()
+                }
+            })
         }
     }
 }
