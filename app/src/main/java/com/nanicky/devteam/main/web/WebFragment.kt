@@ -54,6 +54,10 @@ class WebFragment : Fragment() {
         }
 
         floatingActionButton.setOnLongClickListener {
+            if (searchText.text.toString().isEmpty()) {
+                viewModel.urls = resources.getStringArray(R.array.web_urls_search).toMutableList()
+                viewModel.url.value = viewModel.urls[viewModel.lastIndex]
+            }
             viewModel.setSearchString(searchText.text.toString())
             true
         }
@@ -63,14 +67,17 @@ class WebFragment : Fragment() {
         }
 
         drivemusicButton.setOnClickListener {
+            viewModel.lastIndex = 0
             viewModel.setUrl(viewModel.urls[0])
         }
 
         hotmoButton.setOnClickListener {
+            viewModel.lastIndex = 1
             viewModel.setUrl(viewModel.urls[1])
         }
 
         zaycevButton.setOnClickListener {
+            viewModel.lastIndex = 2
             viewModel.setUrl(viewModel.urls[2])
         }
 

@@ -59,6 +59,8 @@ class BrowseTree(
     val mediaUpdateNotifier: MediaUpdateNotifier
 ) {
 
+    @Volatile var initialized = false
+
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 

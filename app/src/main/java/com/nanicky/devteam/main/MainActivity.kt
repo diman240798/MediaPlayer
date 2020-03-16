@@ -22,7 +22,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) { // activity onCreate called twice
+        if (savedInstanceState == null && !browseTree.initialized) { // activity onCreate called twice
+            browseTree.initialized = true
             favouriteSongsRepository.browseTree = browseTree
             currentQueueSongsRepository.browseTree = browseTree
             browseTree.load()

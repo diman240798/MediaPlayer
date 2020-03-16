@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.nanicky.devteam.main.songs.Song
 
 class WebFragmentViewModel : ViewModel() {
+    var lastIndex: Int = 0
+
     lateinit var urls: MutableList<String>
     val searchString get() = _searhString
     private val _searhString = MutableLiveData<String?>()
