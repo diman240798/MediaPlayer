@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.nanicky.devteam.R
-import com.nanicky.devteam.main.playback.mediasource.BrowseTree
 import kotlinx.android.synthetic.main.fragment_equalizer.*
 import org.koin.android.ext.android.inject
 
@@ -39,10 +38,11 @@ class EqualizerFragment : Fragment() {
             return
         }
         val mEqualizer = Equalizer(0, audioSessionId)
-        mEqualizer.enabled = preferences.getBoolean(CONST_PREF_ENABLED, false)
+        val isEnabled = preferences.getBoolean(CONST_PREF_ENABLED, false)
+        mEqualizer.enabled = isEnabled
 
         EqualizerUI.make(equalizerContainer, mEqualizer, spinner, preferences)
-
+        eqSwitch.isChecked = isEnabled
         eqSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             preferences.edit().putBoolean(CONST_PREF_ENABLED, isChecked)
             mEqualizer.enabled = isChecked
