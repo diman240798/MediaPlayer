@@ -393,8 +393,7 @@ class PlaybackViewModel(
      *  which can also change [MediaItemData.isPlaying]s in the list.
      */
     private val mediaSessionConnection = mediaSessionConnection.also {
-        preferences.edit().putString(Constants.LAST_PARENT_ID, Constants.CURRENT_QUEUE_ROOT)
-            .commit()
+        preferences.edit().putString(Constants.LAST_PARENT_ID, Constants.CURRENT_QUEUE_ROOT).commit()
         it.subscribe(Constants.CURRENT_QUEUE_ROOT, subscriptionCallback)
         it.playbackState.observeForever(playbackStateObserver)
         it.nowPlaying.observeForever(mediaMetadataObserver)

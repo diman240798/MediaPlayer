@@ -147,8 +147,7 @@ class MediaControllerCallback(private val playbackService: PlaybackService) : Me
 
     private fun persistPosition() {
         if (playbackService.mediaController.playbackState.started) {
-            playbackService.preferences.edit().putLong(Constants.LAST_POSITION, playbackService.exoPlayer.contentPosition)
-                .apply()
+            playbackService.preferences.edit().putLong(Constants.LAST_POSITION, playbackService.exoPlayer.contentPosition).apply()
         }
     }
 

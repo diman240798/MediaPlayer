@@ -42,9 +42,10 @@ class EqualizerFragment : Fragment() {
         mEqualizer.enabled = isEnabled
 
         EqualizerUI.make(equalizerContainer, mEqualizer, spinner, preferences)
+        eqSwitch.isEnabled = true
         eqSwitch.isChecked = isEnabled
         eqSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            preferences.edit().putBoolean(CONST_PREF_ENABLED, isChecked)
+            preferences.edit().putBoolean(CONST_PREF_ENABLED, isChecked).commit()
             mEqualizer.enabled = isChecked
         }
 
