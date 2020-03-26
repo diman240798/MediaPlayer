@@ -124,7 +124,7 @@
     <string name="finding_lyrics">Поиск слов</string>
     <string name="share">Поделиться названием</string>
     <string name="play_next">Играть следующей</string>
-    <string name="favourite">Избранныу</string>
+    <string name="favourite">Добавить в избранные</string>
     <string name="add_to_playlist">Добавить в плейлист</string>
     <string name="delete_frm_queue">Удалить из очереди</string>
     <string name="no_playlist">Ни одного плейлиста не найдено</string>

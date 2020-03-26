@@ -18,7 +18,8 @@ import com.nanicky.devteam.main.common.data.Constants
 import com.nanicky.devteam.main.db.currentqueue.CurrentQueueSongsRepository
 import com.nanicky.devteam.main.playback.*
 import timber.log.Timber
-import java.util.concurrent.CopyOnWriteArrayList
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 class PlaybackPreparer(
@@ -63,6 +64,25 @@ class PlaybackPreparer(
                 PlaybackStateCompat.ACTION_PREPARE_FROM_SEARCH or
                 PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
 
+    private fun toMediaCompatCopy(it: MediaMetadataCompat, myMediaUri: Uri? = it.mediaUri): MediaMetadataCompat {
+        return MediaMetadataCompat.Builder().apply {
+            id = it.id!!
+            title = it.title
+            artist = it.artist
+            album = it.album
+            albumId = it.albumId
+            albumArtUri = it.albumArtUri.toString()
+
+            mediaUri = myMediaUri.toString()
+            albumArtUri = it.albumArtUri.toString()
+            flag = MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+            displayTitle = it.title
+            displaySubtitle = it.artist
+            displayDescription = it.description.title.toString()
+            downloadStatus = MediaDescriptionCompat.STATUS_DOWNLOADED
+        }.build()
+    }
+
     /**
      *  Handles callbacks to both [MediaSessionCompat.Callback.onPrepareFromMediaId] *AND*
      *  [MediaSessionCompat.Callback.onPlayFromMediaId] when using [MediaSessionConnector].
@@ -72,27 +92,12 @@ class PlaybackPreparer(
 
         val lastParentId: String? = extras?.getString("uri")
 
-        val metadataList: List<MediaMetadataCompat>
+        val metadataList: MutableList<MediaMetadataCompat>
 
         if (lastParentId == Constants.CURRENT_QUEUE_ROOT) {
             metadataList = currentSongRepository.get()?.map {
-                MediaMetadataCompat.Builder().apply {
-                    id = it.id!!
-                    title = it.title
-                    artist = it.artist
-                    album = it.album
-                    albumId = it.albumId
-                    albumArtUri = it.albumArtUri.toString()
-
-                    mediaUri = it.description.mediaUri.toString()
-                    albumArtUri = it.albumArtUri.toString()
-                    flag = MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-                    displayTitle = it.title
-                    displaySubtitle = it.artist
-                    displayDescription = it.description.title.toString()
-                    downloadStatus = MediaDescriptionCompat.STATUS_DOWNLOADED
-                }.build()
-            }!!
+                toMediaCompatCopy(it)
+            }!!.toMutableList()
         } else {
             val itemToPlay = browseTree[Constants.SONGS_ROOT]?.find { it.id == mediaId }
             if (itemToPlay == null) {
@@ -108,30 +113,37 @@ class PlaybackPreparer(
                 browseTree[Constants.SONGS_ROOT]!!
             }
         }
+        for (i in 0 until metadataList.size) {
+            val uriStr = metadataList[i].mediaUri.toString()
+            if (uriStr.contains('#')) {
+                metadataList[i] = toMediaCompatCopy(metadataList[i], Uri.parse(URLEncoder.encode(uriStr, StandardCharsets.UTF_8.name())))
+            }
 
+            val mediaSource = metadataList.toMediaSource(dataSourceFactory)
 
-        val mediaSource = metadataList.toMediaSource(dataSourceFactory)
+            val positionMs = if (mediaId == preferences.getString(Constants.LAST_ID, null)) {
+                preferences.getLong(Constants.LAST_POSITION, 0)
+            } else {
+                0
+            }
+            browseTree.currentMediaSource = mediaSource
 
-        val positionMs = if (mediaId == preferences.getString(Constants.LAST_ID, null)) {
-            preferences.getLong(Constants.LAST_POSITION, 0)
-        } else {
-            0
+            // Since the playlist was probably based on some ordering (such as tracks
+            // on an album), find which window index to play first so that the song the
+            // user actually wants to hear plays first.
+            var initialWindowIndex = metadataList.indexOfFirst { it.id == mediaId }
+            if (initialWindowIndex == -1) initialWindowIndex = 0
+            exoPlayer.playWhenReady = playWhenReady
+            exoPlayer.prepare(mediaSource)
+            exoPlayer.seekTo(initialWindowIndex, positionMs)
+
         }
-        browseTree.currentMediaSource = mediaSource
-
-        // Since the playlist was probably based on some ordering (such as tracks
-        // on an album), find which window index to play first so that the song the
-        // user actually wants to hear plays first.
-        var initialWindowIndex = metadataList.indexOfFirst { it.id == mediaId }
-        if (initialWindowIndex == -1) initialWindowIndex = 0
-        exoPlayer.playWhenReady = playWhenReady
-        exoPlayer.prepare(mediaSource)
-        exoPlayer.seekTo(initialWindowIndex, positionMs)
-
     }
 
+        override fun onPrepareFromUri(uri: Uri?, playWhenReady: Boolean, extras: Bundle?) = Unit
 
-    override fun onPrepareFromUri(uri: Uri?, playWhenReady: Boolean, extras: Bundle?) = Unit
+        override fun onPrepare(playWhenReady: Boolean) = Unit
 
-    override fun onPrepare(playWhenReady: Boolean) = Unit
 }
+
+
